@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeartWise — Relationship Analyzer</title>
+
+  <!-- Auth guard: hide page instantly, check role, show if OK -->
+  <script src="../js/utils.js"></script>
+  <script>
+    toggleDoc(false);
+    (function () {
+      var token = localStorage.getItem('token');
+      var role  = localStorage.getItem('role');
+      if (!token || role !== 'USER') { window.location.replace('index.html'); }
+      else { toggleDoc(true); }
+    })();
+  </script>
+
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/analyzer.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="nav">
+  <a class="logo" href="home.html">Heart<span>wise</span></a>
+  <div class="nav-right">
+    <div class="avatar-sm" id="navAvatar">U</div>
+  </div>
+</nav>
+
+<div class="analyzer-wrap">
+  <div class="analyzer-header">
+    <div class="badge">🔮 Relationship Analyzer</div>
+    <h2>Red Flag or Green Flag?</h2>
+    <p>Answer honestly. Your results are completely private.</p>
+  </div>
+
+  <div id="analyzer-questions">
+    <div class="analyzer-step-label" id="step-label">Question 1 of 5</div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="prog-fill" style="width:20%"></div>
+    </div>
+
+    <div class="ques-card" id="q1">
+      <h4>How does your partner react when you set a boundary?</h4>
+      <div class="options">
+        <div class="option" onclick="selectOpt(this, 1)">Respects it completely, no questions asked</div>
+        <div class="option" onclick="selectOpt(this, 1)">Gets upset but eventually comes around</div>
+        <div class="option" onclick="selectOpt(this,-1)">Guilt-trips or manipulates me until I give in</div>
+        <div class="option" onclick="selectOpt(this,-1)">Completely ignores my boundaries</div>
+      </div>
+    </div>
+
+    <div class="ques-card" id="q2" style="display:none">
+      <h4>Does your partner support your personal goals and friendships?</h4>
+      <div class="options">
+        <div class="option" onclick="selectOpt(this, 1)">Always encourages me enthusiastically</div>
+        <div class="option" onclick="selectOpt(this, 1)">Generally supportive, occasionally insecure</div>
+        <div class="option" onclick="selectOpt(this,-1)">Tries to limit my friendships or ambitions</div>
+        <div class="option" onclick="selectOpt(this,-1)">Constantly undermines my achievements</div>
+      </div>
+    </div>
+
+    <div class="ques-card" id="q3" style="display:none">
+      <h4>How does your partner handle conflict or disagreements?</h4>
+      <div class="options">
+        <div class="option" onclick="selectOpt(this, 1)">Talks calmly and listens to both sides</div>
+        <div class="option" onclick="selectOpt(this, 1)">Gets heated but always apologizes sincerely</div>
+        <div class="option" onclick="selectOpt(this,-1)">Uses the silent treatment or stonewalling</div>
+        <div class="option" onclick="selectOpt(this,-1)">Blames, shouts, or becomes aggressive</div>
+      </div>
+    </div>
+
+    <div class="ques-card" id="q4" style="display:none">
+      <h4>How does your partner treat your family and close friends?</h4>
+      <div class="options">
+        <div class="option" onclick="selectOpt(this, 1)">Warmly, even when disagreeing with them</div>
+        <div class="option" onclick="selectOpt(this, 1)">Politely, though not particularly close</div>
+        <div class="option" onclick="selectOpt(this,-1)">Often tries to create distance between us</div>
+        <div class="option" onclick="selectOpt(this,-1)">Disrespects or speaks badly about them</div>
+      </div>
+    </div>
+
+    <div class="ques-card" id="q5" style="display:none">
+      <h4>How does your partner respond when you express your emotions?</h4>
+      <div class="options">
+        <div class="option" onclick="selectOpt(this, 1)">Listens, validates, and holds space for me</div>
+        <div class="option" onclick="selectOpt(this, 1)">Not always perfect but tries to understand</div>
+        <div class="option" onclick="selectOpt(this,-1)">Dismisses or mocks my feelings</div>
+        <div class="option" onclick="selectOpt(this,-1)">Uses my vulnerabilities against me later</div>
+      </div>
+    </div>
+
+    <button class="btn-sm" id="analyzer-next" onclick="analyzerNext()"
+            style="margin-top:4px;width:100%;padding:13px;border-radius:12px;font-size:15px;display:none;">
+      Next →
+    </button>
+  </div>
+
+  <div id="analyzer-result" style="display:none;">
+    <div class="result-card">
+      <div class="flag-icon"  id="flag-emoji">🚩</div>
+      <div class="flag-label" id="flag-label">Red Flag Alert</div>
+      <div style="color:var(--muted);font-size:13px;margin-bottom:4px;">Based on your responses</div>
+      <div class="flag-score-bar">
+        <div class="flag-score-fill" id="flag-bar" style="width:0%"></div>
+      </div>
+      <div id="flag-traits" class="flag-traits"></div>
+      <p class="suggest-text" id="flag-suggest"></p>
+      <div class="result-actions">
+        <button class="btn-outline" onclick="resetAnalyzer()">Try Again</button>
+        <button class="btn-sm"      onclick="location.href='home.html'">Find a Mentor →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="../js/api.js"></script>
+<script src="../js/analyzer.js"></script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeartWise — Login</title>
+  <script>
+    (function () {
+      var token = localStorage.getItem('token');
+      var role  = localStorage.getItem('role');
+      if (token && role === 'USER')   { window.location.replace('home.html');      return; }
+      if (token && role === 'MENTOR') { window.location.replace('dashboard.html'); return; }
+    })();
+  </script>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/login.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <a class="logo" href="index.html">Heart<span>wise</span></a>
+    <div class="nav-right"><div class="avatar-sm" id="navAvatar">?</div></div>
+  </nav>
+
+  <div class="login-wrap">
+
+    <!-- Left Panel -->
+    <div class="login-left">
+      <div class="login-hero">
+        <h1>Find your path to <em>love</em> &amp; clarity.</h1>
+        <p>Expert relationship mentors, real insights, and your personal relationship analyzer — all in one place.</p>
+      </div>
+      <div class="login-features">
+        <div class="login-feat"><div class="feat-icon" style="background:rgba(232,82,106,.15);">💞</div>Verified relationship mentors</div>
+        <div class="login-feat"><div class="feat-icon" style="background:rgba(123,94,167,.15);">🔮</div>Red &amp; Green flag analyzer</div>
+        <div class="login-feat"><div class="feat-icon" style="background:rgba(61,122,106,.15);">💬</div>Book chat or call sessions</div>
+        <div class="login-feat"><div class="feat-icon" style="background:rgba(201,146,43,.15);">⭐</div>Rated &amp; reviewed mentors</div>
+      </div>
+      <div class="login-footer">© 2025 HeartWise · Your privacy is sacred</div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="login-right">
+      <div class="login-card">
+
+        <!-- Role toggle: User / Mentor -->
+        <div class="login-toggle">
+          <button class="login-toggle-btn active" id="lt-user"   onclick="switchLogin('user')">I'm a User</button>
+          <button class="login-toggle-btn"         id="lt-mentor" onclick="switchLogin('mentor')">I'm a Mentor</button>
+        </div>
+
+        <!-- ══════════ USER PANEL ══════════ -->
+        <div id="login-user">
+
+          <!-- Login / Register mode toggle -->
+          <div class="mode-toggle">
+            <button class="mode-btn active" id="user-mode-login"    onclick="switchMode('user','login')">Sign In</button>
+            <button class="mode-btn"        id="user-mode-register" onclick="switchMode('user','register')">Create Account</button>
+          </div>
+
+          <!-- User Login -->
+          <div id="user-login-form">
+            <h2 class="login-title">Welcome back 💌</h2>
+            <p class="login-sub">Sign in to connect with your mentor</p>
+            <div class="field"><label>Email</label><input type="email" id="userEmail" placeholder="you@email.com"></div>
+            <div class="field"><label>Password</label><input type="password" id="userPass" placeholder="••••••••"></div>
+            <button class="btn-primary" onclick="loginUser()">Sign In</button>
+            <p class="login-note">Don't have an account? Click "Create Account" above.</p>
+          </div>
+
+          <!-- User Register -->
+          <div id="user-register-form" style="display:none;">
+            <h2 class="login-title">Join HeartWise 💞</h2>
+            <p class="login-sub">Create your free account</p>
+            <div class="field"><label>Full Name</label><input type="text"     id="regUserName"    placeholder="Your name"></div>
+            <div class="field"><label>Email</label>     <input type="email"    id="regUserEmail"   placeholder="you@email.com"></div>
+            <div class="field"><label>Password</label>  <input type="password" id="regUserPass"    placeholder="Min. 6 characters"></div>
+            <div class="field"><label>Confirm Password</label><input type="password" id="regUserConfirm" placeholder="Repeat password"></div>
+            <button class="btn-primary" onclick="registerUser()">Create Account</button>
+            <p class="login-note">Already have an account? Click "Sign In" above.</p>
+          </div>
+
+        </div><!-- end #login-user -->
+
+        <!-- ══════════ MENTOR PANEL ══════════ -->
+        <div id="login-mentor" style="display:none;">
+
+          <div class="mentor-badge">🏅 Verified Mentor Portal — restricted access</div>
+
+          <!-- Login / Register mode toggle -->
+          <div class="mode-toggle">
+            <button class="mode-btn active" id="mentor-mode-login"    onclick="switchMode('mentor','login')">Sign In</button>
+            <button class="mode-btn"        id="mentor-mode-register" onclick="switchMode('mentor','register')">Apply as Mentor</button>
+          </div>
+
+          <!-- Mentor Login -->
+          <div id="mentor-login-form">
+            <h2 class="login-title">Mentor Sign In</h2>
+            <p class="login-sub">Access your session dashboard</p>
+            <div class="field"><label>Email</label>     <input type="email"    id="mentorEmail" placeholder="mentor@email.com"></div>
+            <div class="field"><label>Password</label>  <input type="password" id="mentorPass"  placeholder="••••••••"></div>
+            <div class="field"><label>Mentor ID</label> <input type="text"     id="mentorId"    placeholder="HW-MENTOR-####"></div>
+            <button class="btn-primary" style="background:var(--lavender);" onclick="loginMentor()">Sign In as Mentor</button>
+            <p class="login-note">⚠️ Rejecting 10+ sessions will block your account.</p>
+          </div>
+
+          <!-- Mentor Register -->
+          <div id="mentor-register-form" style="display:none;">
+            <h2 class="login-title">Become a Mentor 🌟</h2>
+            <p class="login-sub">Set up your mentor profile</p>
+            <div class="field"><label>Full Name</label>       <input type="text"     id="regMentorName"      placeholder="Dr. Your Name"></div>
+            <div class="field"><label>Email</label>           <input type="email"    id="regMentorEmail"     placeholder="mentor@email.com"></div>
+            <div class="field"><label>Password</label>        <input type="password" id="regMentorPass"      placeholder="Min. 6 characters"></div>
+            <div class="field"><label>Confirm Password</label><input type="password" id="regMentorConfirm"   placeholder="Repeat password"></div>
+            <div class="field"><label>Specialty <span style="color:#E8526A">*</span></label><input type="text" id="regMentorSpecialty" placeholder="e.g. Couples Therapy, Breakup Recovery"></div>
+            <div class="field"><label>Years of Experience</label><input type="number" id="regMentorExp"   placeholder="e.g. 5" min="0"></div>
+            <div class="field"><label>Price per 30 min (₹)</label><input type="number" id="regMentorPrice" placeholder="e.g. 500" min="0"></div>
+            <button class="btn-primary" style="background:var(--lavender);" onclick="registerMentor()">Create Mentor Account</button>
+            <p class="login-note">Your profile will be listed after verification.</p>
+          </div>
+
+        </div><!-- end #login-mentor -->
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="../js/utils.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+</body>
+</html>
