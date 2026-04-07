@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeartWise — Home</title>
+  <script src="../js/utils.js"></script>
+  <script>
+    toggleDoc(false);
+    (function () {
+      var token = localStorage.getItem('token');
+      var role  = localStorage.getItem('role');
+      if (!token || role !== 'USER') { window.location.replace('index.html'); }
+      else { toggleDoc(true); }
+    })();
+  </script>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/home.css">
+  <style>
+    /* Notification bell styles */
+    .notif-wrap { position: relative; }
+    .notif-bell {
+      background: none; border: none; cursor: pointer;
+      font-size: 20px; padding: 4px 8px; position: relative;
+    }
+    .notif-badge {
+      position: absolute; top: -2px; right: -2px;
+      background: #E8526A; color: #fff;
+      font-size: 10px; font-weight: 700;
+      width: 16px; height: 16px; border-radius: 50%;
+      display: none; align-items: center; justify-content: center;
+    }
+    .notif-panel {
+      display: none; position: absolute; right: 0; top: 44px;
+      width: 320px; background: var(--card); border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,.18); z-index: 999;
+      overflow: hidden;
+    }
+    .notif-header {
+      padding: 14px 16px 10px;
+      font-weight: 700; font-size: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .notif-item {
+      display: flex; gap: 10px; align-items: flex-start;
+      padding: 12px 16px; cursor: pointer;
+      transition: background .15s;
+    }
+    .notif-item:hover   { background: var(--bg); }
+    .notif-item.unread  { background: rgba(232,82,106,.06); }
+    .notif-icon         { font-size: 18px; flex-shrink: 0; }
+    .notif-msg          { font-size: 13px; color: var(--text); line-height: 1.4; }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="nav">
+    <a class="logo" href="home.html">Heart<span>wise</span></a>
+    <div class="nav-right" style="display:flex;align-items:center;gap:10px;">
+
+      <!-- Notification Bell -->
+      <div class="notif-wrap">
+        <button class="notif-bell" id="notif-bell" onclick="toggleNotifications()" title="Notifications">
+          🔔
+          <span class="notif-badge" id="notif-badge">0</span>
+        </button>
+        <div class="notif-panel" id="notif-panel">
+          <div class="notif-header">Notifications</div>
+          <div id="notif-list">
+            <div style="padding:16px;color:var(--muted);font-size:13px;text-align:center;">Loading...</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="avatar-sm" id="navAvatar">U</div>
+      <button onclick="logout()" style="
+        background:none;border:1px solid var(--border);color:var(--muted);
+        padding:6px 14px;border-radius:20px;font-size:13px;cursor:pointer;
+        transition:all .2s;" onmouseover="this.style.borderColor='#E8526A';this.style.color='#E8526A'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
+        Logout
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="home-hero">
+    <h2 id="welcomeText">Hello 👋 How's your heart today?</h2>
+    <p>Find the right mentor, book a session, or analyze your relationship — we've got you.</p>
+    <div class="hero-btns">
+      <button class="btn-outline" onclick="location.href='analyzer.html'">🔮 Analyze My Relationship</button>
+      <button class="btn-sm"      onclick="location.href='mentorprofile.html'">Find a Mentor</button>
+    </div>
+  </div>
+
+  <!-- ANALYZER BANNER -->
+  <div class="analyzer-banner" onclick="location.href='analyzer.html'">
+    <h3>Is your partner a 🚩 or 💚?</h3>
+    <p>Answer 5 quick questions about their behavior. Get your instant report.</p>
+    <button class="btn-gold">Start Analyzer →</button>
+  </div>
+
+  <!-- MENTORS SECTION -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Verified Mentors</span>
+      <button class="see-all">See all →</button>
+    </div>
+    <div class="mentor-grid" id="mentorList"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/home.js"></script>
+</body>
+</html>

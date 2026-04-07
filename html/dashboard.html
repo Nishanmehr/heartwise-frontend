@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeartWise — Mentor Dashboard</title>
+  <script src="../js/utils.js"></script>
+  <script>
+    toggleDoc(false);
+    (function () {
+      var token = localStorage.getItem('token');
+      var role  = localStorage.getItem('role');
+      if (!token || role !== 'MENTOR') { window.location.replace('index.html'); }
+      else { toggleDoc(true); }
+    })();
+  </script>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="nav">
+    <a class="logo" href="dashboard.html">Heart<span>wise</span></a>
+    <div class="nav-right" style="display:flex;align-items:center;gap:10px;">
+      <div class="avatar-sm" id="navAvatar">S</div>
+      <button onclick="logout()" style="
+        background:none;border:1px solid var(--border);color:var(--muted);
+        padding:6px 14px;border-radius:20px;font-size:13px;cursor:pointer;
+        transition:all .2s;" onmouseover="this.style.borderColor='#E8526A';this.style.color='#E8526A'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
+        Logout
+      </button>
+    </div>
+  </nav>
+
+  <div class="dash-wrap">
+
+    <div class="dash-header">
+      <div>
+        <h2 id="dashWelcome">Welcome 👋</h2>
+        <div class="dash-date" id="dashDate"></div>
+      </div>
+      <span class="status-badge status-active">● Active</span>
+    </div>
+
+    <div class="metrics-row">
+      <div class="metric-card">
+        <div class="label">Total Sessions</div>
+        <div class="value" id="metricTotal">—</div>
+        <div class="sub up">All time</div>
+      </div>
+      <div class="metric-card">
+        <div class="label">Pending Requests</div>
+        <div class="value" id="metricPending">—</div>
+        <div class="sub">Awaiting your action</div>
+      </div>
+      <div class="metric-card">
+        <div class="label">Accepted</div>
+        <div class="value" id="metricAccepted">—</div>
+        <div class="sub up">Confirmed sessions</div>
+      </div>
+      <div class="metric-card">
+        <div class="label">Rejections Left</div>
+        <div class="value" id="metricRejLeft" style="color:#C9922B;">10/10</div>
+        <div class="sub warn" id="metricRejWarn">No rejections used</div>
+      </div>
+    </div>
+
+    <div class="reject-warn">
+      <span>⚠️</span>
+      <div style="flex:1;">
+        <div class="warn-text" id="warnText" style="font-weight:600;margin-bottom:4px;">Rejection limit: 0 of 10 used</div>
+        <div class="warn-bar"><div class="warn-fill" id="warnFill" style="width:0%"></div></div>
+      </div>
+      <span>Exceeding 10 rejections will block your account.</span>
+    </div>
+
+    <!-- Session requests rendered dynamically by dashboard.js -->
+    <div class="requests-section">
+      <div class="requests-title">
+        <div class="req-dot"></div>
+        New Session Requests
+      </div>
+      <!-- Cards injected here by JS -->
+      <div style="color:var(--muted);font-size:14px;padding:20px 0;" id="req-loading">
+        Loading requests...
+      </div>
+    </div>
+
+    <!-- Upcoming sessions (static for now, wire to backend later) -->
+    <div class="upcoming-section">
+      <div class="up-title">Accepted Sessions</div>
+      <div id="acceptedList">
+        <div style="color:var(--muted);font-size:14px;padding:12px 0;">
+          Accepted sessions will appear here.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/dashboard.js"></script>
+</body>
+</html>

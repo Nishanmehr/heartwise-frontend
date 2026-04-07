@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeartWise — Mentor Profile</title>
+
+  <script src="../js/utils.js"></script>
+  <script>
+    toggleDoc(false);
+    (function () {
+      var token = localStorage.getItem('token');
+      var role  = localStorage.getItem('role');
+      if (!token || role !== 'USER') { window.location.replace('index.html'); }
+      else { toggleDoc(true); }
+    })();
+  </script>
+
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/profile.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="nav">
+    <a class="logo" href="home.html">Heart<span>wise</span></a>
+    <div class="nav-right">
+      <div class="avatar-sm" id="navAvatar">U</div>
+    </div>
+  </nav>
+
+  <!-- Loading state -->
+  <div id="profile-loading" style="text-align:center;padding:60px;color:var(--muted);font-size:15px;">
+    Loading mentor profile...
+  </div>
+
+  <!-- Error state -->
+  <div id="profile-error" style="display:none;text-align:center;padding:60px;">
+    <div style="font-size:32px;margin-bottom:12px;">😕</div>
+    <div style="color:var(--muted);font-size:15px;">Could not load this mentor's profile.</div>
+    <button class="btn-outline" style="margin-top:16px;" onclick="location.href='home.html'">← Go Back</button>
+  </div>
+
+  <!-- Profile content (hidden until data loads) -->
+  <div id="profile-content" style="display:none;">
+
+    <div class="profile-hero">
+      <div class="profile-top">
+        <div class="profile-avatar" id="mentorAvatar" style="background:linear-gradient(135deg,#E8526A,#C03A55);">?</div>
+        <div class="profile-info">
+          <h2 id="mentorName">—</h2>
+          <div class="spec" id="mentorSpecialty">—</div>
+          <div class="profile-meta">
+            <span style="color:#F5A623;font-size:14px;">★★★★★</span>
+            <span style="font-size:13px;color:var(--muted);" id="mentorRating">—</span>
+            <span class="verified-badge">✓ Verified</span>
+          </div>
+          <div class="profile-stats">
+            <div class="stat"><strong id="mentorExp">—</strong>Experience</div>
+            <div class="stat"><strong id="mentorSessions">—</strong>Sessions</div>
+            <div class="stat"><strong id="mentorPrice">—</strong>Per 30 min</div>
+          </div>
+        </div>
+      </div>
+      <div class="profile-tabs">
+        <div class="profile-tab active" onclick="switchTab(this,'ptab-about')">About</div>
+        <div class="profile-tab"        onclick="switchTab(this,'ptab-book')">Book Session</div>
+        <div class="profile-tab"        onclick="switchTab(this,'ptab-reviews')">Reviews</div>
+      </div>
+    </div>
+
+    <!-- ABOUT TAB -->
+    <div id="ptab-about" class="profile-body">
+      <p class="about-text" id="mentorBio">—</p>
+      <div class="about-tags" id="mentorTags"></div>
+      <div class="about-info" id="mentorMeta">—</div>
+    </div>
+
+    <!-- BOOK TAB -->
+    <div id="ptab-book" class="profile-body" style="display:none;">
+      <div class="sessions-grid">
+        <div class="session-type sel" onclick="selSession(this)">
+          <h5>💬 Chat Session</h5>
+          <p>Text-based, async or live</p>
+          <div class="price" id="chatPrice">—<span style="font-size:12px;color:var(--muted);font-weight:400"> / 30 min</span></div>
+        </div>
+        <div class="session-type" onclick="selSession(this)">
+          <h5>📞 Voice Call</h5>
+          <p>1-on-1 private call</p>
+          <div class="price" id="callPrice">—<span style="font-size:12px;color:var(--muted);font-weight:400"> / 30 min</span></div>
+        </div>
+      </div>
+      <div class="slot-label">Pick a slot</div>
+      <div class="slot-grid">
+        <div class="slot"       onclick="selSlot(this)">Today 4 PM</div>
+        <div class="slot"       onclick="selSlot(this)">Today 6 PM</div>
+        <div class="slot taken">Today 8 PM</div>
+        <div class="slot"       onclick="selSlot(this)">Tue 10 AM</div>
+        <div class="slot"       onclick="selSlot(this)">Tue 2 PM</div>
+        <div class="slot"       onclick="selSlot(this)">Tue 5 PM</div>
+        <div class="slot"       onclick="selSlot(this)">Wed 11 AM</div>
+        <div class="slot taken">Wed 3 PM</div>
+        <div class="slot"       onclick="selSlot(this)">Thu 9 AM</div>
+      </div>
+      <button class="btn-primary" onclick="confirmBooking()">Confirm Booking →</button>
+    </div>
+
+    <!-- REVIEWS TAB -->
+    <div id="ptab-reviews" class="profile-body" style="display:none;">
+      <div id="reviewsList">
+        <div class="review-card">
+          <div class="review-top">
+            <div class="reviewer-av" style="background:#E8526A;">A</div>
+            <div><div class="reviewer-name">Anjali R.</div><div class="review-stars">★★★★★</div></div>
+          </div>
+          <p class="review-text">Really helped me understand what I was going through. Highly recommend!</p>
+        </div>
+        <div class="review-card">
+          <div class="review-top">
+            <div class="reviewer-av" style="background:#7B5EA7;">K</div>
+            <div><div class="reviewer-name">Karan M.</div><div class="review-stars">★★★★★</div></div>
+          </div>
+          <p class="review-text">Incredibly insightful and easy to talk to. Will book again.</p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end #profile-content -->
+
+  <div class="toast" id="toast"></div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/profile.js"></script>
+</body>
+</html>
