@@ -4,6 +4,7 @@
    ============================================= */
 
 let notificationsOpen = false;
+let allMentors = []; // Store all mentors for filtering
 
 /* ── Render mentor cards ── */
 function renderMentors(mentors) {
@@ -12,14 +13,16 @@ function renderMentors(mentors) {
   container.innerHTML = '';
 
   if (!mentors || mentors.length === 0) {
-    container.innerHTML = '<p style="color:var(--muted);text-align:center;padding:24px;">No mentors available right now.</p>';
+    container.innerHTML = '<p style="color:var(--muted);text-align:center;padding:24px;">No mentors found.</p>';
     return;
   }
 
   mentors.forEach(m => {
-    const name   = m.name      || 'Mentor';
+    const name   = m.name   || 'Mentor';
     const letter = name.charAt(0).toUpperCase();
-    const id     = m.id        || '';
+    const id     = m.id     || '';
+    const price  = m.price  || '₹500';
+    const rating = m.rating || 0;
 
     const card = document.createElement('div');
     card.className = 'mentor-card';
@@ -28,8 +31,8 @@ function renderMentors(mentors) {
       <div class="mentor-avatar">${letter}</div>
       <div class="mentor-name">${name}</div>
       <div class="mentor-spec">${m.specialty || 'Relationship Expert'}</div>
-      <div class="mentor-rating">★ ${m.rating || '5.0'}</div>
-      <div class="mentor-price">${m.price || '₹500'} <em>/ 30 min</em></div>
+      <div class="mentor-rating">★ ${rating}</div>
+      <div class="mentor-price">${price} <em>/ 30 min</em></div>
       <div class="card-actions">
         <button class="btn-card"         onclick="location.href='mentorprofile.html?id=${id}'">Profile</button>
         <button class="btn-card primary" onclick="location.href='mentorprofile.html?id=${id}'">Book Now</button>
@@ -37,6 +40,74 @@ function renderMentors(mentors) {
     `;
     container.appendChild(card);
   });
+}
+
+/* ── Populate specialty dropdown ── */
+function populateSpecialties(mentors) {
+  const select = document.getElementById('filterSpecialty');
+  if (!select) return;
+
+  const specialties = [...new Set(
+    mentors.map(m => m.specialty).filter(s => s && s !== 'null')
+  )];
+
+  specialties.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s;
+    opt.textContent = s;
+    select.appendChild(opt);
+  });
+}
+
+/* ── Parse price string to number e.g. "₹500" → 500 ── */
+function parsePrice(priceStr) {
+  if (!priceStr) return 0;
+  return parseInt(priceStr.replace(/[^\d]/g, '')) || 0;
+}
+
+/* ── Apply filters ── */
+function applyFilters() {
+  const specialty  = document.getElementById('filterSpecialty').value;
+  const sortBy     = document.getElementById('filterSort').value;
+  const maxPrice   = parseInt(document.getElementById('filterPrice').value) || 99999;
+  const minRating  = parseFloat(document.getElementById('filterRating').value) || 0;
+
+  // Update price label
+  document.getElementById('priceLabel').textContent =
+    maxPrice >= 99999 ? 'Any' : '₹' + maxPrice;
+
+  let filtered = [...allMentors];
+
+  // Filter by specialty
+  if (specialty) {
+    filtered = filtered.filter(m => m.specialty === specialty);
+  }
+
+  // Filter by max price
+  filtered = filtered.filter(m => parsePrice(m.price) <= maxPrice);
+
+  // Filter by min rating
+  filtered = filtered.filter(m => (m.rating || 0) >= minRating);
+
+  // Sort
+  if (sortBy === 'rating-desc')  filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+  if (sortBy === 'rating-asc')   filtered.sort((a, b) => (a.rating || 0) - (b.rating || 0));
+  if (sortBy === 'price-asc')    filtered.sort((a, b) => parsePrice(a.price) - parsePrice(b.price));
+  if (sortBy === 'price-desc')   filtered.sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
+  if (sortBy === 'exp-desc')     filtered.sort((a, b) => parseInt(b.experience) - parseInt(a.experience));
+  if (sortBy === 'exp-asc')      filtered.sort((a, b) => parseInt(a.experience) - parseInt(b.experience));
+
+  renderMentors(filtered);
+}
+
+/* ── Reset filters ── */
+function resetFilters() {
+  document.getElementById('filterSpecialty').value = '';
+  document.getElementById('filterSort').value      = '';
+  document.getElementById('filterPrice').value     = 99999;
+  document.getElementById('filterRating').value    = 0;
+  document.getElementById('priceLabel').textContent = 'Any';
+  renderMentors(allMentors);
 }
 
 /* ── Render notifications dropdown ── */
@@ -71,12 +142,12 @@ async function refreshUnreadBadge() {
   const userId = getStorage('userId');
   if (!userId) return;
   try {
-    const notifs  = await apiGetNotifications(userId);
-    const unread  = notifs.filter(n => !n.read).length;
-    const badge   = document.getElementById('notif-badge');
+    const notifs = await apiGetNotifications(userId);
+    const unread = notifs.filter(n => !n.read).length;
+    const badge  = document.getElementById('notif-badge');
     if (badge) {
-      badge.textContent    = unread;
-      badge.style.display  = unread > 0 ? 'flex' : 'none';
+      badge.textContent   = unread;
+      badge.style.display = unread > 0 ? 'flex' : 'none';
     }
     renderNotifications(notifs);
   } catch (_) {}
@@ -113,8 +184,9 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   // Load mentors
   try {
-    const mentors = await apiGetMentors();
-    renderMentors(mentors);
+    allMentors = await apiGetMentors();
+    populateSpecialties(allMentors);
+    renderMentors(allMentors);
   } catch (err) {
     const container = document.getElementById('mentorList');
     if (container) container.innerHTML =

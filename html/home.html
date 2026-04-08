@@ -53,6 +53,31 @@
     .notif-item.unread  { background: rgba(232,82,106,.06); }
     .notif-icon         { font-size: 18px; flex-shrink: 0; }
     .notif-msg          { font-size: 13px; color: var(--text); line-height: 1.4; }
+
+    /* Filter bar styles */
+    .filter-bar {
+      display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+      padding: 14px 16px; background: var(--card);
+      border-radius: 16px; margin: 0 0 16px 0;
+      border: 1px solid var(--border);
+    }
+    .filter-bar select, .filter-bar input[type=range] {
+      border: 1px solid var(--border); border-radius: 10px;
+      padding: 7px 12px; font-size: 13px; background: var(--bg);
+      color: var(--text); cursor: pointer; outline: none;
+    }
+    .filter-bar select:focus { border-color: #E8526A; }
+    .filter-group {
+      display: flex; flex-direction: column; gap: 3px; font-size: 12px;
+      color: var(--muted);
+    }
+    .filter-group input[type=range] { width: 120px; padding: 0; accent-color: #E8526A; }
+    .filter-reset {
+      background: none; border: 1px solid var(--border); color: var(--muted);
+      padding: 7px 14px; border-radius: 10px; font-size: 13px; cursor: pointer;
+      transition: all .2s; margin-left: auto;
+    }
+    .filter-reset:hover { border-color: #E8526A; color: #E8526A; }
   </style>
 </head>
 <body>
@@ -109,6 +134,43 @@
       <span class="section-title">Verified Mentors</span>
       <button class="see-all">See all →</button>
     </div>
+    <!-- FILTER BAR -->
+    <div class="filter-bar">
+      <div class="filter-group">
+        <label>💞 Specialty</label>
+        <select id="filterSpecialty" onchange="applyFilters()">
+          <option value="">All Specialties</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>⭐ Min Rating</label>
+        <select id="filterRating" onchange="applyFilters()">
+          <option value="0">Any</option>
+          <option value="3">3+</option>
+          <option value="4">4+</option>
+          <option value="4.5">4.5+</option>
+          <option value="5">5 only</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>💰 Max Price: <span id="priceLabel">Any</span></label>
+        <input type="range" id="filterPrice" min="100" max="5000" step="100" value="99999" oninput="applyFilters()">
+      </div>
+      <div class="filter-group">
+        <label>🔃 Sort By</label>
+        <select id="filterSort" onchange="applyFilters()">
+          <option value="">Default</option>
+          <option value="rating-desc">Rating: High to Low</option>
+          <option value="rating-asc">Rating: Low to High</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="exp-desc">Experience: Most First</option>
+          <option value="exp-asc">Experience: Least First</option>
+        </select>
+      </div>
+      <button class="filter-reset" onclick="resetFilters()">✕ Reset</button>
+    </div>
+
     <div class="mentor-grid" id="mentorList"></div>
   </div>
 
