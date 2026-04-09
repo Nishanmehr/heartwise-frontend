@@ -110,14 +110,38 @@
           <!-- Mentor Register -->
           <div id="mentor-register-form" style="display:none;">
             <h2 class="login-title">Become a Mentor 🌟</h2>
-            <p class="login-sub">Set up your mentor profile</p>
-            <div class="field"><label>Full Name</label>       <input type="text"     id="regMentorName"      placeholder="Dr. Your Name"></div>
-            <div class="field"><label>Email</label>           <input type="email"    id="regMentorEmail"     placeholder="mentor@email.com"></div>
-            <div class="field"><label>Password</label>        <input type="password" id="regMentorPass"      placeholder="Min. 6 characters"></div>
-            <div class="field"><label>Confirm Password</label><input type="password" id="regMentorConfirm"   placeholder="Repeat password"></div>
+            <p class="login-sub">Set up your complete mentor profile</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div class="field"><label>First Name <span style="color:#E8526A">*</span></label><input type="text" id="regMentorFirstName" placeholder="First name"></div>
+              <div class="field"><label>Last Name <span style="color:#E8526A">*</span></label><input type="text" id="regMentorLastName" placeholder="Last name"></div>
+            </div>
+            <div class="field"><label>Email <span style="color:#E8526A">*</span></label><input type="email" id="regMentorEmail" placeholder="mentor@email.com"></div>
+            <div class="field"><label>Password <span style="color:#E8526A">*</span></label><input type="password" id="regMentorPass" placeholder="Min. 6 characters"></div>
+            <div class="field"><label>Confirm Password <span style="color:#E8526A">*</span></label><input type="password" id="regMentorConfirm" placeholder="Repeat password"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div class="field"><label>Date of Birth <span style="color:#E8526A">*</span></label><input type="date" id="regMentorDob"></div>
+              <div class="field"><label>Gender <span style="color:#E8526A">*</span></label>
+                <select id="regMentorGender" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font-size:14px;">
+                  <option value="">Select gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
             <div class="field"><label>Specialty <span style="color:#E8526A">*</span></label><input type="text" id="regMentorSpecialty" placeholder="e.g. Couples Therapy, Breakup Recovery"></div>
-            <div class="field"><label>Years of Experience</label><input type="number" id="regMentorExp"   placeholder="e.g. 5" min="0"></div>
-            <div class="field"><label>Price per 30 min (₹)</label><input type="number" id="regMentorPrice" placeholder="e.g. 500" min="0"></div>
+            <div class="field"><label>Skills / Expertise <span style="color:#E8526A">*</span></label><input type="text" id="regMentorSkills" placeholder="e.g. Trust Issues, Anxiety, Codependency"></div>
+            <div class="field"><label>Languages <span style="color:#E8526A">*</span></label><input type="text" id="regMentorLanguages" placeholder="e.g. Hindi, English, Punjabi"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div class="field"><label>Experience (years)</label><input type="number" id="regMentorExp" placeholder="e.g. 5" min="0"></div>
+              <div class="field"><label>Price per 30 min (₹)</label><input type="number" id="regMentorPrice" placeholder="e.g. 500" min="0"></div>
+            </div>
+            <div class="field">
+              <label>Profile Picture</label>
+              <input type="file" id="regMentorPic" accept="image/*" onchange="previewPic(this)"
+                style="padding:8px;border:1px solid var(--border);border-radius:10px;width:100%;font-size:13px;background:var(--bg);color:var(--text);">
+              <img id="picPreview" src="" alt="" style="display:none;width:80px;height:80px;border-radius:50%;object-fit:cover;margin-top:8px;border:3px solid #E8526A;">
+            </div>
             <button class="btn-primary" style="background:var(--lavender);" onclick="registerMentor()">Create Mentor Account</button>
             <p class="login-note">Your profile will be listed after verification.</p>
           </div>

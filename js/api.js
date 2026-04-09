@@ -4,7 +4,6 @@
    ============================================= */
 
 const BASE_URL = 'https://heartwise-backend-production.up.railway.app/api';
-
 async function apiFetch(endpoint, options = {}) {
   const token = getStorage('token');
 
@@ -52,10 +51,10 @@ async function apiLoginMentor(email, password) {
   });
 }
 
-async function apiRegisterMentor(name, email, password, specialty, experience, price) {
+async function apiRegisterMentor(firstName, lastName, email, password, dob, gender, specialty, skills, languages, experience, price, profilePicture) {
   return apiFetch('/auth/mentor/register', {
     method: 'POST',
-    body: JSON.stringify({ name, email, password, specialty, experience, price }),
+    body: JSON.stringify({ firstName, lastName, email, password, dob, gender, specialty, skills, languages, experience, price, profilePicture }),
   });
 }
 

@@ -12,7 +12,7 @@ async function loadMentors() {
   const specialty = m.specialty || "Relationship Expert";
 
   const card = `
-    <div class="mentor-card">
+    <div class="mentor-card">     give me final working code copy to paste 
       <div class="verified-badge">✓ Verified</div>
       <div class="mentor-avatar">${firstLetter}</div>
       <div class="mentor-name">${name}</div>
