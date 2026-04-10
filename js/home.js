@@ -144,10 +144,12 @@ async function refreshUnreadBadge() {
   try {
     const notifs = await apiGetNotifications(userId);
     const unread = notifs.filter(n => !n.read).length;
-    const badge  = document.getElementById('notif-badge');
+    const badge        = document.getElementById('notif-badge');
+    const profileBadge = document.getElementById('profileNotifBadge');
     if (badge) {
       badge.textContent   = unread;
       badge.style.display = unread > 0 ? 'flex' : 'none';
+      if (profileBadge) { profileBadge.textContent = unread; profileBadge.style.display = unread > 0 ? 'inline' : 'none'; }
     }
     renderNotifications(notifs);
   } catch (_) {}
@@ -162,6 +164,35 @@ function toggleNotifications() {
   if (notificationsOpen) refreshUnreadBadge();
 }
 
+
+/* ── Toggle profile dropdown ── */
+function toggleProfile() {
+  const dropdown = document.getElementById('profileDropdown');
+  if (!dropdown) return;
+  dropdown.classList.toggle('open');
+
+  // Close notif panel if open
+  const panel = document.getElementById('notif-panel');
+  if (panel) { panel.style.display = 'none'; notificationsOpen = false; }
+}
+
+/* ── Fill profile dropdown with user data ── */
+function fillProfileData() {
+  const name  = getStorage('username') || 'User';
+  const email = getStorage('email')    || '';
+  const initial = name.charAt(0).toUpperCase();
+
+  const navAvatar      = document.getElementById('navAvatar');
+  const bigAvatar      = document.getElementById('profileBigAvatar');
+  const profileName    = document.getElementById('profileName');
+  const profileEmail   = document.getElementById('profileEmail');
+
+  if (navAvatar)   navAvatar.textContent   = initial;
+  if (bigAvatar)   bigAvatar.textContent   = initial;
+  if (profileName) profileName.textContent = name;
+  if (profileEmail)profileEmail.textContent= email || 'No email saved';
+}
+
 // Close panel when clicking outside
 document.addEventListener('click', (e) => {
   const bell  = document.getElementById('notif-bell');
@@ -169,6 +200,15 @@ document.addEventListener('click', (e) => {
   if (panel && bell && !bell.contains(e.target) && !panel.contains(e.target)) {
     panel.style.display = 'none';
     notificationsOpen   = false;
+  }
+
+  // Close profile dropdown when clicking outside
+  const profileBtn      = document.getElementById('profileBtn');
+  const profileDropdown = document.getElementById('profileDropdown');
+  if (profileDropdown && profileBtn &&
+      !profileBtn.contains(e.target) &&
+      !profileDropdown.contains(e.target)) {
+    profileDropdown.classList.remove('open');
   }
 });
 
@@ -178,6 +218,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   const name = getStorage('username') || 'User';
   updateNavAvatar(name);
+  fillProfileData();
 
   const welcomeEl = document.getElementById('welcomeText');
   if (welcomeEl) welcomeEl.textContent = `Hello, ${name} 👋 How's your heart today?`;

@@ -28,6 +28,7 @@ function clearAuth() {
   localStorage.removeItem('role');
   localStorage.removeItem('username');
   localStorage.removeItem('userId');
+  localStorage.removeItem('email');
 }
 
 /**

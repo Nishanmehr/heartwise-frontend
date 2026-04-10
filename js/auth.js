@@ -47,6 +47,7 @@ function saveAuthAndRedirect(data, destination) {
   if (!data.token) { toast('Login failed — no token received ❌'); return; }
   setStorage('userId',   data.id);
   setStorage('username', data.name);
+  setStorage('email',    data.email);
   setStorage('role',     data.role);
   setStorage('token',    data.token);
   updateNavAvatar(data.name);
