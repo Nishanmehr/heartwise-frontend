@@ -16,7 +16,7 @@
 ## Screenshots
 
 ### Login Page (Desktop)
-![Login](../screenshots/Login.png)
+![Login](screenshots/Login.png)
 
 
 ### Login Page (Mobile)
@@ -24,10 +24,10 @@ Clean mobile-responsive login with User / Mentor toggle and Sign In / Create Acc
 
 ### User Home
 Browse verified mentors, filter by specialty/rating/price, use the Love Calculator, and analyze your relationship.
-![Home](../screenshots/home.png)
+![Home](screenshots/home.png)
 ### Mentor Dashboard
 Real-time session requests with Accept / Decline, session history, rejection tracking, and profile management.
-![Dashboard](../screenshots/Dashboard.png)
+![Dashboard](screenshots/Dashboard.png)
 ---
 
 ## Features
