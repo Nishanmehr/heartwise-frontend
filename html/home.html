@@ -79,6 +79,94 @@
     }
     .filter-reset:hover { border-color: #E8526A; color: #E8526A; }
 
+    /* ── Love Calculator ── */
+    .love-calc-card {
+      background: var(--card); border-radius: 20px;
+      border: 1px solid var(--border); padding: 28px 24px;
+      text-align: center;
+    }
+    .love-calc-inputs {
+      display: flex; align-items: center; gap: 12px;
+      justify-content: center; flex-wrap: wrap; margin-bottom: 20px;
+    }
+    .love-input-wrap {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 12px; padding: 10px 14px; flex: 1; min-width: 160px; max-width: 220px;
+      transition: border .2s;
+    }
+    .love-input-wrap:focus-within { border-color: #E8526A; }
+    .love-input-icon { font-size: 16px; }
+    .love-input {
+      border: none; background: none; outline: none;
+      font-size: 14px; color: var(--text); width: 100%;
+    }
+    .love-heart-icon { font-size: 28px; animation: heartbeat 1.2s infinite; }
+    @keyframes heartbeat {
+      0%,100% { transform: scale(1); }
+      50%      { transform: scale(1.2); }
+    }
+    .love-calc-btn {
+      background: linear-gradient(135deg, #E8526A, #C03A55);
+      color: #fff; border: none; border-radius: 12px;
+      padding: 12px 32px; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: opacity .2s, transform .1s;
+    }
+    .love-calc-btn:hover   { opacity: .9; }
+    .love-calc-btn:active  { transform: scale(.97); }
+
+    /* Result */
+    .love-result-names {
+      font-size: 15px; font-weight: 600; color: var(--text);
+      margin: 20px 0 12px;
+    }
+    .love-meter {
+      width: 100%; max-width: 400px; height: 14px;
+      background: #f0e0e4; border-radius: 20px;
+      margin: 0 auto 10px; overflow: hidden;
+    }
+    .love-meter-fill {
+      height: 100%; border-radius: 20px;
+      background: linear-gradient(90deg, #E8526A, #ff8fa3);
+      transition: width 1.2s cubic-bezier(.4,0,.2,1);
+    }
+    .love-percent {
+      font-size: 42px; font-weight: 800;
+      background: linear-gradient(135deg, #E8526A, #C03A55);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .love-message {
+      font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 6px;
+    }
+    .love-emoji { font-size: 32px; }
+
+    /* ── Love Breakdown ── */
+    .love-breakdown {
+      margin-top: 20px; padding: 16px;
+      background: var(--bg); border-radius: 14px;
+      border: 1px solid var(--border); text-align: left;
+    }
+    .lb-row {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 10px; font-size: 13px; color: var(--text);
+    }
+    .lb-row:last-child { margin-bottom: 0; }
+    .lb-row > span:first-child { width: 130px; flex-shrink: 0; }
+    .lb-bar {
+      flex: 1; height: 8px; background: #f0e0e4;
+      border-radius: 20px; overflow: hidden; display: block;
+    }
+    .lb-bar span {
+      display: block; height: 100%;
+      background: linear-gradient(90deg, #E8526A, #ff8fa3);
+      border-radius: 20px;
+      transition: width 1s ease;
+    }
+    .lb-val { width: 36px; text-align: right; font-weight: 700; color: #E8526A; font-size: 12px; }
+
+
+
     /* Profile dropdown */
     .profile-wrap { position: relative; }
     .profile-avatar-btn {
@@ -198,6 +286,39 @@
     <h3>Is your partner a 🚩 or 💚?</h3>
     <p>Answer 5 quick questions about their behavior. Get your instant report.</p>
     <button class="btn-gold">Start Analyzer →</button>
+  </div>
+
+
+  <!-- LOVE CALCULATOR -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">💕 Love Calculator</span>
+    </div>
+    <div class="love-calc-card">
+      <div class="love-calc-inputs">
+        <div class="love-input-wrap">
+          <span class="love-input-icon">👤</span>
+          <input type="text" id="loveName1" placeholder="Your name" class="love-input" oninput="resetLoveResult()">
+        </div>
+        <div class="love-heart-icon">💞</div>
+        <div class="love-input-wrap">
+          <span class="love-input-icon">👤</span>
+          <input type="text" id="loveName2" placeholder="Partner's name" class="love-input" oninput="resetLoveResult()">
+        </div>
+      </div>
+      <button class="love-calc-btn" onclick="calculateLove()">Calculate Love 💕</button>
+
+      <div id="loveResult" style="display:none;">
+        <div class="love-result-names" id="loveResultNames"></div>
+        <div class="love-meter">
+          <div class="love-meter-fill" id="loveMeterFill" style="width:0%"></div>
+        </div>
+        <div class="love-percent" id="lovePercent">0%</div>
+        <div class="love-message" id="loveMessage"></div>
+        <div class="love-emoji"   id="loveEmoji"></div>
+        <div id="loveBreakdown"></div>
+      </div>
+    </div>
   </div>
 
   <!-- MENTORS SECTION -->

@@ -212,6 +212,136 @@ document.addEventListener('click', (e) => {
   }
 });
 
+
+/* ══════════════════════════════════════
+   LOVE CALCULATOR
+   ══════════════════════════════════════ */
+
+/* ── Factor 1: Common Letters (30%) ── */
+function commonLettersScore(n1, n2) {
+  const set1 = new Set(n1.toLowerCase().replace(/\s/g,''));
+  const set2 = new Set(n2.toLowerCase().replace(/\s/g,''));
+  let common = 0;
+  set1.forEach(c => { if (set2.has(c)) common++; });
+  const maxUnique = Math.max(set1.size, set2.size);
+  return maxUnique === 0 ? 0 : (common / maxUnique) * 100;
+}
+
+/* ── Factor 2: Numerology (30%) ── */
+function numerologyValue(name) {
+  let sum = 0;
+  for (const c of name.toLowerCase().replace(/\s/g,'')) {
+    const code = c.charCodeAt(0) - 96;
+    if (code >= 1 && code <= 26) sum += code;
+  }
+  // Reduce to single digit
+  while (sum > 9) {
+    sum = String(sum).split('').reduce((a, d) => a + parseInt(d), 0);
+  }
+  return sum;
+}
+function numerologyScore(n1, n2) {
+  const v1   = numerologyValue(n1);
+  const v2   = numerologyValue(n2);
+  const diff = Math.abs(v1 - v2);
+  return (1 - diff / 9) * 100;
+}
+
+/* ── Factor 3: Name Length Compatibility (20%) ── */
+function lengthScore(n1, n2) {
+  const l1   = n1.replace(/\s/g,'').length;
+  const l2   = n2.replace(/\s/g,'').length;
+  const diff = Math.abs(l1 - l2);
+  const maxL = Math.max(l1, l2);
+  return maxL === 0 ? 100 : (1 - diff / maxL) * 100;
+}
+
+/* ── Factor 4: First Letter Compatibility (20%) ── */
+function firstLetterScore(n1, n2) {
+  const c1   = n1.trim()[0].toLowerCase().charCodeAt(0) - 97;
+  const c2   = n2.trim()[0].toLowerCase().charCodeAt(0) - 97;
+  const diff = Math.abs(c1 - c2);
+  return (1 - diff / 25) * 100;
+}
+
+/* ── Main Calculator ── */
+function calculateLove() {
+  const name1 = document.getElementById('loveName1').value.trim();
+  const name2 = document.getElementById('loveName2').value.trim();
+
+  if (!name1 || !name2) { toast('Please enter both names 💕'); return; }
+
+  // Calculate each factor
+  const f1 = commonLettersScore(name1, name2);   // 30%
+  const f2 = numerologyScore(name1, name2);       // 30%
+  const f3 = lengthScore(name1, name2);           // 20%
+  const f4 = firstLetterScore(name1, name2);      // 20%
+
+  // Weighted total
+  const score = Math.round((f1 * 0.30) + (f2 * 0.30) + (f3 * 0.20) + (f4 * 0.20));
+
+  // Store breakdown for display
+  window._loveBreakdown = {
+    commonLetters: Math.round(f1),
+    numerology:    Math.round(f2),
+    nameLength:    Math.round(f3),
+    firstLetter:   Math.round(f4),
+    total:         score
+  };
+
+  const result = getLoveResult(score);
+
+  // Show result
+  document.getElementById('loveResult').style.display = 'block';
+  document.getElementById('loveResultNames').textContent = `${name1} ❤️ ${name2}`;
+  document.getElementById('lovePercent').textContent     = score + '%';
+  document.getElementById('loveMessage').textContent     = result.message;
+  document.getElementById('loveEmoji').textContent       = result.emoji;
+
+
+  // Animate main meter
+  const fill = document.getElementById('loveMeterFill');
+  fill.style.width = '0%';
+  fill.style.background = score >= 80
+    ? 'linear-gradient(90deg,#E8526A,#ff4d6d)'
+    : score >= 50
+    ? 'linear-gradient(90deg,#C9922B,#f4a261)'
+    : 'linear-gradient(90deg,#7B5EA7,#a78bca)';
+  setTimeout(() => { fill.style.width = score + '%'; }, 100);
+}
+
+function getLoveResult(score) {
+  if (score >= 90) return {
+    message: "Soulmates! You were made for each other! 🥰",
+    emoji: "💍👑💞"
+  };
+  if (score >= 75) return {
+    message: "Deep love! This is something truly special! 💖",
+    emoji: "💕🔥💕"
+  };
+  if (score >= 60) return {
+    message: "Strong connection! You two have great chemistry! 💫",
+    emoji: "😍✨💘"
+  };
+  if (score >= 45) return {
+    message: "Good match! With effort, this can bloom beautifully! 🌸",
+    emoji: "🌹😊💛"
+  };
+  if (score >= 30) return {
+    message: "There's potential here! Give it time and care! 🌱",
+    emoji: "🤞🌼💚"
+  };
+  return {
+    message: "Opposites attract! Maybe a mentor can help? 😄",
+    emoji: "🙈💬🤔"
+  };
+}
+
+function resetLoveResult() {
+  const resultEl = document.getElementById('loveResult');
+  if (resultEl) resultEl.style.display = 'none';
+}
+
 /* ── Page init ── */
 window.addEventListener('DOMContentLoaded', async () => {
   requireUser();

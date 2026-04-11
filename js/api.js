@@ -68,6 +68,13 @@ async function apiGetMentor(id) {
   return apiFetch(`/mentors/${id}`);
 }
 
+async function apiUpdateMentor(id, data) {
+  return apiFetch(`/mentors/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+}
+
 /* ── SESSIONS ── */
 
 async function apiBookSession(mentorId, type, slot) {

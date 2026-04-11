@@ -19,6 +19,89 @@
   <link rel="stylesheet" href="../css/navbar.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/dashboard.css">
+  <style>
+    /* ── Profile Button ── */
+    .profile-wrap { position: relative; }
+    .profile-avatar-btn {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(135deg, #7B5EA7, #5A3E85);
+      color: #fff; font-size: 15px; font-weight: 700;
+      border: 2px solid rgba(255,255,255,0.3);
+      cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .profile-avatar-btn:hover {
+      transform: scale(1.08);
+      box-shadow: 0 4px 12px rgba(123,94,167,0.4);
+    }
+
+    /* ── Dropdown ── */
+    .profile-dropdown {
+      position: absolute; right: 0; top: 50px;
+      width: 260px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+      z-index: 9999;
+      overflow: hidden;
+      border: 1px solid #f0f0f0;
+    }
+
+    /* ── Header ── */
+    .pd-header {
+      padding: 20px 16px 16px;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(123,94,167,0.08), rgba(90,62,133,0.05));
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .pd-avatar {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: linear-gradient(135deg, #7B5EA7, #5A3E85);
+      color: #fff; font-size: 26px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 10px;
+      border: 3px solid rgba(123,94,167,0.2);
+    }
+    .pd-name {
+      font-size: 16px; font-weight: 700;
+      color: #1a1a2e; margin-bottom: 3px;
+    }
+    .pd-email {
+      font-size: 12px; color: #888;
+      margin-bottom: 3px;
+    }
+    .pd-spec {
+      font-size: 11px; color: #7B5EA7;
+      font-weight: 600;
+    }
+
+    /* ── Stats Row ── */
+    .pd-stats {
+      display: flex; justify-content: space-around;
+      padding: 12px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      background: #fafafa;
+    }
+    .pd-stat { text-align: center; }
+    .pd-stat-val { font-size: 16px; font-weight: 700; color: #1a1a2e; }
+    .pd-stat-lbl { font-size: 10px; color: #888; margin-top: 2px; }
+
+    /* ── Menu Items ── */
+    .pd-menu { padding: 6px 0; }
+    .pd-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 18px; font-size: 14px; color: #333;
+      cursor: pointer; transition: background .15s;
+      border: none; background: none; width: 100%; text-align: left;
+      font-family: inherit;
+    }
+    .pd-item:hover { background: #f8f4ff; color: #7B5EA7; }
+    .pd-item.danger { color: #E8526A; }
+    .pd-item.danger:hover { background: #fff0f2; }
+    .pd-icon { font-size: 18px; width: 24px; text-align: center; }
+    .pd-divider { height: 1px; background: #f0f0f0; margin: 4px 0; }
+  </style>
 </head>
 <body>
 
@@ -26,13 +109,56 @@
   <nav class="nav">
     <a class="logo" href="dashboard.html">Heart<span>wise</span></a>
     <div class="nav-right" style="display:flex;align-items:center;gap:10px;">
-      <div class="avatar-sm" id="navAvatar">S</div>
-      <button onclick="logout()" style="
-        background:none;border:1px solid var(--border);color:var(--muted);
-        padding:6px 14px;border-radius:20px;font-size:13px;cursor:pointer;
-        transition:all .2s;" onmouseover="this.style.borderColor='#E8526A';this.style.color='#E8526A'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
-        Logout
-      </button>
+
+      <!-- Profile Button + Dropdown -->
+      <div class="profile-wrap">
+        <button class="profile-avatar-btn" id="profileBtn" onclick="toggleProfile()">
+          <span id="navAvatar">M</span>
+        </button>
+
+        <div class="profile-dropdown" id="profileDropdown" style="display:none;">
+
+          <!-- Header -->
+          <div class="pd-header">
+            <div class="pd-avatar" id="pdAvatar">M</div>
+            <div class="pd-name"  id="pdName">Mentor</div>
+            <div class="pd-email" id="pdEmail">—</div>
+            <div class="pd-spec"  id="pdSpec">—</div>
+          </div>
+
+          <!-- Stats -->
+          <div class="pd-stats">
+            <div class="pd-stat">
+              <div class="pd-stat-val" id="pdStatTotal">—</div>
+              <div class="pd-stat-lbl">Sessions</div>
+            </div>
+            <div class="pd-stat">
+              <div class="pd-stat-val" id="pdStatAccepted">—</div>
+              <div class="pd-stat-lbl">Accepted</div>
+            </div>
+            <div class="pd-stat">
+              <div class="pd-stat-val" id="pdStatDeclined">—</div>
+              <div class="pd-stat-lbl">Declined</div>
+            </div>
+          </div>
+
+          <!-- Menu -->
+          <div class="pd-menu">
+            <button class="pd-item" onclick="location.href='mentor-edit-profile.html'">
+              <span class="pd-icon">👤</span> Edit Profile
+            </button>
+            <button class="pd-item" onclick="location.href='mentor-sessions.html'">
+              <span class="pd-icon">📋</span> Session History
+            </button>
+            <div class="pd-divider"></div>
+            <button class="pd-item danger" onclick="logout()">
+              <span class="pd-icon">🚪</span> Logout
+            </button>
+          </div>
+
+        </div>
+      </div>
+
     </div>
   </nav>
 
@@ -78,19 +204,16 @@
       <span>Exceeding 10 rejections will block your account.</span>
     </div>
 
-    <!-- Session requests rendered dynamically by dashboard.js -->
     <div class="requests-section">
       <div class="requests-title">
         <div class="req-dot"></div>
         New Session Requests
       </div>
-      <!-- Cards injected here by JS -->
       <div style="color:var(--muted);font-size:14px;padding:20px 0;" id="req-loading">
         Loading requests...
       </div>
     </div>
 
-    <!-- Upcoming sessions (static for now, wire to backend later) -->
     <div class="upcoming-section">
       <div class="up-title">Accepted Sessions</div>
       <div id="acceptedList">
@@ -103,6 +226,55 @@
   </div>
 
   <div class="toast" id="toast"></div>
+
+  <script>
+    /* Toggle dropdown */
+    function toggleProfile() {
+      const d = document.getElementById('profileDropdown');
+      if (!d) return;
+      d.style.display = d.style.display === 'block' ? 'none' : 'block';
+    }
+
+    /* Close on outside click */
+    document.addEventListener('click', function(e) {
+      var btn = document.getElementById('profileBtn');
+      var d   = document.getElementById('profileDropdown');
+      if (d && btn && !btn.contains(e.target) && !d.contains(e.target)) {
+        d.style.display = 'none';
+      }
+    });
+
+    /* Fill profile data */
+    function fillProfileDropdown(sessions) {
+      var name    = localStorage.getItem('username') || 'Mentor';
+      var email   = localStorage.getItem('email')    || '—';
+      var initial = name.charAt(0).toUpperCase();
+
+      var els = {
+        navAvatar:   document.getElementById('navAvatar'),
+        pdAvatar:    document.getElementById('pdAvatar'),
+        pdName:      document.getElementById('pdName'),
+        pdEmail:     document.getElementById('pdEmail'),
+      };
+
+      if (els.navAvatar) els.navAvatar.textContent = initial;
+      if (els.pdAvatar)  els.pdAvatar.textContent  = initial;
+      if (els.pdName)    els.pdName.textContent     = name;
+      if (els.pdEmail)   els.pdEmail.textContent    = email;
+
+      if (sessions) {
+        var total    = sessions.length;
+        var accepted = sessions.filter(function(s){ return s.status === 'ACCEPTED'; }).length;
+        var declined = sessions.filter(function(s){ return s.status === 'DECLINED'; }).length;
+        var t = document.getElementById('pdStatTotal');
+        var a = document.getElementById('pdStatAccepted');
+        var d = document.getElementById('pdStatDeclined');
+        if (t) t.textContent = total;
+        if (a) a.textContent = accepted;
+        if (d) d.textContent = declined;
+      }
+    }
+  </script>
 
   <script src="../js/api.js"></script>
   <script src="../js/dashboard.js"></script>

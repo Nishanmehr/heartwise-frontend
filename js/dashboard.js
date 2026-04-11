@@ -176,6 +176,7 @@ async function rejectReq(sessionId, cardId) {
   }
 }
 
+
 /* ── Page init ── */
 window.addEventListener('DOMContentLoaded', async () => {
   requireMentor();
@@ -199,9 +200,12 @@ window.addEventListener('DOMContentLoaded', async () => {
     updateMetrics(allSessions);
     renderRequests(allSessions);
     renderAccepted(allSessions);
+    fillProfileDropdown(allSessions);
   } catch (err) {
     console.error('Failed to load sessions:', err);
     document.getElementById('req-loading').textContent = 'Could not load requests. Is the server running?';
     toast('Could not load session requests ⚠️');
+    fillProfileDropdown(null);
   }
+
 });

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeartWise — Edit Profile</title>
+  <script src="../js/utils.js"></script>
+  <script>
+    toggleDoc(false);
+    (function () {
+      var token = localStorage.getItem('token');
+      var role  = localStorage.getItem('role');
+      if (!token || role !== 'MENTOR') { window.location.replace('index.html'); }
+      else { toggleDoc(true); }
+    })();
+  </script>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .edit-wrap {
+      max-width: 600px; margin: 32px auto; padding: 0 16px 60px;
+    }
+    .edit-card {
+      background: var(--card); border-radius: 20px;
+      border: 1px solid var(--border); padding: 28px;
+    }
+    .edit-title {
+      font-size: 20px; font-weight: 700; color: var(--text);
+      margin-bottom: 4px;
+    }
+    .edit-sub {
+      font-size: 13px; color: var(--muted); margin-bottom: 24px;
+    }
+    .pic-section {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 24px; padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .pic-avatar {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: linear-gradient(135deg,#7B5EA7,#5A3E85);
+      color: #fff; font-size: 28px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; flex-shrink: 0; border: 3px solid var(--lavender);
+    }
+    .pic-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .pic-btn {
+      background: none; border: 1px solid var(--border);
+      color: var(--text); padding: 8px 16px; border-radius: 10px;
+      font-size: 13px; cursor: pointer; transition: all .2s;
+    }
+    .pic-btn:hover { border-color: var(--lavender); color: var(--lavender); }
+    .field { margin-bottom: 16px; }
+    .field label {
+      display: block; font-size: 12px; font-weight: 600;
+      color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .5px;
+    }
+    .field input, .field select, .field textarea {
+      width: 100%; padding: 11px 14px; border: 1px solid var(--border);
+      border-radius: 12px; font-size: 14px; background: var(--bg);
+      color: var(--text); outline: none; transition: border .2s;
+      box-sizing: border-box;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: var(--lavender);
+    }
+    .fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .section-label {
+      font-size: 13px; font-weight: 700; color: var(--text);
+      margin: 20px 0 12px; padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .save-btn {
+      width: 100%; padding: 14px; background: var(--lavender);
+      color: #fff; border: none; border-radius: 14px;
+      font-size: 15px; font-weight: 600; cursor: pointer;
+      margin-top: 8px; transition: opacity .2s;
+    }
+    .save-btn:hover { opacity: .88; }
+    .back-btn {
+      display: flex; align-items: center; gap: 6px;
+      color: var(--muted); font-size: 13px; cursor: pointer;
+      margin-bottom: 16px; background: none; border: none;
+    }
+    .back-btn:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a class="logo" href="dashboard.html">Heart<span>wise</span></a>
+    <div class="nav-right">
+      <div class="avatar-sm" id="navAvatar">S</div>
+    </div>
+  </nav>
+
+  <div class="edit-wrap">
+
+    <button class="back-btn" onclick="location.href='dashboard.html'">← Back to Dashboard</button>
+
+    <div class="edit-card">
+      <div class="edit-title">Edit Profile ✏️</div>
+      <div class="edit-sub">Update your mentor profile information</div>
+
+      <!-- Profile Picture -->
+      <div class="pic-section">
+        <div class="pic-avatar" id="picAvatar">S</div>
+        <div>
+          <div style="font-weight:600;font-size:14px;margin-bottom:4px;" id="picName">Mentor</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:10px;" id="picEmail">—</div>
+          <input type="file" id="picFileInput" accept="image/*" style="display:none" onchange="handlePicChange(this)">
+          <button class="pic-btn" onclick="document.getElementById('picFileInput').click()">📷 Change Photo</button>
+        </div>
+      </div>
+
+      <!-- Personal Info -->
+      <div class="section-label">👤 Personal Information</div>
+      <div class="fields-grid">
+        <div class="field">
+          <label>First Name</label>
+          <input type="text" id="editFirstName" placeholder="First name">
+        </div>
+        <div class="field">
+          <label>Last Name</label>
+          <input type="text" id="editLastName" placeholder="Last name">
+        </div>
+      </div>
+      <div class="fields-grid">
+        <div class="field">
+          <label>Date of Birth</label>
+          <input type="date" id="editDob">
+        </div>
+        <div class="field">
+          <label>Gender</label>
+          <select id="editGender">
+            <option value="">Select gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Professional Info -->
+      <div class="section-label">💼 Professional Information</div>
+      <div class="field">
+        <label>Specialty</label>
+        <input type="text" id="editSpecialty" placeholder="e.g. Couples Therapy, Breakup Recovery">
+      </div>
+      <div class="field">
+        <label>Skills / Expertise</label>
+        <input type="text" id="editSkills" placeholder="e.g. Trust Issues, Anxiety, Codependency">
+      </div>
+      <div class="field">
+        <label>Languages</label>
+        <input type="text" id="editLanguages" placeholder="e.g. Hindi, English">
+      </div>
+      <div class="fields-grid">
+        <div class="field">
+          <label>Experience (years)</label>
+          <input type="number" id="editExperience" placeholder="e.g. 5" min="0">
+        </div>
+        <div class="field">
+          <label>Price per 30 min (₹)</label>
+          <input type="number" id="editPrice" placeholder="e.g. 500" min="0">
+        </div>
+      </div>
+
+      <button class="save-btn" onclick="saveProfile()">Save Changes →</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="../js/api.js"></script>
+  <script>
+    let profilePictureBase64 = null;
+
+    /* Handle profile pic change */
+    function handlePicChange(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          profilePictureBase64 = e.target.result;
+          const avatar = document.getElementById('picAvatar');
+          avatar.innerHTML = `<img src="${e.target.result}" alt="Profile">`;
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    /* Load mentor data into form */
+    async function loadProfile() {
+      const mentorId = getStorage('userId');
+      const name     = getStorage('username') || 'Mentor';
+      const email    = getStorage('email')    || '—';
+
+      updateNavAvatar(name);
+      document.getElementById('picAvatar').textContent = name.charAt(0).toUpperCase();
+      document.getElementById('picName').textContent   = name;
+      document.getElementById('picEmail').textContent  = email;
+
+      try {
+        const m = await apiGetMentor(mentorId);
+
+        document.getElementById('editFirstName').value  = m.firstName  || '';
+        document.getElementById('editLastName').value   = m.lastName   || '';
+        document.getElementById('editDob').value        = m.dob        || '';
+        document.getElementById('editGender').value     = m.gender     || '';
+        document.getElementById('editSpecialty').value  = m.specialty  || '';
+        document.getElementById('editSkills').value     = m.skills     || '';
+        document.getElementById('editLanguages').value  = m.languages  || '';
+        document.getElementById('editExperience').value = parseInt(m.experience) || '';
+        document.getElementById('editPrice').value      = parseInt(m.price)      || '';
+
+        if (m.profilePicture) {
+          document.getElementById('picAvatar').innerHTML =
+            `<img src="${m.profilePicture}" alt="Profile">`;
+        }
+      } catch (err) {
+        toast('Could not load profile data ⚠️');
+      }
+    }
+
+    /* Save profile */
+    async function saveProfile() {
+      const mentorId = getStorage('userId');
+
+      const data = {
+        firstName:  document.getElementById('editFirstName').value.trim(),
+        lastName:   document.getElementById('editLastName').value.trim(),
+        dob:        document.getElementById('editDob').value,
+        gender:     document.getElementById('editGender').value,
+        specialty:  document.getElementById('editSpecialty').value.trim(),
+        skills:     document.getElementById('editSkills').value.trim(),
+        languages:  document.getElementById('editLanguages').value.trim(),
+        experience: parseInt(document.getElementById('editExperience').value) || 0,
+        price:      parseFloat(document.getElementById('editPrice').value)    || 500,
+      };
+
+      if (profilePictureBase64) {
+        data.profilePicture = profilePictureBase64;
+      }
+
+      try {
+        await apiUpdateMentor(mentorId, data);
+
+        // Update localStorage username
+        const fullName = data.firstName + ' ' + data.lastName;
+        setStorage('username', fullName.trim());
+        updateNavAvatar(fullName);
+
+        toast('Profile updated successfully! ✅');
+        setTimeout(() => location.href = 'dashboard.html', 1200);
+      } catch (err) {
+        toast(err.message || 'Failed to update profile ❌');
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      requireMentor();
+      loadProfile();
+    });
+  </script>
+</body>
+</html>

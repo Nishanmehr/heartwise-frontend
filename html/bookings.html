@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeartWise — Booking History</title>
+  <script src="../js/utils.js"></script>
+  <script>
+    toggleDoc(false);
+    (function () {
+      var token = localStorage.getItem('token');
+      var role  = localStorage.getItem('role');
+      if (!token || role !== 'USER') { window.location.replace('index.html'); }
+      else { toggleDoc(true); }
+    })();
+  </script>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .history-wrap { max-width: 680px; margin: 32px auto; padding: 0 16px 60px; }
+    .history-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .history-sub   { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+    .tab-row {
+      display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 8px 18px; border-radius: 20px; border: 1px solid var(--border);
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      background: none; color: var(--muted); transition: all .2s;
+    }
+    .tab-btn.active { background: #E8526A; color: #fff; border-color: #E8526A; }
+    .booking-card {
+      background: var(--card); border-radius: 16px;
+      border: 1px solid var(--border); padding: 16px;
+      margin-bottom: 12px; display: flex; align-items: center; gap: 14px;
+    }
+    .booking-av {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: linear-gradient(135deg,#7B5EA7,#5A3E85);
+      color: #fff; font-size: 18px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .booking-info { flex: 1; }
+    .booking-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+    .booking-slot { font-size: 12px; color: var(--muted); }
+    .booking-type { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; margin-top: 4px; display: inline-block; }
+    .type-chat    { background: rgba(61,122,106,.12); color: #3D7A6A; }
+    .type-call    { background: rgba(123,94,167,.12); color: #7B5EA7; }
+    .status-badge-sm {
+      font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 20px; white-space: nowrap;
+    }
+    .status-accepted { background: rgba(61,122,106,.12); color: #3D7A6A; }
+    .status-declined { background: rgba(214,59,59,.1);   color: #D63B3B; }
+    .status-pending  { background: rgba(201,146,43,.12); color: #C9922B; }
+    .empty-state {
+      text-align: center; padding: 48px 24px; color: var(--muted); font-size: 14px;
+    }
+    .stats-row {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px;
+    }
+    .stat-card {
+      background: var(--card); border-radius: 14px;
+      border: 1px solid var(--border); padding: 14px; text-align: center;
+    }
+    .stat-val { font-size: 22px; font-weight: 700; color: var(--text); }
+    .stat-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .book-again-btn {
+      font-size: 12px; padding: 6px 12px; border-radius: 10px;
+      background: none; border: 1px solid var(--border);
+      color: var(--muted); cursor: pointer; transition: all .2s;
+      white-space: nowrap;
+    }
+    .book-again-btn:hover { border-color: #E8526A; color: #E8526A; }
+    .back-btn {
+      display: flex; align-items: center; gap: 6px;
+      color: var(--muted); font-size: 13px; cursor: pointer;
+      margin-bottom: 16px; background: none; border: none;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a class="logo" href="home.html">Heart<span>wise</span></a>
+    <div class="nav-right">
+      <div class="avatar-sm" id="navAvatar">U</div>
+    </div>
+  </nav>
+
+  <div class="history-wrap">
+
+    <button class="back-btn" onclick="location.href='home.html'">← Back to Home</button>
+
+    <div class="history-title">Booking History 📋</div>
+    <div class="history-sub">All your mentor sessions</div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-val" id="statTotal">—</div>
+        <div class="stat-lbl">Total</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color:#3D7A6A;" id="statAccepted">—</div>
+        <div class="stat-lbl">Confirmed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color:#C9922B;" id="statPending">—</div>
+        <div class="stat-lbl">Pending</div>
+      </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="filterBookings('ALL', this)">All</button>
+      <button class="tab-btn" onclick="filterBookings('PENDING',  this)">⏳ Pending</button>
+      <button class="tab-btn" onclick="filterBookings('ACCEPTED', this)">✅ Confirmed</button>
+      <button class="tab-btn" onclick="filterBookings('DECLINED', this)">❌ Declined</button>
+    </div>
+
+    <!-- Booking List -->
+    <div id="bookingList">
+      <div class="empty-state">Loading your bookings...</div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="../js/api.js"></script>
+  <script>
+    let allBookings = [];
+    const avatarColors = [
+      'linear-gradient(135deg,#7B5EA7,#5A3E85)',
+      'linear-gradient(135deg,#E8526A,#C03A55)',
+      'linear-gradient(135deg,#3D7A6A,#235A4D)',
+      'linear-gradient(135deg,#C9922B,#A0701A)',
+    ];
+
+    function renderBookings(bookings) {
+      const list = document.getElementById('bookingList');
+      if (!bookings || bookings.length === 0) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <div style="font-size:40px;margin-bottom:12px;">📋</div>
+            No bookings yet.<br>
+            <button class="btn-sm" style="margin-top:16px;" onclick="location.href='home.html'">Find a Mentor →</button>
+          </div>`;
+        return;
+      }
+
+      list.innerHTML = bookings.map((b, i) => {
+        const name    = b.mentorName || 'Mentor';
+        const letter  = name.charAt(0).toUpperCase();
+        const color   = avatarColors[i % avatarColors.length];
+        const isCall  = (b.sessionType || '').toLowerCase().includes('call');
+        const status  = b.status || 'PENDING';
+        const statusClass = status === 'ACCEPTED' ? 'status-accepted'
+                          : status === 'DECLINED' ? 'status-declined'
+                          : 'status-pending';
+        const statusLabel = status === 'ACCEPTED' ? '✅ Confirmed'
+                          : status === 'DECLINED' ? '❌ Declined'
+                          : '⏳ Pending';
+
+        return `
+          <div class="booking-card">
+            <div class="booking-av" style="background:${color};">${letter}</div>
+            <div class="booking-info">
+              <div class="booking-name">${name}</div>
+              <div class="booking-slot">📅 ${b.slot || '—'}</div>
+              <span class="booking-type ${isCall ? 'type-call' : 'type-chat'}">${isCall ? '📞 Call' : '💬 Chat'}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+              <span class="status-badge-sm ${statusClass}">${statusLabel}</span>
+              ${status === 'DECLINED'
+                ? `<button class="book-again-btn" onclick="location.href='mentorprofile.html?id=${b.mentorId}'">Book Again</button>`
+                : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterBookings(status, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filtered = status === 'ALL' ? allBookings : allBookings.filter(b => b.status === status);
+      renderBookings(filtered);
+    }
+
+    function updateStats(bookings) {
+      document.getElementById('statTotal').textContent    = bookings.length;
+      document.getElementById('statAccepted').textContent = bookings.filter(b => b.status === 'ACCEPTED').length;
+      document.getElementById('statPending').textContent  = bookings.filter(b => b.status === 'PENDING').length;
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      requireUser();
+      const name = getStorage('username') || 'User';
+      updateNavAvatar(name);
+
+      const userId = getStorage('userId');
+      try {
+        allBookings = await apiGetUserSessions(userId);
+        updateStats(allBookings);
+        renderBookings(allBookings);
+      } catch (err) {
+        document.getElementById('bookingList').innerHTML =
+          '<div class="empty-state">Could not load bookings ⚠️</div>';
+      }
+    });
+  </script>
+</body>
+</html>

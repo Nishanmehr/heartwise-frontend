@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeartWise — Session History</title>
+  <script src="../js/utils.js"></script>
+  <script>
+    toggleDoc(false);
+    (function () {
+      var token = localStorage.getItem('token');
+      var role  = localStorage.getItem('role');
+      if (!token || role !== 'MENTOR') { window.location.replace('index.html'); }
+      else { toggleDoc(true); }
+    })();
+  </script>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .history-wrap { max-width: 680px; margin: 32px auto; padding: 0 16px 60px; }
+    .history-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .history-sub   { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+    .tab-row {
+      display: flex; gap: 8px; margin-bottom: 20px;
+    }
+    .tab-btn {
+      padding: 8px 18px; border-radius: 20px; border: 1px solid var(--border);
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      background: none; color: var(--muted); transition: all .2s;
+    }
+    .tab-btn.active {
+      background: var(--lavender); color: #fff; border-color: var(--lavender);
+    }
+    .session-card {
+      background: var(--card); border-radius: 16px;
+      border: 1px solid var(--border); padding: 16px;
+      margin-bottom: 12px; display: flex; align-items: center; gap: 14px;
+    }
+    .session-av {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg,#E8526A,#C03A55);
+      color: #fff; font-size: 17px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .session-info { flex: 1; }
+    .session-name { font-size: 14px; font-weight: 700; color: var(--text); }
+    .session-slot { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .session-type { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+    .type-chat    { background: rgba(61,122,106,.12); color: #3D7A6A; }
+    .type-call    { background: rgba(123,94,167,.12); color: #7B5EA7; }
+    .status-badge-sm {
+      font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px;
+    }
+    .status-accepted { background: rgba(61,122,106,.12); color: #3D7A6A; }
+    .status-declined { background: rgba(214,59,59,.1);   color: #D63B3B; }
+    .status-pending  { background: rgba(201,146,43,.12); color: #C9922B; }
+    .empty-state {
+      text-align: center; padding: 48px 24px; color: var(--muted); font-size: 14px;
+    }
+    .stats-row {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px;
+    }
+    .stat-card {
+      background: var(--card); border-radius: 14px;
+      border: 1px solid var(--border); padding: 14px; text-align: center;
+    }
+    .stat-val { font-size: 22px; font-weight: 700; color: var(--text); }
+    .stat-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .back-btn {
+      display: flex; align-items: center; gap: 6px;
+      color: var(--muted); font-size: 13px; cursor: pointer;
+      margin-bottom: 16px; background: none; border: none;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a class="logo" href="dashboard.html">Heart<span>wise</span></a>
+    <div class="nav-right">
+      <div class="avatar-sm" id="navAvatar">S</div>
+    </div>
+  </nav>
+
+  <div class="history-wrap">
+
+    <button class="back-btn" onclick="location.href='dashboard.html'">← Back to Dashboard</button>
+
+    <div class="history-title">Session History 📋</div>
+    <div class="history-sub">All your sessions in one place</div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-val" id="statTotal">—</div>
+        <div class="stat-lbl">Total</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color:#3D7A6A;" id="statAccepted">—</div>
+        <div class="stat-lbl">Accepted</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color:#D63B3B;" id="statDeclined">—</div>
+        <div class="stat-lbl">Declined</div>
+      </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="filterSessions('ALL', this)">All</button>
+      <button class="tab-btn" onclick="filterSessions('PENDING',  this)">⏳ Pending</button>
+      <button class="tab-btn" onclick="filterSessions('ACCEPTED', this)">✅ Accepted</button>
+      <button class="tab-btn" onclick="filterSessions('DECLINED', this)">❌ Declined</button>
+    </div>
+
+    <!-- Session List -->
+    <div id="sessionList">
+      <div class="empty-state">Loading sessions...</div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="../js/api.js"></script>
+  <script>
+    let allSessions = [];
+    const avatarColors = [
+      'linear-gradient(135deg,#E8526A,#C03A55)',
+      'linear-gradient(135deg,#7B5EA7,#5A3E85)',
+      'linear-gradient(135deg,#3D7A6A,#235A4D)',
+      'linear-gradient(135deg,#C9922B,#A0701A)',
+    ];
+
+    function renderSessions(sessions) {
+      const list = document.getElementById('sessionList');
+      if (!sessions || sessions.length === 0) {
+        list.innerHTML = '<div class="empty-state">😊 No sessions found.</div>';
+        return;
+      }
+
+      list.innerHTML = sessions.map((s, i) => {
+        const letter  = (s.userName || 'U').charAt(0).toUpperCase();
+        const color   = avatarColors[i % avatarColors.length];
+        const isCall  = (s.sessionType || '').toLowerCase().includes('call');
+        const status  = s.status || 'PENDING';
+        const statusClass = status === 'ACCEPTED' ? 'status-accepted'
+                          : status === 'DECLINED' ? 'status-declined'
+                          : 'status-pending';
+        const statusLabel = status === 'ACCEPTED' ? '✅ Accepted'
+                          : status === 'DECLINED' ? '❌ Declined'
+                          : '⏳ Pending';
+
+        return `
+          <div class="session-card">
+            <div class="session-av" style="background:${color};">${letter}</div>
+            <div class="session-info">
+              <div class="session-name">${s.userName || 'User'}</div>
+              <div class="session-slot">📅 ${s.slot || '—'}</div>
+            </div>
+            <span class="session-type ${isCall ? 'type-call' : 'type-chat'}">${isCall ? '📞 Call' : '💬 Chat'}</span>
+            <span class="status-badge-sm ${statusClass}">${statusLabel}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function filterSessions(status, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filtered = status === 'ALL' ? allSessions : allSessions.filter(s => s.status === status);
+      renderSessions(filtered);
+    }
+
+    function updateStats(sessions) {
+      document.getElementById('statTotal').textContent    = sessions.length;
+      document.getElementById('statAccepted').textContent = sessions.filter(s => s.status === 'ACCEPTED').length;
+      document.getElementById('statDeclined').textContent = sessions.filter(s => s.status === 'DECLINED').length;
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      requireMentor();
+      const name = getStorage('username') || 'Mentor';
+      updateNavAvatar(name);
+
+      const mentorId = getStorage('userId');
+      try {
+        allSessions = await apiGetMentorSessions(mentorId);
+        updateStats(allSessions);
+        renderSessions(allSessions);
+      } catch (err) {
+        document.getElementById('sessionList').innerHTML =
+          '<div class="empty-state">Could not load sessions ⚠️</div>';
+      }
+    });
+  </script>
+</body>
+</html>
