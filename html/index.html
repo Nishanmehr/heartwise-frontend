@@ -22,42 +22,55 @@
 
   <nav class="nav">
     <a class="logo" href="index.html">Heart<span>wise</span></a>
-    <div class="nav-right"><div class="avatar-sm" id="navAvatar">?</div></div>
+    <div class="nav-right">
+      <div class="avatar-sm" id="navAvatar" style="background:linear-gradient(135deg,#E8526A,#C03A55);color:#fff;">?</div>
+    </div>
   </nav>
 
   <div class="login-wrap">
 
-    <!-- Left Panel -->
+    <!-- Left Panel (Desktop only) -->
     <div class="login-left">
       <div class="login-hero">
         <h1>Find your path to <em>love</em> &amp; clarity.</h1>
         <p>Expert relationship mentors, real insights, and your personal relationship analyzer — all in one place.</p>
       </div>
       <div class="login-features">
-        <div class="login-feat"><div class="feat-icon" style="background:rgba(232,82,106,.15);">💞</div>Verified relationship mentors</div>
-        <div class="login-feat"><div class="feat-icon" style="background:rgba(123,94,167,.15);">🔮</div>Red &amp; Green flag analyzer</div>
-        <div class="login-feat"><div class="feat-icon" style="background:rgba(61,122,106,.15);">💬</div>Book chat or call sessions</div>
-        <div class="login-feat"><div class="feat-icon" style="background:rgba(201,146,43,.15);">⭐</div>Rated &amp; reviewed mentors</div>
+        <div class="login-feat">
+          <div class="feat-icon" style="background:rgba(232,82,106,.2);">💞</div>
+          Verified relationship mentors
+        </div>
+        <div class="login-feat">
+          <div class="feat-icon" style="background:rgba(123,94,167,.2);">🔮</div>
+          Red &amp; Green flag analyzer
+        </div>
+        <div class="login-feat">
+          <div class="feat-icon" style="background:rgba(61,122,106,.2);">💬</div>
+          Book chat or call sessions
+        </div>
+        <div class="login-feat">
+          <div class="feat-icon" style="background:rgba(201,146,43,.2);">⭐</div>
+          Rated &amp; reviewed mentors
+        </div>
       </div>
-      <div class="login-footer">© 2026 HeartWise · Your privacy is sacred</div>
+      <div class="login-footer">© 2025 HeartWise · Your privacy is sacred</div>
     </div>
 
     <!-- Right Panel -->
     <div class="login-right">
       <div class="login-card">
 
-        <!-- Role toggle: User / Mentor -->
+        <!-- Role Toggle -->
         <div class="login-toggle">
           <button class="login-toggle-btn active" id="lt-user"   onclick="switchLogin('user')">I'm a User</button>
           <button class="login-toggle-btn"         id="lt-mentor" onclick="switchLogin('mentor')">I'm a Mentor</button>
         </div>
 
-        <!-- ══════════ USER PANEL ══════════ -->
+        <!-- ══ USER PANEL ══ -->
         <div id="login-user">
-
-          <!-- Login / Register mode toggle -->
           <div class="mode-toggle">
             <button class="mode-btn active" id="user-mode-login"    onclick="switchMode('user','login')">Sign In</button>
+            <span class="mode-separator">&nbsp;|&nbsp;</span>
             <button class="mode-btn"        id="user-mode-register" onclick="switchMode('user','register')">Create Account</button>
           </div>
 
@@ -75,35 +88,32 @@
           <div id="user-register-form" style="display:none;">
             <h2 class="login-title">Join HeartWise 💞</h2>
             <p class="login-sub">Create your free account</p>
-            <div class="field"><label>Full Name</label><input type="text"     id="regUserName"    placeholder="Your name"></div>
-            <div class="field"><label>Email</label>     <input type="email"    id="regUserEmail"   placeholder="you@email.com"></div>
-            <div class="field"><label>Password</label>  <input type="password" id="regUserPass"    placeholder="Min. 6 characters"></div>
+            <div class="field"><label>Full Name</label><input type="text" id="regUserName" placeholder="Your name"></div>
+            <div class="field"><label>Email</label><input type="email" id="regUserEmail" placeholder="you@email.com"></div>
+            <div class="field"><label>Password</label><input type="password" id="regUserPass" placeholder="Min. 6 characters"></div>
             <div class="field"><label>Confirm Password</label><input type="password" id="regUserConfirm" placeholder="Repeat password"></div>
             <button class="btn-primary" onclick="registerUser()">Create Account</button>
             <p class="login-note">Already have an account? Click "Sign In" above.</p>
           </div>
+        </div>
 
-        </div><!-- end #login-user -->
-
-        <!-- ══════════ MENTOR PANEL ══════════ -->
+        <!-- ══ MENTOR PANEL ══ -->
         <div id="login-mentor" style="display:none;">
-
           <div class="mentor-badge">🏅 Verified Mentor Portal — restricted access</div>
-
-          <!-- Login / Register mode toggle -->
           <div class="mode-toggle">
             <button class="mode-btn active" id="mentor-mode-login"    onclick="switchMode('mentor','login')">Sign In</button>
+            <span class="mode-separator">&nbsp;|&nbsp;</span>
             <button class="mode-btn"        id="mentor-mode-register" onclick="switchMode('mentor','register')">Apply as Mentor</button>
           </div>
 
           <!-- Mentor Login -->
           <div id="mentor-login-form">
-            <h2 class="login-title">Mentor Sign In</h2>
+            <h2 class="login-title">Mentor Sign In 🌟</h2>
             <p class="login-sub">Access your session dashboard</p>
-            <div class="field"><label>Email</label>     <input type="email"    id="mentorEmail" placeholder="mentor@email.com"></div>
-            <div class="field"><label>Password</label>  <input type="password" id="mentorPass"  placeholder="••••••••"></div>
-            <div class="field"><label>Mentor ID</label> <input type="text"     id="mentorId"    placeholder="HW-MENTOR-####"></div>
-            <button class="btn-primary" style="background:var(--lavender);" onclick="loginMentor()">Sign In as Mentor</button>
+            <div class="field"><label>Email</label><input type="email" id="mentorEmail" placeholder="mentor@email.com"></div>
+            <div class="field"><label>Password</label><input type="password" id="mentorPass" placeholder="••••••••"></div>
+            <div class="field"><label>Mentor ID</label><input type="text" id="mentorId" placeholder="HW-MENTOR-####"></div>
+            <button class="btn-primary" style="background:linear-gradient(135deg,#7B5EA7,#5A3E85);" onclick="loginMentor()">Sign In as Mentor</button>
             <p class="login-note">⚠️ Rejecting 10+ sessions will block your account.</p>
           </div>
 
@@ -111,50 +121,64 @@
           <div id="mentor-register-form" style="display:none;">
             <h2 class="login-title">Become a Mentor 🌟</h2>
             <p class="login-sub">Set up your complete mentor profile</p>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div class="fields-grid-2">
               <div class="field"><label>First Name <span style="color:#E8526A">*</span></label><input type="text" id="regMentorFirstName" placeholder="First name"></div>
               <div class="field"><label>Last Name <span style="color:#E8526A">*</span></label><input type="text" id="regMentorLastName" placeholder="Last name"></div>
             </div>
             <div class="field"><label>Email <span style="color:#E8526A">*</span></label><input type="email" id="regMentorEmail" placeholder="mentor@email.com"></div>
             <div class="field"><label>Password <span style="color:#E8526A">*</span></label><input type="password" id="regMentorPass" placeholder="Min. 6 characters"></div>
             <div class="field"><label>Confirm Password <span style="color:#E8526A">*</span></label><input type="password" id="regMentorConfirm" placeholder="Repeat password"></div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div class="fields-grid-2">
               <div class="field"><label>Date of Birth <span style="color:#E8526A">*</span></label><input type="date" id="regMentorDob"></div>
               <div class="field"><label>Gender <span style="color:#E8526A">*</span></label>
-                <select id="regMentorGender" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font-size:14px;">
-                  <option value="">Select gender</option>
+                <select id="regMentorGender">
+                  <option value="">Select</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
                   <option value="Other">Other</option>
                 </select>
               </div>
             </div>
-            <div class="field"><label>Specialty <span style="color:#E8526A">*</span></label><input type="text" id="regMentorSpecialty" placeholder="e.g. Couples Therapy, Breakup Recovery"></div>
-            <div class="field"><label>Skills / Expertise <span style="color:#E8526A">*</span></label><input type="text" id="regMentorSkills" placeholder="e.g. Trust Issues, Anxiety, Codependency"></div>
-            <div class="field"><label>Languages <span style="color:#E8526A">*</span></label><input type="text" id="regMentorLanguages" placeholder="e.g. Hindi, English, Punjabi"></div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-              <div class="field"><label>Experience (years)</label><input type="number" id="regMentorExp" placeholder="e.g. 5" min="0"></div>
-              <div class="field"><label>Price per 30 min (₹)</label><input type="number" id="regMentorPrice" placeholder="e.g. 500" min="0"></div>
+            <div class="field"><label>Specialty <span style="color:#E8526A">*</span></label><input type="text" id="regMentorSpecialty" placeholder="e.g. Couples Therapy"></div>
+            <div class="field"><label>Skills <span style="color:#E8526A">*</span></label><input type="text" id="regMentorSkills" placeholder="e.g. Trust Issues, Anxiety"></div>
+            <div class="field"><label>Languages <span style="color:#E8526A">*</span></label><input type="text" id="regMentorLanguages" placeholder="e.g. Hindi, English"></div>
+            <div class="fields-grid-2">
+              <div class="field"><label>Experience (yrs)</label><input type="number" id="regMentorExp" placeholder="e.g. 5" min="0"></div>
+              <div class="field"><label>Price (₹/30min)</label><input type="number" id="regMentorPrice" placeholder="e.g. 500" min="0"></div>
             </div>
             <div class="field">
               <label>Profile Picture</label>
               <input type="file" id="regMentorPic" accept="image/*" onchange="previewPic(this)"
-                style="padding:8px;border:1px solid var(--border);border-radius:10px;width:100%;font-size:13px;background:var(--bg);color:var(--text);">
-              <img id="picPreview" src="" alt="" style="display:none;width:80px;height:80px;border-radius:50%;object-fit:cover;margin-top:8px;border:3px solid #E8526A;">
+                style="padding:8px;border:1px solid var(--border);border-radius:10px;width:100%;font-size:13px;background:var(--bg);color:var(--text);box-sizing:border-box;">
+              <img id="picPreview" src="" alt="" style="display:none;width:70px;height:70px;border-radius:50%;object-fit:cover;margin-top:8px;border:3px solid #E8526A;">
             </div>
-            <button class="btn-primary" style="background:var(--lavender);" onclick="registerMentor()">Create Mentor Account</button>
+            <button class="btn-primary" style="background:linear-gradient(135deg,#7B5EA7,#5A3E85);" onclick="registerMentor()">Create Mentor Account</button>
             <p class="login-note">Your profile will be listed after verification.</p>
           </div>
-
-        </div><!-- end #login-mentor -->
+        </div>
 
       </div>
     </div>
-
   </div>
 
   <div class="toast" id="toast"></div>
 
+  <script>
+    // Hide left panel on mobile immediately
+    (function() {
+      if (window.innerWidth <= 768) {
+        document.addEventListener('DOMContentLoaded', function() {
+          var left = document.querySelector('.login-left');
+          if (left) left.style.display = 'none';
+        });
+      }
+      window.addEventListener('resize', function() {
+        var left = document.querySelector('.login-left');
+        if (!left) return;
+        left.style.display = window.innerWidth <= 768 ? 'none' : 'flex';
+      });
+    })();
+  </script>
   <script src="../js/utils.js"></script>
   <script src="../js/api.js"></script>
   <script src="../js/auth.js"></script>
