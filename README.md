@@ -18,10 +18,12 @@
 ### Login Page (Desktop)
 ![Login](screenshots/Login.png)
 
+### Mentor Dashboard
+![Mentors](screenshots/Mentors.png)
 
 ### Login Page (Mobile)
 Clean mobile-responsive login with User / Mentor toggle and Sign In / Create Account modes.
-
+![Loginmentor](screenshots/loginmentor.png)
 ### User Home
 Browse verified mentors, filter by specialty/rating/price, use the Love Calculator, and analyze your relationship.
 ![Home](screenshots/home.png)
