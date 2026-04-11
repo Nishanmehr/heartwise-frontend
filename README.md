@@ -18,7 +18,7 @@
 ### Login Page (Desktop)
 ![Login](screenshots/Login.png)
 
-### Mentor Dashboard
+### Mentor Listing
 ![Mentors](screenshots/Mentors.png)
 
 ### Login Page (Mobile)
