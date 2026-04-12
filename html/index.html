@@ -157,30 +157,53 @@
           </div>
         </div>
 
+
+        <!-- ══ OTP VERIFICATION SCREEN ══ -->
+        <div id="otp-screen" style="display:none;">
+          <div style="text-align:center;margin-bottom:24px;">
+            <div style="font-size:48px;margin-bottom:12px;">📧</div>
+            <h2 class="login-title">Check your email!</h2>
+            <p class="login-sub">We sent a 6-digit code to<br><strong id="otpEmailDisplay">—</strong></p>
+          </div>
+          <div class="field">
+            <label>Enter OTP</label>
+            <input type="text" id="otpInput" placeholder="Enter 6-digit code"
+              maxlength="6"
+              style="text-align:center;font-size:24px;font-weight:700;letter-spacing:8px;">
+          </div>
+          <button class="btn-primary" onclick="verifyOtp()">Verify Email ✅</button>
+          <p class="login-note" style="margin-top:16px;">
+            Didn't receive it?
+            <button onclick="resendOtp()" style="background:none;border:none;color:#E8526A;font-weight:600;cursor:pointer;font-size:12px;">
+              Resend OTP
+            </button>
+          </p>
+        </div>
+
       </div>
     </div>
   </div>
 
   <div class="toast" id="toast"></div>
 
-  <script>
-    // Hide left panel on mobile immediately
-    (function() {
-      if (window.innerWidth <= 768) {
-        document.addEventListener('DOMContentLoaded', function() {
-          var left = document.querySelector('.login-left');
-          if (left) left.style.display = 'none';
-        });
-      }
-      window.addEventListener('resize', function() {
-        var left = document.querySelector('.login-left');
-        if (!left) return;
-        left.style.display = window.innerWidth <= 768 ? 'none' : 'flex';
-      });
-    })();
-  </script>
   <script src="../js/utils.js"></script>
   <script src="../js/api.js"></script>
   <script src="../js/auth.js"></script>
+
+  <script>
+    // Mobile responsive fix - runs after DOM is ready
+    function handleMobileLayout() {
+      var left = document.querySelector('.login-left');
+      if (!left) return;
+      if (window.innerWidth <= 768) {
+        left.style.display = 'none';
+      } else {
+        left.style.display = 'flex';
+      }
+    }
+    // Run on load and resize
+    window.addEventListener('load', handleMobileLayout);
+    window.addEventListener('resize', handleMobileLayout);
+  </script>
 </body>
 </html>

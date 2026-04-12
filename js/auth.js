@@ -62,9 +62,18 @@ async function loginUser() {
 
   try {
     const data = await apiLoginUser(email, password);
+
+    // If email not verified — show OTP screen
+    if (data.needsVerification) {
+      showOtpScreen(data.email);
+      toast('Please verify your email first 📧');
+      return;
+    }
+
     toast('Welcome back! 💞');
     saveAuthAndRedirect(data, 'home.html');
   } catch (err) {
+    // Check if error response has needsVerification
     toast(err.message || 'Network error. Is the server running?');
   }
 }
@@ -82,10 +91,57 @@ async function registerUser() {
 
   try {
     const data = await apiRegisterUser(name, email, password);
-    toast('Account created! Welcome 💞');
-    saveAuthAndRedirect(data, 'home.html');
+    // Show OTP screen
+    showOtpScreen(email);
+    toast('OTP sent to ' + email + ' 📧');
   } catch (err) {
     toast(err.message || 'Registration failed ❌');
+  }
+}
+
+/* ══════════════ SHOW OTP SCREEN ══════════════ */
+function showOtpScreen(email) {
+  // Hide all panels safely
+  var userEl   = document.getElementById('login-user');
+  var mentorEl = document.getElementById('login-mentor');
+  var toggleEl = document.getElementById('login-toggle');
+  var otpEl    = document.getElementById('otp-screen');
+  var emailEl  = document.getElementById('otpEmailDisplay');
+
+  if (userEl)   userEl.style.display   = 'none';
+  if (mentorEl) mentorEl.style.display = 'none';
+  if (toggleEl) toggleEl.style.display = 'none';
+  if (otpEl)    otpEl.style.display    = 'block';
+  if (emailEl)  emailEl.textContent    = email;
+
+  // Store email for verification
+  window._pendingOtpEmail = email;
+}
+
+/* ══════════════ VERIFY OTP ══════════════ */
+async function verifyOtp() {
+  const otp   = document.getElementById('otpInput').value.trim();
+  const email = window._pendingOtpEmail;
+
+  if (!otp || otp.length !== 6) { toast('Please enter the 6-digit OTP ⚠️'); return; }
+
+  try {
+    const data = await apiVerifyOtp(email, otp);
+    toast('Email verified! Welcome 💞');
+    saveAuthAndRedirect(data, 'home.html');
+  } catch (err) {
+    toast(err.message || 'Invalid OTP ❌');
+  }
+}
+
+/* ══════════════ RESEND OTP ══════════════ */
+async function resendOtp() {
+  const email = window._pendingOtpEmail;
+  try {
+    await apiResendOtp(email);
+    toast('OTP resent to ' + email + ' 📧');
+  } catch (err) {
+    toast(err.message || 'Failed to resend OTP ❌');
   }
 }
 
