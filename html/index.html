@@ -3,382 +3,207 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HeartWise — Home</title>
-  <script src="../js/utils.js"></script>
+  <title>HeartWise — Login</title>
   <script>
-    toggleDoc(false);
     (function () {
       var token = localStorage.getItem('token');
       var role  = localStorage.getItem('role');
-      if (!token || role !== 'USER') { window.location.replace('index.html'); }
-      else { toggleDoc(true); }
+      if (token && role === 'USER')   { window.location.replace('home.html');      return; }
+      if (token && role === 'MENTOR') { window.location.replace('dashboard.html'); return; }
     })();
   </script>
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/navbar.css">
   <link rel="stylesheet" href="../css/components.css">
-  <link rel="stylesheet" href="../css/home.css">
-  <style>
-    /* Notification bell styles */
-    .notif-wrap { position: relative; }
-    .notif-bell {
-      background: none; border: none; cursor: pointer;
-      font-size: 20px; padding: 4px 8px; position: relative;
-    }
-    .notif-badge {
-      position: absolute; top: -2px; right: -2px;
-      background: #E8526A; color: #fff;
-      font-size: 10px; font-weight: 700;
-      width: 16px; height: 16px; border-radius: 50%;
-      display: none; align-items: center; justify-content: center;
-    }
-    .notif-panel {
-      display: none; position: absolute; right: 0; top: 44px;
-      width: 320px; background: #fff; border-radius: 16px;
-      box-shadow: 0 8px 32px rgba(0,0,0,.25); z-index: 9999;
-      overflow: hidden; border: 1px solid #f0f0f0;
-    }
-    .notif-header {
-      padding: 14px 16px 10px;
-      font-weight: 700; font-size: 14px;
-      color: #1a1a2e;
-      border-bottom: 1px solid #f0f0f0;
-      background: #fff;
-    }
-    .notif-item {
-      display: flex; gap: 10px; align-items: flex-start;
-      padding: 12px 16px; cursor: pointer;
-      transition: background .15s; background: #fff;
-    }
-    .notif-item:hover   { background: #f8f8f8; }
-    .notif-item.unread  { background: rgba(232,82,106,.06); }
-    .notif-icon         { font-size: 18px; flex-shrink: 0; }
-    .notif-msg          { font-size: 13px; color: #333; line-height: 1.4; }
-
-    /* Filter bar styles */
-    .filter-bar {
-      display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
-      padding: 14px 16px; background: var(--card);
-      border-radius: 16px; margin: 0 0 16px 0;
-      border: 1px solid var(--border);
-    }
-    .filter-bar select, .filter-bar input[type=range] {
-      border: 1px solid var(--border); border-radius: 10px;
-      padding: 7px 12px; font-size: 13px; background: var(--bg);
-      color: var(--text); cursor: pointer; outline: none;
-    }
-    .filter-bar select:focus { border-color: #E8526A; }
-    .filter-group {
-      display: flex; flex-direction: column; gap: 3px; font-size: 12px;
-      color: var(--muted);
-    }
-    .filter-group input[type=range] { width: 120px; padding: 0; accent-color: #E8526A; }
-    .filter-reset {
-      background: none; border: 1px solid var(--border); color: var(--muted);
-      padding: 7px 14px; border-radius: 10px; font-size: 13px; cursor: pointer;
-      transition: all .2s; margin-left: auto;
-    }
-    .filter-reset:hover { border-color: #E8526A; color: #E8526A; }
-
-    /* ── Love Calculator ── */
-    .love-calc-card {
-      background: var(--card); border-radius: 20px;
-      border: 1px solid var(--border); padding: 28px 24px;
-      text-align: center;
-    }
-    .love-calc-inputs {
-      display: flex; align-items: center; gap: 12px;
-      justify-content: center; flex-wrap: wrap; margin-bottom: 20px;
-    }
-    .love-input-wrap {
-      display: flex; align-items: center; gap: 8px;
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: 12px; padding: 10px 14px; flex: 1; min-width: 160px; max-width: 220px;
-      transition: border .2s;
-    }
-    .love-input-wrap:focus-within { border-color: #E8526A; }
-    .love-input-icon { font-size: 16px; }
-    .love-input {
-      border: none; background: none; outline: none;
-      font-size: 14px; color: var(--text); width: 100%;
-    }
-    .love-heart-icon { font-size: 28px; animation: heartbeat 1.2s infinite; }
-    @keyframes heartbeat {
-      0%,100% { transform: scale(1); }
-      50%      { transform: scale(1.2); }
-    }
-    .love-calc-btn {
-      background: linear-gradient(135deg, #E8526A, #C03A55);
-      color: #fff; border: none; border-radius: 12px;
-      padding: 12px 32px; font-size: 15px; font-weight: 600;
-      cursor: pointer; transition: opacity .2s, transform .1s;
-    }
-    .love-calc-btn:hover   { opacity: .9; }
-    .love-calc-btn:active  { transform: scale(.97); }
-
-    /* Result */
-    .love-result-names {
-      font-size: 15px; font-weight: 600; color: var(--text);
-      margin: 20px 0 12px;
-    }
-    .love-meter {
-      width: 100%; max-width: 400px; height: 14px;
-      background: #f0e0e4; border-radius: 20px;
-      margin: 0 auto 10px; overflow: hidden;
-    }
-    .love-meter-fill {
-      height: 100%; border-radius: 20px;
-      background: linear-gradient(90deg, #E8526A, #ff8fa3);
-      transition: width 1.2s cubic-bezier(.4,0,.2,1);
-    }
-    .love-percent {
-      font-size: 42px; font-weight: 800;
-      background: linear-gradient(135deg, #E8526A, #C03A55);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      margin-bottom: 8px;
-    }
-    .love-message {
-      font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 6px;
-    }
-    .love-emoji { font-size: 32px; }
-
-    /* ── Love Breakdown ── */
-    .love-breakdown {
-      margin-top: 20px; padding: 16px;
-      background: var(--bg); border-radius: 14px;
-      border: 1px solid var(--border); text-align: left;
-    }
-    .lb-row {
-      display: flex; align-items: center; gap: 10px;
-      margin-bottom: 10px; font-size: 13px; color: var(--text);
-    }
-    .lb-row:last-child { margin-bottom: 0; }
-    .lb-row > span:first-child { width: 130px; flex-shrink: 0; }
-    .lb-bar {
-      flex: 1; height: 8px; background: #f0e0e4;
-      border-radius: 20px; overflow: hidden; display: block;
-    }
-    .lb-bar span {
-      display: block; height: 100%;
-      background: linear-gradient(90deg, #E8526A, #ff8fa3);
-      border-radius: 20px;
-      transition: width 1s ease;
-    }
-    .lb-val { width: 36px; text-align: right; font-weight: 700; color: #E8526A; font-size: 12px; }
-
-
-
-    /* Profile dropdown */
-    .profile-wrap { position: relative; z-index: 9999; }
-    .profile-avatar-btn {
-      width: 36px; height: 36px; border-radius: 50%;
-      background: linear-gradient(135deg,#E8526A,#C03A55);
-      color: #fff; font-size: 15px; font-weight: 700;
-      border: none; cursor: pointer; display: flex;
-      align-items: center; justify-content: center;
-      transition: transform .2s;
-    }
-    .profile-avatar-btn:hover { transform: scale(1.08); }
-    .profile-dropdown {
-      display: none; position: absolute; right: 0; top: 46px;
-      width: 240px; background: #fff; border-radius: 16px;
-      box-shadow: 0 8px 32px rgba(0,0,0,.25); z-index: 9999;
-      overflow: hidden; border: 1px solid #f0f0f0;
-    }
-    .profile-dropdown.open { display: block; }
-    .profile-header {
-      padding: 16px; text-align: center;
-      border-bottom: 1px solid #f0f0f0;
-      background: linear-gradient(135deg,rgba(232,82,106,.1),rgba(123,94,167,.1));
-    }
-    .profile-header-avatar {
-      width: 56px; height: 56px; border-radius: 50%;
-      background: linear-gradient(135deg,#E8526A,#C03A55);
-      color: #fff; font-size: 22px; font-weight: 700;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 8px;
-    }
-    .profile-header-name {
-      font-size: 15px; font-weight: 700; color: #1a1a2e;
-      margin-bottom: 2px;
-    }
-    .profile-header-email {
-      font-size: 12px; color: #666;
-    }
-    .profile-menu-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 12px 16px; font-size: 14px; color: #333;
-      cursor: pointer; transition: background .15s;
-      border: none; background: #fff; width: 100%; text-align: left;
-      font-family: inherit;
-    }
-    .profile-menu-item:hover { background: #f8f4ff; color: #7B5EA7; }
-    .profile-menu-item.danger { color: #E8526A; }
-    .profile-menu-item.danger:hover { background: #fff0f2; }
-    .profile-menu-item .menu-icon { font-size: 16px; width: 20px; }
-    .profile-divider { height: 1px; background: #f0f0f0; margin: 4px 0; }
-  </style>
+  <link rel="stylesheet" href="../css/login.css">
 </head>
 <body>
 
-  <!-- NAVBAR -->
   <nav class="nav">
-    <a class="logo" href="home.html">Heart<span>wise</span></a>
-    <div class="nav-right" style="display:flex;align-items:center;gap:10px;">
-
-      <!-- Notification Bell -->
-      <div class="notif-wrap">
-        <button class="notif-bell" id="notif-bell" onclick="toggleNotifications()" title="Notifications">
-          🔔
-          <span class="notif-badge" id="notif-badge">0</span>
-        </button>
-        <div class="notif-panel" id="notif-panel">
-          <div class="notif-header">Notifications</div>
-          <div id="notif-list">
-            <div style="padding:16px;color:var(--muted);font-size:13px;text-align:center;">Loading...</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Profile Dropdown -->
-      <div class="profile-wrap">
-        <button class="profile-avatar-btn" id="profileBtn" onclick="toggleProfile()">
-          <span id="navAvatar">U</span>
-        </button>
-        <div class="profile-dropdown" id="profileDropdown">
-
-          <!-- Header -->
-          <div class="profile-header">
-            <div class="profile-header-avatar" id="profileBigAvatar">U</div>
-            <div class="profile-header-name"   id="profileName">User</div>
-            <div class="profile-header-email"  id="profileEmail">—</div>
-          </div>
-
-          <!-- Menu Items -->
-          <div style="padding: 6px 0;">
-            <button class="profile-menu-item" onclick="toggleNotifications(); toggleProfile();">
-              <span class="menu-icon">🔔</span> Notifications
-              <span id="profileNotifBadge" style="margin-left:auto;background:#E8526A;color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;display:none;">0</span>
-            </button>
-            <button class="profile-menu-item" onclick="location.href='bookings.html'">
-              <span class="menu-icon">📋</span> Booking History
-            </button>
-            <div class="profile-divider"></div>
-            <button class="profile-menu-item danger" onclick="logout()">
-              <span class="menu-icon">🚪</span> Logout
-            </button>
-          </div>
-
-        </div>
-      </div>
+    <a class="logo" href="index.html">Heart<span>wise</span></a>
+    <div class="nav-right">
+      <div class="avatar-sm" id="navAvatar" style="background:linear-gradient(135deg,#E8526A,#C03A55);color:#fff;">?</div>
     </div>
   </nav>
 
-  <!-- HERO -->
-  <div class="home-hero">
-    <h2 id="welcomeText">Hello 👋 How's your heart today?</h2>
-    <p>Find the right mentor, book a session, or analyze your relationship — we've got you.</p>
-    <div class="hero-btns">
-      <button class="btn-outline" onclick="location.href='analyzer.html'">🔮 Analyze My Relationship</button>
-      <button class="btn-sm" onclick="scrollToMentors()">Find a Mentor</button>
-    </div>
-  </div>
+  <div class="login-wrap">
 
-  <!-- ANALYZER BANNER -->
-  <div class="analyzer-banner" onclick="location.href='analyzer.html'">
-    <h3>Is your partner a 🚩 or 💚?</h3>
-    <p>Answer 5 quick questions about their behavior. Get your instant report.</p>
-    <button class="btn-gold">Start Analyzer →</button>
-  </div>
-
-
-  <!-- LOVE CALCULATOR -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-title">💕 Love Calculator</span>
-    </div>
-    <div class="love-calc-card">
-      <div class="love-calc-inputs">
-        <div class="love-input-wrap">
-          <span class="love-input-icon">👤</span>
-          <input type="text" id="loveName1" placeholder="Your name" class="love-input" oninput="resetLoveResult()">
+    <!-- Left Panel (Desktop only) -->
+    <div class="login-left">
+      <div class="login-hero">
+        <h1>Find your path to <em>love</em> &amp; clarity.</h1>
+        <p>Expert relationship mentors, real insights, and your personal relationship analyzer — all in one place.</p>
+      </div>
+      <div class="login-features">
+        <div class="login-feat">
+          <div class="feat-icon" style="background:rgba(232,82,106,.2);">💞</div>
+          Verified relationship mentors
         </div>
-        <div class="love-heart-icon">💞</div>
-        <div class="love-input-wrap">
-          <span class="love-input-icon">👤</span>
-          <input type="text" id="loveName2" placeholder="Partner's name" class="love-input" oninput="resetLoveResult()">
+        <div class="login-feat">
+          <div class="feat-icon" style="background:rgba(123,94,167,.2);">🔮</div>
+          Red &amp; Green flag analyzer
+        </div>
+        <div class="login-feat">
+          <div class="feat-icon" style="background:rgba(61,122,106,.2);">💬</div>
+          Book chat or call sessions
+        </div>
+        <div class="login-feat">
+          <div class="feat-icon" style="background:rgba(201,146,43,.2);">⭐</div>
+          Rated &amp; reviewed mentors
         </div>
       </div>
-      <button class="love-calc-btn" onclick="calculateLove()">Calculate Love 💕</button>
+      <div class="login-footer">© 2025 HeartWise · Your privacy is sacred</div>
+    </div>
 
-      <div id="loveResult" style="display:none;">
-        <div class="love-result-names" id="loveResultNames"></div>
-        <div class="love-meter">
-          <div class="love-meter-fill" id="loveMeterFill" style="width:0%"></div>
+    <!-- Right Panel -->
+    <div class="login-right">
+      <div class="login-card">
+
+        <!-- Role Toggle -->
+        <div class="login-toggle">
+          <button class="login-toggle-btn active" id="lt-user"   onclick="switchLogin('user')">I'm a User</button>
+          <button class="login-toggle-btn"         id="lt-mentor" onclick="switchLogin('mentor')">I'm a Mentor</button>
         </div>
-        <div class="love-percent" id="lovePercent">0%</div>
-        <div class="love-message" id="loveMessage"></div>
-        <div class="love-emoji"   id="loveEmoji"></div>
-      </div>
-    </div>
-  </div>
 
-  <!-- MENTORS SECTION -->
-  <div class="section" id="mentorSection">
-    <div class="section-header">
-      <span class="section-title">Verified Mentors</span>
-      <button class="see-all">See all →</button>
-    </div>
-    <!-- FILTER BAR -->
-    <div class="filter-bar">
-      <div class="filter-group">
-        <label>💞 Specialty</label>
-        <select id="filterSpecialty" onchange="applyFilters()">
-          <option value="">All Specialties</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label>⭐ Min Rating</label>
-        <select id="filterRating" onchange="applyFilters()">
-          <option value="0">Any</option>
-          <option value="3">3+</option>
-          <option value="4">4+</option>
-          <option value="4.5">4.5+</option>
-          <option value="5">5 only</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label>💰 Max Price: <span id="priceLabel">Any</span></label>
-        <input type="range" id="filterPrice" min="100" max="5000" step="100" value="99999" oninput="applyFilters()">
-      </div>
-      <div class="filter-group">
-        <label>🔃 Sort By</label>
-        <select id="filterSort" onchange="applyFilters()">
-          <option value="">Default</option>
-          <option value="rating-desc">Rating: High to Low</option>
-          <option value="rating-asc">Rating: Low to High</option>
-          <option value="price-asc">Price: Low to High</option>
-          <option value="price-desc">Price: High to Low</option>
-          <option value="exp-desc">Experience: Most First</option>
-          <option value="exp-asc">Experience: Least First</option>
-        </select>
-      </div>
-      <button class="filter-reset" onclick="resetFilters()">✕ Reset</button>
-    </div>
+        <!-- ══ USER PANEL ══ -->
+        <div id="login-user">
+          <div class="mode-toggle">
+            <button class="mode-btn active" id="user-mode-login"    onclick="switchMode('user','login')">Sign In</button>
+            <span class="mode-separator">&nbsp;|&nbsp;</span>
+            <button class="mode-btn"        id="user-mode-register" onclick="switchMode('user','register')">Create Account</button>
+          </div>
 
-    <div class="mentor-grid" id="mentorList"></div>
+          <!-- User Login -->
+          <div id="user-login-form">
+            <h2 class="login-title">Welcome back 💌</h2>
+            <p class="login-sub">Sign in to connect with your mentor</p>
+            <div class="field"><label>Email</label><input type="email" id="userEmail" placeholder="you@email.com"></div>
+            <div class="field"><label>Password</label><input type="password" id="userPass" placeholder="••••••••"></div>
+            <button class="btn-primary" onclick="loginUser()">Sign In</button>
+            <p class="login-note">Don't have an account? Click "Create Account" above.</p>
+          </div>
+
+          <!-- User Register -->
+          <div id="user-register-form" style="display:none;">
+            <h2 class="login-title">Join HeartWise 💞</h2>
+            <p class="login-sub">Create your free account</p>
+            <div class="field"><label>Full Name</label><input type="text" id="regUserName" placeholder="Your name"></div>
+            <div class="field"><label>Email</label><input type="email" id="regUserEmail" placeholder="you@email.com"></div>
+            <div class="field"><label>Password</label><input type="password" id="regUserPass" placeholder="Min. 6 characters"></div>
+            <div class="field"><label>Confirm Password</label><input type="password" id="regUserConfirm" placeholder="Repeat password"></div>
+            <button class="btn-primary" onclick="registerUser()">Create Account</button>
+            <p class="login-note">Already have an account? Click "Sign In" above.</p>
+          </div>
+        </div>
+
+        <!-- ══ MENTOR PANEL ══ -->
+        <div id="login-mentor" style="display:none;">
+          <div class="mentor-badge">🏅 Verified Mentor Portal — restricted access</div>
+          <div class="mode-toggle">
+            <button class="mode-btn active" id="mentor-mode-login"    onclick="switchMode('mentor','login')">Sign In</button>
+            <span class="mode-separator">&nbsp;|&nbsp;</span>
+            <button class="mode-btn"        id="mentor-mode-register" onclick="switchMode('mentor','register')">Apply as Mentor</button>
+          </div>
+
+          <!-- Mentor Login -->
+          <div id="mentor-login-form">
+            <h2 class="login-title">Mentor Sign In 🌟</h2>
+            <p class="login-sub">Access your session dashboard</p>
+            <div class="field"><label>Email</label><input type="email" id="mentorEmail" placeholder="mentor@email.com"></div>
+            <div class="field"><label>Password</label><input type="password" id="mentorPass" placeholder="••••••••"></div>
+            <div class="field"><label>Mentor ID</label><input type="text" id="mentorId" placeholder="HW-MENTOR-####"></div>
+            <button class="btn-primary" style="background:linear-gradient(135deg,#7B5EA7,#5A3E85);" onclick="loginMentor()">Sign In as Mentor</button>
+            <p class="login-note">⚠️ Rejecting 10+ sessions will block your account.</p>
+          </div>
+
+          <!-- Mentor Register -->
+          <div id="mentor-register-form" style="display:none;">
+            <h2 class="login-title">Become a Mentor 🌟</h2>
+            <p class="login-sub">Set up your complete mentor profile</p>
+            <div class="fields-grid-2">
+              <div class="field"><label>First Name <span style="color:#E8526A">*</span></label><input type="text" id="regMentorFirstName" placeholder="First name"></div>
+              <div class="field"><label>Last Name <span style="color:#E8526A">*</span></label><input type="text" id="regMentorLastName" placeholder="Last name"></div>
+            </div>
+            <div class="field"><label>Email <span style="color:#E8526A">*</span></label><input type="email" id="regMentorEmail" placeholder="mentor@email.com"></div>
+            <div class="field"><label>Password <span style="color:#E8526A">*</span></label><input type="password" id="regMentorPass" placeholder="Min. 6 characters"></div>
+            <div class="field"><label>Confirm Password <span style="color:#E8526A">*</span></label><input type="password" id="regMentorConfirm" placeholder="Repeat password"></div>
+            <div class="fields-grid-2">
+              <div class="field"><label>Date of Birth <span style="color:#E8526A">*</span></label><input type="date" id="regMentorDob"></div>
+              <div class="field"><label>Gender <span style="color:#E8526A">*</span></label>
+                <select id="regMentorGender">
+                  <option value="">Select</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="field"><label>Specialty <span style="color:#E8526A">*</span></label><input type="text" id="regMentorSpecialty" placeholder="e.g. Couples Therapy"></div>
+            <div class="field"><label>Skills <span style="color:#E8526A">*</span></label><input type="text" id="regMentorSkills" placeholder="e.g. Trust Issues, Anxiety"></div>
+            <div class="field"><label>Languages <span style="color:#E8526A">*</span></label><input type="text" id="regMentorLanguages" placeholder="e.g. Hindi, English"></div>
+            <div class="fields-grid-2">
+              <div class="field"><label>Experience (yrs)</label><input type="number" id="regMentorExp" placeholder="e.g. 5" min="0"></div>
+              <div class="field"><label>Price (₹/30min)</label><input type="number" id="regMentorPrice" placeholder="e.g. 500" min="0"></div>
+            </div>
+            <div class="field">
+              <label>Profile Picture</label>
+              <input type="file" id="regMentorPic" accept="image/*" onchange="previewPic(this)"
+                style="padding:8px;border:1px solid var(--border);border-radius:10px;width:100%;font-size:13px;background:var(--bg);color:var(--text);box-sizing:border-box;">
+              <img id="picPreview" src="" alt="" style="display:none;width:70px;height:70px;border-radius:50%;object-fit:cover;margin-top:8px;border:3px solid #E8526A;">
+            </div>
+            <button class="btn-primary" style="background:linear-gradient(135deg,#7B5EA7,#5A3E85);" onclick="registerMentor()">Create Mentor Account</button>
+            <p class="login-note">Your profile will be listed after verification.</p>
+          </div>
+        </div>
+
+
+        <!-- ══ OTP VERIFICATION SCREEN ══ -->
+        <div id="otp-screen" style="display:none;">
+          <div style="text-align:center;margin-bottom:24px;">
+            <div style="font-size:48px;margin-bottom:12px;">📧</div>
+            <h2 class="login-title">Check your email!</h2>
+            <p class="login-sub">We sent a 6-digit code to<br><strong id="otpEmailDisplay">—</strong></p>
+          </div>
+          <div class="field">
+            <label>Enter OTP</label>
+            <input type="text" id="otpInput" placeholder="Enter 6-digit code"
+              maxlength="6"
+              style="text-align:center;font-size:24px;font-weight:700;letter-spacing:8px;">
+          </div>
+          <button class="btn-primary" onclick="verifyOtp()">Verify Email ✅</button>
+          <p class="login-note" style="margin-top:16px;">
+            Didn't receive it?
+            <button onclick="resendOtp()" style="background:none;border:none;color:#E8526A;font-weight:600;cursor:pointer;font-size:12px;">
+              Resend OTP
+            </button>
+          </p>
+        </div>
+
+      </div>
+    </div>
   </div>
 
   <div class="toast" id="toast"></div>
 
-  <script>
-    function scrollToMentors() {
-      var el = document.getElementById("mentorSection");
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }
-  </script>
+  <script src="../js/utils.js"></script>
   <script src="../js/api.js"></script>
-  <script src="../js/home.js"></script>
+  <script src="../js/auth.js"></script>
+
+  <script>
+    // Mobile responsive fix - runs after DOM is ready
+    function handleMobileLayout() {
+      var left = document.querySelector('.login-left');
+      if (!left) return;
+      if (window.innerWidth <= 768) {
+        left.style.display = 'none';
+      } else {
+        left.style.display = 'flex';
+      }
+    }
+    // Run on load and resize
+    window.addEventListener('load', handleMobileLayout);
+    window.addEventListener('resize', handleMobileLayout);
+  </script>
 </body>
 </html>
