@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeartWise — AI Love Letter Generator</title>
+  <script src="../js/utils.js"></script>
+  <script>
+    toggleDoc(false);
+    (function () {
+      var token = localStorage.getItem('token');
+      var role  = localStorage.getItem('role');
+      if (!token || role !== 'USER') { window.location.replace('index.html'); }
+      else { toggleDoc(true); }
+    })();
+  </script>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .letter-wrap {
+      max-width: 680px;
+      margin: 32px auto;
+      padding: 0 16px 60px;
+    }
+
+    .letter-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .letter-header .badge {
+      display: inline-block;
+      background: linear-gradient(135deg, rgba(232,82,106,.12), rgba(201,146,43,.12));
+      color: #E8526A;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      letter-spacing: .5px;
+    }
+    .letter-header h2 {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .letter-header p {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    /* Form Card */
+    .letter-form-card {
+      background: var(--card);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 500px) {
+      .form-row { grid-template-columns: 1fr; }
+    }
+
+    .form-group { margin-bottom: 14px; }
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      margin-bottom: 6px;
+    }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      font-size: 14px;
+      background: var(--bg);
+      color: var(--text);
+      outline: none;
+      transition: border .2s;
+      box-sizing: border-box;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: #E8526A;
+    }
+
+    /* Reason Pills */
+    .reason-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .reason-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .reason-pill {
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      background: var(--bg);
+      color: var(--text);
+      transition: all .2s;
+      user-select: none;
+    }
+    .reason-pill:hover { border-color: #E8526A; color: #E8526A; }
+    .reason-pill.selected {
+      background: linear-gradient(135deg, #E8526A, #C03A55);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    /* Generate Button */
+    .generate-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #E8526A, #C03A55);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity .2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .generate-btn:hover { opacity: .9; }
+    .generate-btn:disabled { opacity: .6; cursor: not-allowed; }
+
+    /* Result Card */
+    .letter-result {
+      background: var(--card);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      padding: 24px;
+      display: none;
+    }
+    .letter-result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .letter-result-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .letter-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .action-btn {
+      padding: 7px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .action-btn:hover { border-color: #E8526A; color: #E8526A; }
+
+    .letter-text {
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--text);
+      white-space: pre-wrap;
+      font-family: Georgia, serif;
+      padding: 16px;
+      background: var(--bg);
+      border-radius: 12px;
+      border-left: 3px solid #E8526A;
+      min-height: 120px;
+    }
+
+    /* Loading dots */
+    .loading-dots {
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+    }
+    .loading-dots span {
+      width: 6px; height: 6px;
+      background: #fff;
+      border-radius: 50%;
+      animation: dot-bounce .6s infinite alternate;
+    }
+    .loading-dots span:nth-child(2) { animation-delay: .2s; }
+    .loading-dots span:nth-child(3) { animation-delay: .4s; }
+    @keyframes dot-bounce {
+      from { transform: translateY(0); opacity: .4; }
+      to   { transform: translateY(-4px); opacity: 1; }
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      cursor: pointer;
+      margin-bottom: 16px;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+    .back-btn:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="nav">
+    <a class="logo" href="home.html">Heart<span>wise</span></a>
+    <div class="nav-right">
+      <div class="avatar-sm" id="navAvatar">U</div>
+    </div>
+  </nav>
+
+  <div class="letter-wrap">
+
+    <button class="back-btn" onclick="location.href='home.html'">← Back to Home</button>
+
+    <div class="letter-header">
+      <div class="badge">💌 AI Powered</div>
+      <h2>Love Letter Generator</h2>
+      <p>Tell us the occasion and we'll write the perfect letter for you</p>
+    </div>
+
+    <!-- Form -->
+    <div class="letter-form-card">
+
+      <!-- Names -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" id="senderName" placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label>Partner's Name</label>
+          <input type="text" id="receiverName" placeholder="Their name">
+        </div>
+      </div>
+
+      <!-- Tone -->
+      <div class="form-group">
+        <label>Tone</label>
+        <select id="letterTone">
+          <option value="romantic">💕 Romantic & Deep</option>
+          <option value="cute">🥰 Cute & Sweet</option>
+          <option value="funny">😄 Funny & Playful</option>
+          <option value="emotional">😢 Emotional & Heartfelt</option>
+          <option value="poetic">🌹 Poetic & Artistic</option>
+        </select>
+      </div>
+
+      <!-- Reason Pills -->
+      <span class="reason-label">Occasion / Reason</span>
+      <div class="reason-pills" id="reasonPills">
+        <div class="reason-pill selected" onclick="selectReason(this)" data-reason="birthday">🎂 Birthday</div>
+        <div class="reason-pill" onclick="selectReason(this)" data-reason="apology">🙏 Apology / Sorry</div>
+        <div class="reason-pill" onclick="selectReason(this)" data-reason="missing">💭 Missing You</div>
+        <div class="reason-pill" onclick="selectReason(this)" data-reason="anniversary">💍 Anniversary</div>
+        <div class="reason-pill" onclick="selectReason(this)" data-reason="fight">😔 After a Fight</div>
+        <div class="reason-pill" onclick="selectReason(this)" data-reason="firstlove">💘 Expressing Love</div>
+        <div class="reason-pill" onclick="selectReason(this)" data-reason="longdistance">✈️ Long Distance</div>
+        <div class="reason-pill" onclick="selectReason(this)" data-reason="goodmorning">☀️ Good Morning</div>
+        <div class="reason-pill" onclick="selectReason(this)" data-reason="goodnight">🌙 Good Night</div>
+        <div class="reason-pill" onclick="selectReason(this)" data-reason="propose">💍 Proposal</div>
+        <div class="reason-pill" onclick="selectReason(this)" data-reason="cheer">🌟 Cheer Them Up</div>
+        <div class="reason-pill" onclick="selectReason(this)" data-reason="random">💞 Just Because</div>
+      </div>
+
+      <!-- Extra context -->
+      <div class="form-group">
+        <label>Add a Personal Touch (Optional)</label>
+        <input type="text" id="extraContext" placeholder="e.g. She loves sunsets, his favourite is pizza...">
+      </div>
+
+      <button class="generate-btn" id="generateBtn" onclick="generateLetter()">
+        <span id="btnText">✨ Generate Love Letter</span>
+      </button>
+    </div>
+
+    <!-- Result -->
+    <div class="letter-result" id="letterResult">
+      <div class="letter-result-header">
+        <div class="letter-result-title">💌 Your Love Letter</div>
+        <div class="letter-actions">
+          <button class="action-btn" onclick="copyLetter()">📋 Copy</button>
+          <button class="action-btn" onclick="generateLetter()">🔄 Regenerate</button>
+        </div>
+      </div>
+      <div class="letter-text" id="letterText"></div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="../js/utils.js"></script>
+  <script>
+    let selectedReason = 'birthday';
+
+    function selectReason(el) {
+      document.querySelectorAll('.reason-pill').forEach(p => p.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedReason = el.dataset.reason;
+    }
+
+    async function generateLetter() {
+      const senderName   = document.getElementById('senderName').value.trim();
+      const receiverName = document.getElementById('receiverName').value.trim();
+      const tone         = document.getElementById('letterTone').value;
+      const extraContext = document.getElementById('extraContext').value.trim();
+
+      if (!senderName || !receiverName) {
+        toast('Please enter both names ⚠️');
+        return;
+      }
+
+      // Show loading
+      const btn     = document.getElementById('generateBtn');
+      const btnText = document.getElementById('btnText');
+      btn.disabled  = true;
+      btnText.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div> Writing...';
+
+      const resultDiv = document.getElementById('letterResult');
+      const letterText = document.getElementById('letterText');
+      resultDiv.style.display = 'block';
+      letterText.textContent  = '✍️ Writing your letter...';
+
+      // Build prompt
+      const reasonMap = {
+        birthday:    "their birthday",
+        apology:     "an apology after doing something wrong",
+        missing:     "missing them deeply",
+        anniversary: "their anniversary",
+        fight:       "after a fight to make up",
+        firstlove:   "expressing love for the first time",
+        longdistance:"being in a long distance relationship",
+        goodmorning: "wishing them a good morning",
+        goodnight:   "wishing them a good night",
+        propose:     "proposing marriage",
+        cheer:       "cheering them up when they are sad",
+        random:      "just because they love them"
+      };
+
+      const toneMap = {
+        romantic:  "deeply romantic and passionate",
+        cute:      "cute, sweet and adorable",
+        funny:     "funny, playful and lighthearted",
+        emotional: "emotional, heartfelt and sincere",
+        poetic:    "poetic, artistic and beautifully written"
+      };
+
+      const prompt = `Write a ${toneMap[tone]} love letter from ${senderName} to ${receiverName} for ${reasonMap[selectedReason]}.
+${extraContext ? `Personal details: ${extraContext}` : ''}
+Make it personal, genuine and about 150-200 words. 
+Start with "My dearest ${receiverName}," and end with "${senderName}".
+Only write the letter, nothing else.`;
+
+      try {
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 1000,
+            messages: [{ role: 'user', content: prompt }]
+          })
+        });
+
+        const data = await response.json();
+        const letter = data.content[0].text;
+
+        // Typewriter effect
+        letterText.textContent = '';
+        let i = 0;
+        const typeInterval = setInterval(() => {
+          if (i < letter.length) {
+            letterText.textContent += letter[i];
+            i++;
+          } else {
+            clearInterval(typeInterval);
+          }
+        }, 15);
+
+      } catch (err) {
+        letterText.textContent = 'Could not generate letter. Please try again.';
+        toast('Generation failed ❌');
+      } finally {
+        btn.disabled  = false;
+        btnText.innerHTML = '✨ Generate Love Letter';
+      }
+    }
+
+    function copyLetter() {
+      const text = document.getElementById('letterText').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        toast('Letter copied! 📋');
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      requireUser();
+      const name = getStorage('username');
+      if (name) {
+        updateNavAvatar(name);
+        document.getElementById('senderName').value = name;
+      }
+    });
+  </script>
+</body>
+</html>
