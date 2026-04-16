@@ -2,6 +2,7 @@
    api.js — All Backend API Calls
    Depends on: utils.js
    ============================================= */
+
 const BASE_URL = 'https://heartwise-backend-production.up.railway.app/api';
 async function apiFetch(endpoint, options = {}) {
   const token = getStorage('token');
@@ -123,6 +124,15 @@ async function apiGetNotifications(userId) {
 
 async function apiMarkNotificationRead(notifId) {
   return apiFetch(`/sessions/notifications/${notifId}/read`, { method: 'PUT' });
+}
+
+/* ── AI ── */
+
+async function apiGenerateLoveLetter(senderName, receiverName, reason, tone, extra) {
+  return apiFetch('/ai/love-letter', {
+    method: 'POST',
+    body: JSON.stringify({ senderName, receiverName, reason, tone, extra }),
+  });
 }
 
 /* ── ANALYZER ── */

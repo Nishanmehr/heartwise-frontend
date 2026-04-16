@@ -359,49 +359,23 @@
       resultDiv.style.display = 'block';
       letterText.textContent  = '✍️ Writing your letter...';
 
-      // Build prompt
-      const reasonMap = {
-        birthday:    "their birthday",
-        apology:     "an apology after doing something wrong",
-        missing:     "missing them deeply",
-        anniversary: "their anniversary",
-        fight:       "after a fight to make up",
-        firstlove:   "expressing love for the first time",
-        longdistance:"being in a long distance relationship",
-        goodmorning: "wishing them a good morning",
-        goodnight:   "wishing them a good night",
-        propose:     "proposing marriage",
-        cheer:       "cheering them up when they are sad",
-        random:      "just because they love them"
-      };
-
-      const toneMap = {
-        romantic:  "deeply romantic and passionate",
-        cute:      "cute, sweet and adorable",
-        funny:     "funny, playful and lighthearted",
-        emotional: "emotional, heartfelt and sincere",
-        poetic:    "poetic, artistic and beautifully written"
-      };
-
-      const prompt = `Write a ${toneMap[tone]} love letter from ${senderName} to ${receiverName} for ${reasonMap[selectedReason]}.
-${extraContext ? `Personal details: ${extraContext}` : ''}
-Make it personal, genuine and about 150-200 words. 
-Start with "My dearest ${receiverName}," and end with "${senderName}".
-Only write the letter, nothing else.`;
-
       try {
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
+        const BASE_URL = 'https://heartwise-backend-production.up.railway.app/api';
+        const response = await fetch(BASE_URL + '/ai/love-letter', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            model: 'claude-sonnet-4-20250514',
-            max_tokens: 1000,
-            messages: [{ role: 'user', content: prompt }]
+            senderName:   senderName,
+            receiverName: receiverName,
+            reason:       selectedReason,
+            tone:         tone,
+            extra:        extraContext
           })
         });
 
         const data = await response.json();
-        const letter = data.content[0].text;
+        if (!response.ok) throw new Error(data.message || 'Failed');
+        const letter = data.letter;
 
         // Typewriter effect
         letterText.textContent = '';
