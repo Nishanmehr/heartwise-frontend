@@ -610,9 +610,9 @@
       if (el) el.scrollIntoView({ behavior: "smooth" });
     }
   </script>
+  <script src="../js/utils.js"></script>
   <script src="../js/api.js"></script>
   <script src="../js/home.js"></script>
-
 
   <!-- NOVA CHATBOT SCRIPT -->
   <script>
@@ -662,7 +662,11 @@
       var initial  = username.charAt(0).toUpperCase();
       var div      = document.createElement('div');
       div.className = 'msg ' + role;
-      var safeText = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/
+      var safeText = text
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/
 /g,'<br>');
       if (role === 'nova') {
         div.innerHTML = '<div class="msg-avatar">🌟</div><div class="msg-bubble">' + safeText + '</div>';
@@ -694,15 +698,12 @@
       var input = document.getElementById('novaInput');
       var text  = input.value.trim();
       if (!text) return;
-
       document.getElementById('novaSuggestions').style.display = 'none';
       addMessage('user', text);
       novaHistory.push({ role: 'user', content: text });
       input.value = '';
-
       var typingId = showTyping();
       document.getElementById('novaSend').disabled = true;
-
       try {
         var res = await fetch(NOVA_API, {
           method: 'POST',
@@ -717,7 +718,7 @@
         if (novaHistory.length > 10) novaHistory = novaHistory.slice(-10);
       } catch (err) {
         removeTyping(typingId);
-        addMessage('nova', "I'm having a little trouble connecting right now. Please try again 💙");
+        addMessage('nova', "I'm having trouble connecting. Please try again 💙");
       } finally {
         document.getElementById('novaSend').disabled = false;
         input.focus();
