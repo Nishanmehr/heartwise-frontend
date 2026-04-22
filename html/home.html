@@ -613,28 +613,28 @@
   <script src="../js/api.js"></script>
   <script src="../js/home.js"></script>
 
+
   <!-- NOVA CHATBOT SCRIPT -->
   <script>
-    const NOVA_API = 'https://heartwise-backend-production.up.railway.app/api/ai/chat';
-    let novaOpen = false;
-    let novaHistory = [];
-    let tooltipHidden = false;
+    var NOVA_API = 'https://heartwise-backend-production.up.railway.app/api/ai/chat';
+    var novaOpen = false;
+    var novaHistory = [];
+    var tooltipHidden = false;
 
-    // Show tooltip after 3 seconds
-    setTimeout(() => {
-      if (!tooltipHidden) document.getElementById('novaTooltip').style.display = 'block';
+    setTimeout(function() {
+      var t = document.getElementById('novaTooltip');
+      if (t && !tooltipHidden) t.style.display = 'block';
     }, 3000);
 
     function toggleNova() {
       novaOpen = !novaOpen;
-      const win = document.getElementById('novaWindow');
-      const fab = document.getElementById('novaFab');
-      const tooltip = document.getElementById('novaTooltip');
-
+      var win     = document.getElementById('novaWindow');
+      var fab     = document.getElementById('novaFab');
+      var tooltip = document.getElementById('novaTooltip');
       if (novaOpen) {
         win.classList.add('open');
         fab.innerHTML = '✕';
-        tooltip.style.display = 'none';
+        if (tooltip) tooltip.style.display = 'none';
         tooltipHidden = true;
         document.getElementById('novaInput').focus();
       } else {
@@ -656,93 +656,72 @@
       sendNovaMessage();
     }
 
-    async function sendNovaMessage() {
-      const input = document.getElementById('novaInput');
-      const text  = input.value.trim();
-      if (!text) return;
-
-      // Hide suggestions after first message
-      document.getElementById('novaSuggestions').style.display = 'none';
-
-      // Add user message
-      addMessage('user', text);
-      novaHistory.push({ role: 'user', content: text });
-      input.value = '';
-
-      // Show typing
-      const typingId = showTyping();
-
-      // Disable send
-      document.getElementById('novaSend').disabled = true;
-
-      try {
-        const res = await fetch(NOVA_API, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: novaHistory })
-        });
-
-        const data = await res.json();
-        removeTyping(typingId);
-
-        if (!res.ok) throw new Error(data.message);
-
-        const reply = data.reply;
-        novaHistory.push({ role: 'assistant', content: reply });
-        addMessage('nova', reply);
-
-        // Keep history max 10 messages to avoid token limit
-        if (novaHistory.length > 10) novaHistory = novaHistory.slice(-10);
-
-      } catch (err) {
-        removeTyping(typingId);
-        addMessage('nova', "I'm having a little trouble connecting right now. Please try again in a moment 💙");
-      } finally {
-        document.getElementById('novaSend').disabled = false;
-        input.focus();
-      }
-    }
-
     function addMessage(role, text) {
-      const msgs = document.getElementById('novaMessages');
-      const username = localStorage.getItem('username') || 'You';
-      const initial  = username.charAt(0).toUpperCase();
-
-      const div = document.createElement('div');
+      var msgs     = document.getElementById('novaMessages');
+      var username = localStorage.getItem('username') || 'You';
+      var initial  = username.charAt(0).toUpperCase();
+      var div      = document.createElement('div');
       div.className = 'msg ' + role;
-      div.innerHTML = role === 'nova'
-        ? \`<div class="msg-avatar">🌟</div><div class="msg-bubble">\${escapeHtml(text)}</div>\`
-        : \`<div class="msg-bubble">\${escapeHtml(text)}</div><div class="msg-avatar">\${initial}</div>\`;
-
+      var safeText = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/
+/g,'<br>');
+      if (role === 'nova') {
+        div.innerHTML = '<div class="msg-avatar">🌟</div><div class="msg-bubble">' + safeText + '</div>';
+      } else {
+        div.innerHTML = '<div class="msg-bubble">' + safeText + '</div><div class="msg-avatar">' + initial + '</div>';
+      }
       msgs.appendChild(div);
       msgs.scrollTop = msgs.scrollHeight;
     }
 
     function showTyping() {
-      const msgs = document.getElementById('novaMessages');
-      const id   = 'typing-' + Date.now();
-      const div  = document.createElement('div');
-      div.className = 'msg nova'; div.id = id;
-      div.innerHTML = \`<div class="msg-avatar">🌟</div>
-        <div class="msg-bubble"><div class="typing-dots">
-          <span></span><span></span><span></span>
-        </div></div>\`;
+      var msgs = document.getElementById('novaMessages');
+      var id   = 'typing-' + Date.now();
+      var div  = document.createElement('div');
+      div.className = 'msg nova';
+      div.id = id;
+      div.innerHTML = '<div class="msg-avatar">🌟</div><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
       msgs.appendChild(div);
       msgs.scrollTop = msgs.scrollHeight;
       return id;
     }
 
     function removeTyping(id) {
-      const el = document.getElementById(id);
+      var el = document.getElementById(id);
       if (el) el.remove();
     }
 
-    function escapeHtml(text) {
-      return text
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/\n/g, '<br>');
+    async function sendNovaMessage() {
+      var input = document.getElementById('novaInput');
+      var text  = input.value.trim();
+      if (!text) return;
+
+      document.getElementById('novaSuggestions').style.display = 'none';
+      addMessage('user', text);
+      novaHistory.push({ role: 'user', content: text });
+      input.value = '';
+
+      var typingId = showTyping();
+      document.getElementById('novaSend').disabled = true;
+
+      try {
+        var res = await fetch(NOVA_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: novaHistory })
+        });
+        var data = await res.json();
+        removeTyping(typingId);
+        if (!res.ok) throw new Error(data.message);
+        novaHistory.push({ role: 'assistant', content: data.reply });
+        addMessage('nova', data.reply);
+        if (novaHistory.length > 10) novaHistory = novaHistory.slice(-10);
+      } catch (err) {
+        removeTyping(typingId);
+        addMessage('nova', "I'm having a little trouble connecting right now. Please try again 💙");
+      } finally {
+        document.getElementById('novaSend').disabled = false;
+        input.focus();
+      }
     }
   </script>
 </body>
