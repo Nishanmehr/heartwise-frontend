@@ -675,11 +675,7 @@
       var div      = document.createElement('div');
       div.className = 'msg ' + role;
       var safeText = text
-        .replace(/&/g,'&amp;')
-        .replace(/</g,'&lt;')
-        .replace(/>/g,'&gt;')
-        .replace(/
-/g,'<br>');
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
       if (role === 'nova') {
         div.innerHTML = '<div class="msg-avatar">🌟</div><div class="msg-bubble">' + safeText + '</div>';
       } else {
