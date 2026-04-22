@@ -561,7 +561,7 @@
   <div class="nova-tooltip" id="novaTooltip">💬 Chat with Nova AI</div>
 
   <!-- FAB Button -->
-  <button class="nova-fab" id="novaFab" onclick="toggleNova()" title="Chat with Nova">
+  <button class="nova-fab" id="novaFab" title="Chat with Nova">
     🌟
   </button>
 
@@ -573,7 +573,7 @@
         <div class="nova-name">Nova</div>
         <div class="nova-status">Online • AI Relationship Advisor</div>
       </div>
-      <button class="nova-close" onclick="toggleNova()">✕</button>
+      <button class="nova-close" id="novaClose">✕</button>
     </div>
 
     <div class="nova-messages" id="novaMessages">
@@ -589,16 +589,16 @@
 
     <!-- Quick suggestions -->
     <div class="nova-suggestions" id="novaSuggestions">
-      <button class="sugg-btn" onclick="sendSuggestion(this)">💔 Breakup advice</button>
-      <button class="sugg-btn" onclick="sendSuggestion(this)">💬 Communication tips</button>
-      <button class="sugg-btn" onclick="sendSuggestion(this)">😤 We had a fight</button>
-      <button class="sugg-btn" onclick="sendSuggestion(this)">💕 Express feelings</button>
+      <button class="sugg-btn">💔 Breakup advice</button>
+      <button class="sugg-btn">💬 Communication tips</button>
+      <button class="sugg-btn">😤 We had a fight</button>
+      <button class="sugg-btn">💕 Express feelings</button>
     </div>
 
     <div class="nova-input-wrap">
       <textarea class="nova-input" id="novaInput" placeholder="Type your message..."
-        rows="1" onkeydown="handleNovaKey(event)"></textarea>
-      <button class="nova-send" id="novaSend" onclick="sendNovaMessage()">➤</button>
+        rows="1" id="novaInputArea"></textarea>
+      <button class="nova-send" id="novaSend">➤</button>
     </div>
   </div>
 
@@ -617,6 +617,18 @@
   <!-- NOVA CHATBOT SCRIPT -->
   <script>
     var NOVA_API = 'https://heartwise-backend-production.up.railway.app/api/ai/chat';
+
+    // Attach all event listeners after DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('novaFab').addEventListener('click', toggleNova);
+      document.getElementById('novaClose').addEventListener('click', toggleNova);
+      document.getElementById('novaSend').addEventListener('click', sendNovaMessage);
+      var inp = document.getElementById('novaInputArea') || document.getElementById('novaInput');
+      if (inp) inp.addEventListener('keydown', handleNovaKey);
+      document.querySelectorAll('.sugg-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() { sendSuggestion(this); });
+      });
+    });
     var novaOpen = false;
     var novaHistory = [];
     var tooltipHidden = false;
@@ -636,7 +648,7 @@
         fab.innerHTML = '✕';
         if (tooltip) tooltip.style.display = 'none';
         tooltipHidden = true;
-        document.getElementById('novaInput').focus();
+        var ni = document.getElementById('novaInputArea') || document.getElementById('novaInput'); if(ni) ni.focus();
       } else {
         win.classList.remove('open');
         fab.innerHTML = '🌟';
@@ -695,7 +707,7 @@
     }
 
     async function sendNovaMessage() {
-      var input = document.getElementById('novaInput');
+      var input = document.getElementById('novaInputArea') || document.getElementById('novaInput');
       var text  = input.value.trim();
       if (!text) return;
       document.getElementById('novaSuggestions').style.display = 'none';
