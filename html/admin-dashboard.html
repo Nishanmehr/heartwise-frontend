@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeartWise — Admin Dashboard</title>
+  <script>
+    if (!localStorage.getItem('adminToken')) location.replace('admin-login.html');
+  </script>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <style>
+    * { box-sizing: border-box; }
+    body { background: #0f0f1a; color: #fff; font-family: var(--font-body); margin: 0; }
+
+    /* ── Navbar ── */
+    .admin-nav {
+      background: #1a1a2e; padding: 14px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .admin-nav .logo { font-size: 20px; font-weight: 800; color: #fff; }
+    .admin-nav .logo span { color: #E8526A; }
+    .admin-badge { background: rgba(123,94,167,.2); color: #b39ddb; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; }
+    .logout-btn { background: rgba(232,82,106,.15); color: #E8526A; border: 1px solid rgba(232,82,106,.3); padding: 7px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .logout-btn:hover { background: rgba(232,82,106,.25); }
+
+    /* ── Layout ── */
+    .admin-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 16px 60px; }
+
+    /* ── Stats ── */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 28px; }
+    .stat-card {
+      background: #1a1a2e; border-radius: 16px;
+      padding: 20px; border: 1px solid rgba(255,255,255,.08);
+      text-align: center;
+    }
+    .stat-card .stat-icon { font-size: 28px; margin-bottom: 8px; }
+    .stat-card .stat-val  { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+    .stat-card .stat-lbl  { font-size: 12px; color: rgba(255,255,255,.5); }
+    .stat-card.purple .stat-val { color: #b39ddb; }
+    .stat-card.pink   .stat-val { color: #E8526A; }
+    .stat-card.green  .stat-val { color: #4ade80; }
+    .stat-card.yellow .stat-val { color: #fbbf24; }
+    .stat-card.blue   .stat-val { color: #60a5fa; }
+    .stat-card.red    .stat-val { color: #f87171; }
+
+    /* ── Tabs ── */
+    .tabs { display: flex; gap: 4px; margin-bottom: 20px; background: #1a1a2e; padding: 4px; border-radius: 14px; }
+    .tab-btn {
+      flex: 1; padding: 10px; border-radius: 10px; border: none;
+      background: none; color: rgba(255,255,255,.5);
+      font-size: 13px; font-weight: 600; cursor: pointer; transition: all .2s;
+    }
+    .tab-btn.active { background: linear-gradient(135deg,#7B5EA7,#5A3E85); color: #fff; }
+
+    /* ── Table ── */
+    .table-card { background: #1a1a2e; border-radius: 16px; border: 1px solid rgba(255,255,255,.08); overflow: hidden; }
+    .table-header { padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .table-title { font-size: 15px; font-weight: 700; }
+    .table-count { font-size: 12px; color: rgba(255,255,255,.4); }
+    table { width: 100%; border-collapse: collapse; }
+    th { padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 700; color: rgba(255,255,255,.4); text-transform: uppercase; letter-spacing: .6px; border-bottom: 1px solid rgba(255,255,255,.06); }
+    td { padding: 12px 16px; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,.04); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,.02); }
+
+    /* ── Badges ── */
+    .badge-verified   { background: rgba(74,222,128,.15); color: #4ade80; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .badge-unverified { background: rgba(251,191,36,.15);  color: #fbbf24; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .badge-pending    { background: rgba(251,191,36,.15);  color: #fbbf24; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .badge-accepted   { background: rgba(74,222,128,.15);  color: #4ade80; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .badge-declined   { background: rgba(248,113,113,.15); color: #f87171; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+
+    /* ── Delete Button ── */
+    .del-btn {
+      background: rgba(232,82,106,.15); color: #E8526A;
+      border: 1px solid rgba(232,82,106,.3);
+      padding: 5px 12px; border-radius: 8px;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      transition: all .2s;
+    }
+    .del-btn:hover { background: rgba(232,82,106,.3); }
+
+    /* ── Loading ── */
+    .loading { text-align: center; padding: 40px; color: rgba(255,255,255,.3); font-size: 14px; }
+
+    /* ── Toast ── */
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1a1a2e; color: #fff; padding: 12px 24px; border-radius: 12px; font-size: 14px; display: none; z-index: 9999; border: 1px solid rgba(255,255,255,.1); }
+
+    /* ── Empty ── */
+    .empty { text-align: center; padding: 40px; color: rgba(255,255,255,.3); font-size: 14px; }
+
+    @media(max-width:600px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .tabs { flex-wrap: wrap; }
+      td, th { padding: 10px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="admin-nav">
+    <div>
+      <span class="logo">Heart<span>wise</span></span>
+      &nbsp;&nbsp;<span class="admin-badge">🔐 Admin Panel</span>
+    </div>
+    <button class="logout-btn" onclick="adminLogout()">Logout</button>
+  </div>
+
+  <div class="admin-wrap">
+
+    <!-- Stats -->
+    <div class="stats-grid" id="statsGrid">
+      <div class="stat-card purple"><div class="stat-icon">👥</div><div class="stat-val" id="s-users">—</div><div class="stat-lbl">Total Users</div></div>
+      <div class="stat-card pink">  <div class="stat-icon">🏅</div><div class="stat-val" id="s-mentors">—</div><div class="stat-lbl">Total Mentors</div></div>
+      <div class="stat-card blue">  <div class="stat-icon">📅</div><div class="stat-val" id="s-bookings">—</div><div class="stat-lbl">Total Bookings</div></div>
+      <div class="stat-card yellow"><div class="stat-icon">⏳</div><div class="stat-val" id="s-pending">—</div><div class="stat-lbl">Pending</div></div>
+      <div class="stat-card green"> <div class="stat-icon">✅</div><div class="stat-val" id="s-accepted">—</div><div class="stat-lbl">Accepted</div></div>
+      <div class="stat-card red">   <div class="stat-icon">❌</div><div class="stat-val" id="s-declined">—</div><div class="stat-lbl">Declined</div></div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('users')">👥 Users</button>
+      <button class="tab-btn"        onclick="switchTab('mentors')">🏅 Mentors</button>
+      <button class="tab-btn"        onclick="switchTab('bookings')">📅 Bookings</button>
+    </div>
+
+    <!-- Users Table -->
+    <div id="tab-users">
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title">👥 All Users</div>
+          <div class="table-count" id="users-count"></div>
+        </div>
+        <div id="users-body"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- Mentors Table -->
+    <div id="tab-mentors" style="display:none;">
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title">🏅 All Mentors</div>
+          <div class="table-count" id="mentors-count"></div>
+        </div>
+        <div id="mentors-body"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- Bookings Table -->
+    <div id="tab-bookings" style="display:none;">
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title">📅 All Bookings</div>
+          <div class="table-count" id="bookings-count"></div>
+        </div>
+        <div id="bookings-body"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const BASE  = 'https://heartwise-backend-production.up.railway.app/api/admin';
+    const TOKEN = localStorage.getItem('adminToken');
+
+    async function adminFetch(url, options = {}) {
+      const res = await fetch(url, {
+        ...options,
+        headers: { 'Content-Type': 'application/json', 'Admin-Token': TOKEN, ...options.headers }
+      });
+      return res;
+    }
+
+    function toast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.style.display = 'block';
+      setTimeout(() => t.style.display = 'none', 3000);
+    }
+
+    function adminLogout() {
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminName');
+      location.replace('admin-login.html');
+    }
+
+    // Load stats
+    async function loadStats() {
+      try {
+        const res  = await adminFetch(BASE + '/stats');
+        const data = await res.json();
+        document.getElementById('s-users').textContent    = data.totalUsers;
+        document.getElementById('s-mentors').textContent  = data.totalMentors;
+        document.getElementById('s-bookings').textContent = data.totalBookings;
+        document.getElementById('s-pending').textContent  = data.pending;
+        document.getElementById('s-accepted').textContent = data.accepted;
+        document.getElementById('s-declined').textContent = data.declined;
+      } catch (e) { console.error(e); }
+    }
+
+    // Load users
+    async function loadUsers() {
+      try {
+        const res   = await adminFetch(BASE + '/users');
+        const users = await res.json();
+        document.getElementById('users-count').textContent = users.length + ' users';
+        if (!users.length) { document.getElementById('users-body').innerHTML = '<div class="empty">No users found</div>'; return; }
+        let html = '<table><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Status</th><th>Action</th></tr></thead><tbody>';
+        users.forEach(u => {
+          html += `<tr>
+            <td>#${u.id}</td>
+            <td>${u.name || '—'}</td>
+            <td>${u.email}</td>
+            <td><span class="${u.verified ? 'badge-verified' : 'badge-unverified'}">${u.verified ? '✅ Verified' : '⏳ Unverified'}</span></td>
+            <td><button class="del-btn" onclick="deleteUser(${u.id})">🗑 Delete</button></td>
+          </tr>`;
+        });
+        html += '</tbody></table>';
+        document.getElementById('users-body').innerHTML = html;
+      } catch (e) { document.getElementById('users-body').innerHTML = '<div class="empty">Failed to load</div>'; }
+    }
+
+    // Load mentors
+    async function loadMentors() {
+      try {
+        const res     = await adminFetch(BASE + '/mentors');
+        const mentors = await res.json();
+        document.getElementById('mentors-count').textContent = mentors.length + ' mentors';
+        if (!mentors.length) { document.getElementById('mentors-body').innerHTML = '<div class="empty">No mentors found</div>'; return; }
+        let html = '<table><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Specialty</th><th>Price</th><th>Rating</th><th>Action</th></tr></thead><tbody>';
+        mentors.forEach(m => {
+          html += `<tr>
+            <td>#${m.id}</td>
+            <td>${m.firstName || ''} ${m.lastName || ''}</td>
+            <td>${m.email}</td>
+            <td>${m.specialty || '—'}</td>
+            <td>${m.price || '—'}</td>
+            <td>⭐ ${m.rating || 0}</td>
+            <td><button class="del-btn" onclick="deleteMentor(${m.id})">🗑 Delete</button></td>
+          </tr>`;
+        });
+        html += '</tbody></table>';
+        document.getElementById('mentors-body').innerHTML = html;
+      } catch (e) { document.getElementById('mentors-body').innerHTML = '<div class="empty">Failed to load</div>'; }
+    }
+
+    // Load bookings
+    async function loadBookings() {
+      try {
+        const res      = await adminFetch(BASE + '/bookings');
+        const bookings = await res.json();
+        document.getElementById('bookings-count').textContent = bookings.length + ' bookings';
+        if (!bookings.length) { document.getElementById('bookings-body').innerHTML = '<div class="empty">No bookings found</div>'; return; }
+        let html = '<table><thead><tr><th>ID</th><th>User ID</th><th>Mentor ID</th><th>Type</th><th>Slot</th><th>Status</th><th>Action</th></tr></thead><tbody>';
+        bookings.forEach(b => {
+          const statusClass = b.status === 'ACCEPTED' ? 'badge-accepted' : b.status === 'DECLINED' ? 'badge-declined' : 'badge-pending';
+          html += `<tr>
+            <td>#${b.id}</td>
+            <td>#${b.userId}</td>
+            <td>#${b.mentorId}</td>
+            <td>${b.sessionType || '—'}</td>
+            <td>${b.slot || '—'}</td>
+            <td><span class="${statusClass}">${b.status}</span></td>
+            <td><button class="del-btn" onclick="deleteBooking(${b.id})">🗑 Delete</button></td>
+          </tr>`;
+        });
+        html += '</tbody></table>';
+        document.getElementById('bookings-body').innerHTML = html;
+      } catch (e) { document.getElementById('bookings-body').innerHTML = '<div class="empty">Failed to load</div>'; }
+    }
+
+    // Delete functions
+    async function deleteUser(id) {
+      if (!confirm('Delete this user?')) return;
+      const res = await adminFetch(BASE + '/users/' + id, { method: 'DELETE' });
+      if (res.ok) { toast('User deleted ✅'); loadUsers(); loadStats(); }
+      else toast('Failed to delete ❌');
+    }
+
+    async function deleteMentor(id) {
+      if (!confirm('Delete this mentor?')) return;
+      const res = await adminFetch(BASE + '/mentors/' + id, { method: 'DELETE' });
+      if (res.ok) { toast('Mentor deleted ✅'); loadMentors(); loadStats(); }
+      else toast('Failed to delete ❌');
+    }
+
+    async function deleteBooking(id) {
+      if (!confirm('Delete this booking?')) return;
+      const res = await adminFetch(BASE + '/bookings/' + id, { method: 'DELETE' });
+      if (res.ok) { toast('Booking deleted ✅'); loadBookings(); loadStats(); }
+      else toast('Failed to delete ❌');
+    }
+
+    // Tab switching
+    function switchTab(tab) {
+      ['users','mentors','bookings'].forEach(t => {
+        document.getElementById('tab-' + t).style.display = t === tab ? 'block' : 'none';
+      });
+      document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', ['users','mentors','bookings'][i] === tab);
+      });
+    }
+
+    // Init
+    loadStats();
+    loadUsers();
+    loadMentors();
+    loadBookings();
+  </script>
+</body>
+</html>

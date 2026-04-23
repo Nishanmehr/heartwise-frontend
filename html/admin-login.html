@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeartWise — Admin Login</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <style>
+    body { display:flex; align-items:center; justify-content:center; min-height:100vh; background:var(--bg); }
+    .card {
+      width:100%; max-width:400px; padding:40px 32px;
+      background:var(--card); border-radius:20px;
+      border:1px solid var(--border);
+      box-shadow:0 8px 32px rgba(0,0,0,.1);
+    }
+    .logo { text-align:center; margin-bottom:28px; }
+    .logo h1 { font-size:24px; font-weight:800; color:var(--text); }
+    .logo h1 span { color:#E8526A; }
+    .logo p { font-size:13px; color:var(--muted); margin-top:4px; }
+    .badge {
+      display:inline-block; background:rgba(123,94,167,.1);
+      color:#7B5EA7; font-size:11px; font-weight:700;
+      padding:4px 12px; border-radius:20px; margin-bottom:20px;
+    }
+    .field { margin-bottom:16px; }
+    .field label { display:block; font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; margin-bottom:6px; }
+    .field input {
+      width:100%; padding:12px 14px;
+      border:1.5px solid var(--border); border-radius:12px;
+      font-size:14px; background:var(--bg); color:var(--text);
+      outline:none; transition:border .2s; box-sizing:border-box;
+    }
+    .field input:focus { border-color:#7B5EA7; }
+    .btn {
+      width:100%; padding:14px;
+      background:linear-gradient(135deg,#7B5EA7,#5A3E85);
+      color:#fff; border:none; border-radius:14px;
+      font-size:15px; font-weight:700; cursor:pointer;
+      transition:opacity .2s; margin-top:4px;
+    }
+    .btn:hover { opacity:.9; }
+    .error { color:#E8526A; font-size:13px; text-align:center; margin-top:12px; display:none; }
+    .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:#1a1a2e; color:#fff; padding:12px 24px; border-radius:12px; font-size:14px; display:none; z-index:9999; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">
+      <h1>Heart<span>wise</span></h1>
+      <p>Administration Portal</p>
+    </div>
+    <div style="text-align:center;">
+      <span class="badge">🔐 Admin Access Only</span>
+    </div>
+    <div class="field">
+      <label>Admin Email</label>
+      <input type="email" id="adminEmail" placeholder="admin@heartwise.com">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="adminPass" placeholder="••••••••" onkeydown="if(event.key==='Enter') adminLogin()">
+    </div>
+    <button class="btn" onclick="adminLogin()">🔐 Login as Admin</button>
+    <div class="error" id="errorMsg">Invalid credentials. Try again.</div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script>
+    // Redirect if already logged in
+    if (localStorage.getItem('adminToken')) location.replace('admin-dashboard.html');
+
+    async function adminLogin() {
+      const email    = document.getElementById('adminEmail').value.trim();
+      const password = document.getElementById('adminPass').value.trim();
+      const errorMsg = document.getElementById('errorMsg');
+      errorMsg.style.display = 'none';
+
+      if (!email || !password) { errorMsg.textContent = 'Please fill all fields'; errorMsg.style.display = 'block'; return; }
+
+      try {
+        const res  = await fetch('https://heartwise-backend-production.up.railway.app/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (!res.ok) { errorMsg.textContent = data.message || 'Invalid credentials'; errorMsg.style.display = 'block'; return; }
+        localStorage.setItem('adminToken', data.token);
+        localStorage.setItem('adminName',  data.name);
+        location.replace('admin-dashboard.html');
+      } catch (err) {
+        errorMsg.textContent = 'Server error. Try again.';
+        errorMsg.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
