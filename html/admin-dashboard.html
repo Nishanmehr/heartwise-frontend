@@ -233,16 +233,22 @@
         const mentors = await res.json();
         document.getElementById('mentors-count').textContent = mentors.length + ' mentors';
         if (!mentors.length) { document.getElementById('mentors-body').innerHTML = '<div class="empty">No mentors found</div>'; return; }
-        let html = '<table><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Specialty</th><th>Price</th><th>Rating</th><th>Action</th></tr></thead><tbody>';
+        let html = '<table><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Specialty</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
         mentors.forEach(m => {
+          const approvedBadge = m.approved
+            ? '<span class="badge-accepted">✅ Approved</span>'
+            : '<span class="badge-pending">⏳ Pending</span>';
+          const approveBtn = m.approved
+            ? `<button class="del-btn" style="background:rgba(251,191,36,.15);color:#fbbf24;border-color:rgba(251,191,36,.3);" onclick="rejectMentor(${m.id})">❌ Reject</button>`
+            : `<button class="del-btn" style="background:rgba(74,222,128,.15);color:#4ade80;border-color:rgba(74,222,128,.3);" onclick="approveMentor(${m.id})">✅ Approve</button>`;
           html += `<tr>
             <td>#${m.id}</td>
             <td>${m.firstName || ''} ${m.lastName || ''}</td>
             <td>${m.email}</td>
             <td>${m.specialty || '—'}</td>
             <td>${m.price || '—'}</td>
-            <td>⭐ ${m.rating || 0}</td>
-            <td><button class="del-btn" onclick="deleteMentor(${m.id})">🗑 Delete</button></td>
+            <td>${approvedBadge}</td>
+            <td style="display:flex;gap:6px;">${approveBtn} <button class="del-btn" onclick="deleteMentor(${m.id})">🗑 Delete</button></td>
           </tr>`;
         });
         html += '</tbody></table>';
@@ -276,6 +282,19 @@
     }
 
     // Delete functions
+    async function approveMentor(id) {
+      const res = await adminFetch(BASE + '/mentors/' + id + '/approve', { method: 'PUT' });
+      if (res.ok) { toast('Mentor approved ✅'); loadMentors(); loadStats(); }
+      else toast('Failed ❌');
+    }
+
+    async function rejectMentor(id) {
+      if (!confirm('Reject this mentor?')) return;
+      const res = await adminFetch(BASE + '/mentors/' + id + '/reject', { method: 'PUT' });
+      if (res.ok) { toast('Mentor rejected ❌'); loadMentors(); loadStats(); }
+      else toast('Failed ❌');
+    }
+
     async function deleteUser(id) {
       if (!confirm('Delete this user?')) return;
       const res = await adminFetch(BASE + '/users/' + id, { method: 'DELETE' });
