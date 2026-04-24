@@ -187,13 +187,27 @@ window.addEventListener('DOMContentLoaded', async () => {
   const welcomeEl = document.getElementById('dashWelcome');
   if (welcomeEl) welcomeEl.textContent = `Welcome, ${name} 👋`;
 
-  // Load mentor profile picture
+  const dateEl = document.getElementById('dashDate');
+  if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-IN', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+  });
+
   const mentorId = getStorage('userId');
-  if (mentorId) {
-    try {
-      const mentor = await apiGetMentor(mentorId);
-      if (mentor && mentor.profilePicture) {
-        // Update nav avatar with picture
+  if (!mentorId) return;
+
+  // Load mentor profile picture
+  try {
+    const mentor = await apiGetMentor(mentorId);
+    if (mentor) {
+      // Update name if available
+      if (mentor.firstName) {
+        const fullName = (mentor.firstName + ' ' + (mentor.lastName || '')).trim();
+        const welcomeEl2 = document.getElementById('dashWelcome');
+        if (welcomeEl2) welcomeEl2.textContent = 'Welcome, ' + fullName + ' 👋';
+        updateNavAvatar(fullName);
+      }
+      // Update profile picture
+      if (mentor.profilePicture) {
         const navAv = document.getElementById('navAvatar');
         if (navAv) {
           navAv.innerHTML = '';
@@ -205,28 +219,9 @@ window.addEventListener('DOMContentLoaded', async () => {
           img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
           navAv.appendChild(img);
         }
-        // Update profile section if exists
-        const profPic = document.getElementById('mentorProfilePic');
-        if (profPic) {
-          profPic.innerHTML = '';
-          profPic.style.background = 'none';
-          profPic.style.overflow = 'hidden';
-          const img2 = document.createElement('img');
-          img2.src = mentor.profilePicture;
-          img2.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:50%;';
-          profPic.appendChild(img2);
-        }
       }
-    } catch(e) { console.log('Could not load profile pic'); }
-  }
-
-  const dateEl = document.getElementById('dashDate');
-  if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-IN', {
-    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-  });
-
-  const mentorId = getStorage('userId');
-  if (!mentorId) return;
+    }
+  } catch(e) { console.log('Could not load mentor profile'); }
 
   try {
     allSessions = await apiGetMentorSessions(mentorId);
