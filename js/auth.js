@@ -169,9 +169,8 @@ async function resendOtp() {
 async function loginMentor() {
   const email    = document.getElementById('mentorEmail').value.trim();
   const password = document.getElementById('mentorPass').value.trim();
-  const mentorId = document.getElementById('mentorId').value.trim();
 
-  if (!email || !password || !mentorId) { toast('Please fill in all fields ⚠️'); return; }
+  if (!email || !password) { toast('Please fill in all fields ⚠️'); return; }
 
   try {
     const data = await apiLoginMentor(email, password);
