@@ -11,7 +11,20 @@ function renderProfile(mentor) {
   const initial = name.charAt(0).toUpperCase();
 
   // Avatar
-  document.getElementById('mentorAvatar').textContent = initial;
+  // Avatar — show profile picture if available
+  const avatarEl = document.getElementById('mentorAvatar');
+  if (mentor.profilePicture) {
+    avatarEl.innerHTML = '';
+    avatarEl.style.background = 'none';
+    avatarEl.style.padding = '0';
+    const img = document.createElement('img');
+    img.src = mentor.profilePicture;
+    img.alt = name;
+    img.style.cssText = 'width:100%;height:100%;border-radius:50%;object-fit:cover;';
+    avatarEl.appendChild(img);
+  } else {
+    avatarEl.textContent = initial;
+  }
 
   // Basic info
   document.getElementById('mentorName').textContent      = name;

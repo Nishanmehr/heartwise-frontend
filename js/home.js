@@ -23,12 +23,18 @@ function renderMentors(mentors) {
     const id     = m.id     || '';
     const price  = m.price  || '₹500';
     const rating = m.rating || 0;
+    const pic    = m.profilePicture;
+
+    // Avatar — image if available, else initials
+    const avatarHtml = pic
+      ? `<img src="${pic}" alt="${name}" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid #E8526A;">`
+      : `<div class="mentor-avatar">${letter}</div>`;
 
     const card = document.createElement('div');
     card.className = 'mentor-card';
     card.innerHTML = `
       <div class="verified-badge">✓ Verified</div>
-      <div class="mentor-avatar">${letter}</div>
+      ${avatarHtml}
       <div class="mentor-name">${name}</div>
       <div class="mentor-spec">${m.specialty || 'Relationship Expert'}</div>
       <div class="mentor-rating">★ ${rating}</div>
