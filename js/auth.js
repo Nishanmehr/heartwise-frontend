@@ -32,11 +32,27 @@ function previewPic(input) {
   }
 }
 
-/* ── Convert image file to base64 ── */
+/* ── Convert image file to base64 (compressed) ── */
 function fileToBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload  = () => resolve(reader.result);
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        // Max 300x300
+        let w = img.width, h = img.height;
+        const max = 300;
+        if (w > h) { if (w > max) { h = h * max / w; w = max; } }
+        else        { if (h > max) { w = w * max / h; h = max; } }
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', 0.7)); // 70% quality
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });
