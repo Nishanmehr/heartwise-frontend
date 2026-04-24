@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeartWise — Application Under Review</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <style>
+    body { background: var(--bg); }
+
+    .wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 32px 16px 80px;
+      text-align: center;
+    }
+
+    /* ── Header ── */
+    .status-icon {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: linear-gradient(135deg, rgba(251,191,36,.2), rgba(251,191,36,.05));
+      border: 2px solid rgba(251,191,36,.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; margin: 0 auto 20px;
+      animation: pulse-pending 2s infinite;
+    }
+    @keyframes pulse-pending {
+      0%,100% { box-shadow: 0 0 0 0 rgba(251,191,36,.3); }
+      50%      { box-shadow: 0 0 0 12px rgba(251,191,36,.0); }
+    }
+    .page-title {
+      font-size: 26px; font-weight: 800;
+      color: var(--text); margin-bottom: 8px;
+    }
+    .page-sub {
+      font-size: 15px; color: var(--muted);
+      margin-bottom: 8px; line-height: 1.6;
+    }
+    .mentor-name {
+      font-size: 16px; font-weight: 700;
+      color: #7B5EA7; margin-bottom: 32px;
+    }
+
+    /* ── Flowchart ── */
+    .flowchart {
+      background: var(--card);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      padding: 32px 24px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .flowchart-title {
+      font-size: 13px; font-weight: 700;
+      color: var(--muted); text-transform: uppercase;
+      letter-spacing: .6px; margin-bottom: 28px;
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      position: relative;
+      padding-bottom: 32px;
+    }
+    .step:last-child { padding-bottom: 0; }
+
+    /* Vertical line */
+    .step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 19px; top: 44px;
+      width: 2px;
+      height: calc(100% - 12px);
+      background: var(--border);
+    }
+    .step.done:not(:last-child)::after { background: #4ade80; }
+    .step.active:not(:last-child)::after { background: linear-gradient(#fbbf24, var(--border)); }
+
+    .step-icon {
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0; z-index: 1;
+      border: 2px solid var(--border);
+      background: var(--bg);
+    }
+    .step.done   .step-icon { background: rgba(74,222,128,.15); border-color: #4ade80; }
+    .step.active .step-icon { background: rgba(251,191,36,.15); border-color: #fbbf24; animation: pulse-step 1.5s infinite; }
+    .step.pending .step-icon { background: var(--bg); border-color: var(--border); opacity: .5; }
+
+    @keyframes pulse-step {
+      0%,100% { box-shadow: 0 0 0 0 rgba(251,191,36,.4); }
+      50%      { box-shadow: 0 0 0 8px rgba(251,191,36,.0); }
+    }
+
+    .step-content { flex: 1; padding-top: 6px; text-align: left; }
+    .step-title {
+      font-size: 15px; font-weight: 700;
+      color: var(--text); margin-bottom: 4px;
+    }
+    .step.pending .step-title { opacity: .5; }
+    .step-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+    .step.pending .step-desc { opacity: .4; }
+
+    .step-badge {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      padding: 2px 10px; border-radius: 20px; margin-top: 6px;
+    }
+    .badge-done    { background: rgba(74,222,128,.15);  color: #4ade80; }
+    .badge-active  { background: rgba(251,191,36,.15);  color: #fbbf24; }
+    .badge-pending { background: rgba(255,255,255,.06); color: var(--muted); opacity: .5; }
+
+    /* ── Info Card ── */
+    .info-card {
+      background: rgba(123,94,167,.08);
+      border: 1px solid rgba(123,94,167,.2);
+      border-radius: 16px; padding: 20px;
+      margin-bottom: 20px; text-align: left;
+    }
+    .info-card h3 { font-size: 14px; font-weight: 700; color: #7B5EA7; margin-bottom: 12px; }
+    .info-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 13px; color: var(--text); }
+    .info-item:last-child { margin-bottom: 0; }
+
+    /* ── Buttons ── */
+    .btn-outline {
+      padding: 12px 28px; border-radius: 12px;
+      border: 1.5px solid var(--border); background: none;
+      color: var(--text); font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: all .2s; margin: 0 6px;
+    }
+    .btn-outline:hover { border-color: #7B5EA7; color: #7B5EA7; }
+    .btn-primary {
+      padding: 12px 28px; border-radius: 12px;
+      background: linear-gradient(135deg,#7B5EA7,#5A3E85);
+      color: #fff; border: none; font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: opacity .2s; margin: 0 6px;
+    }
+    .btn-primary:hover { opacity: .9; }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a class="logo" href="index.html">Heart<span>wise</span></a>
+  </nav>
+
+  <div class="wrap">
+
+    <div class="status-icon">⏳</div>
+    <h1 class="page-title">Application Under Review</h1>
+    <p class="page-sub">Thank you for applying as a mentor on HeartWise!</p>
+    <p class="mentor-name" id="mentorNameDisplay"></p>
+
+    <!-- Flowchart -->
+    <div class="flowchart">
+      <div class="flowchart-title">📋 Application Process</div>
+      <div class="steps">
+
+        <!-- Step 1 - Done -->
+        <div class="step done">
+          <div class="step-icon">✅</div>
+          <div class="step-content">
+            <div class="step-title">Profile Submitted</div>
+            <div class="step-desc">Your mentor profile with all details and profile picture has been submitted successfully.</div>
+            <span class="step-badge badge-done">Completed</span>
+          </div>
+        </div>
+
+        <!-- Step 2 - Done -->
+        <div class="step done">
+          <div class="step-icon">📧</div>
+          <div class="step-content">
+            <div class="step-title">Email Verified</div>
+            <div class="step-desc">Your email address has been verified with OTP. Your identity is confirmed.</div>
+            <span class="step-badge badge-done">Completed</span>
+          </div>
+        </div>
+
+        <!-- Step 3 - Active -->
+        <div class="step active">
+          <div class="step-icon">🔍</div>
+          <div class="step-content">
+            <div class="step-title">Profile Review</div>
+            <div class="step-desc">Our team is reviewing your profile, credentials, and experience. This usually takes 24-48 hours.</div>
+            <span class="step-badge badge-active">In Progress</span>
+          </div>
+        </div>
+
+        <!-- Step 4 - Pending -->
+        <div class="step pending">
+          <div class="step-icon">🎥</div>
+          <div class="step-content">
+            <div class="step-title">Video Interview</div>
+            <div class="step-desc">A short 15-minute video interview to verify your expertise and communication skills.</div>
+            <span class="step-badge badge-pending">Upcoming</span>
+          </div>
+        </div>
+
+        <!-- Step 5 - Pending -->
+        <div class="step pending">
+          <div class="step-icon">🏅</div>
+          <div class="step-content">
+            <div class="step-title">Final Approval</div>
+            <div class="step-desc">Once approved, your profile will go live and users can start booking sessions with you!</div>
+            <span class="step-badge badge-pending">Upcoming</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Info Card -->
+    <div class="info-card">
+      <h3>📌 What happens next?</h3>
+      <div class="info-item">📬 <span>You will receive an email when your profile review is complete.</span></div>
+      <div class="info-item">🎥 <span>We will schedule a short video interview to verify your expertise.</span></div>
+      <div class="info-item">⏱️ <span>The entire process takes 2-3 business days.</span></div>
+      <div class="info-item">✅ <span>Once approved, you can login and start accepting sessions!</span></div>
+    </div>
+
+    <!-- Buttons -->
+    <div style="margin-top: 24px;">
+      <button class="btn-outline" onclick="checkStatus()">🔄 Check Status</button>
+      <button class="btn-primary" onclick="location.href='index.html'">← Back to Login</button>
+    </div>
+
+  </div>
+
+  <script>
+    // Show mentor name
+    var name = localStorage.getItem('pendingMentorName') || sessionStorage.getItem('pendingMentorName');
+    if (name) {
+      document.getElementById('mentorNameDisplay').textContent = 'Welcome, ' + name + '! 👋';
+    }
+
+    async function checkStatus() {
+      var email = localStorage.getItem('pendingMentorEmail') || sessionStorage.getItem('pendingMentorEmail');
+      if (!email) { alert('Please login to check status.'); return; }
+
+      try {
+        var res  = await fetch('https://heartwise-backend-production.up.railway.app/api/auth/mentor/status?email=' + encodeURIComponent(email));
+        var data = await res.json();
+        if (data.approved) {
+          alert('🎉 Congratulations! Your profile has been approved! Please login now.');
+          location.href = 'index.html';
+        } else {
+          alert('⏳ Your application is still under review. We will notify you via email once approved!');
+        }
+      } catch (e) {
+        alert('Could not check status. Please try again.');
+      }
+    }
+  </script>
+</body>
+</html>

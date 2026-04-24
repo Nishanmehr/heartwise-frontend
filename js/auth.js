@@ -122,8 +122,12 @@ function showOtpScreen(email) {
 async function verifyOtp() {
   const otp   = document.getElementById('otpInput').value.trim();
   const email = window._pendingOtpEmail;
+  const role  = window._pendingOtpRole || 'user';
 
   if (!otp || otp.length !== 6) { toast('Please enter the 6-digit OTP ⚠️'); return; }
+
+  // Mentor OTP
+  if (role === 'mentor') { verifyMentorOtp(); return; }
 
   try {
     const data = await apiVerifyOtp(email, otp);
@@ -155,6 +159,21 @@ async function loginMentor() {
 
   try {
     const data = await apiLoginMentor(email, password);
+
+    if (data.needsVerification) {
+      showMentorOtpScreen(data.email);
+      toast('Please verify your email first 📧');
+      return;
+    }
+
+    if (data.pendingApproval) {
+      sessionStorage.setItem('pendingMentorEmail', data.email);
+      sessionStorage.setItem('pendingMentorName',  data.name || '');
+      toast('Application under review ⏳');
+      setTimeout(() => { location.href = 'mentor-pending.html'; }, 1000);
+      return;
+    }
+
     toast('Welcome, Mentor! 🌟');
     saveAuthAndRedirect(data, 'dashboard.html');
   } catch (err) {
@@ -206,9 +225,60 @@ async function registerMentor() {
       dob, gender, specialty, skills, languages,
       experience, price, profilePicture
     );
+
+    // Show OTP screen for mentor
+    if (data.needsVerification) {
+      showMentorOtpScreen(email);
+      toast('OTP sent to ' + email + ' 📧');
+      return;
+    }
+
     toast('Mentor account created! 🌟');
     saveAuthAndRedirect(data, 'dashboard.html');
   } catch (err) {
     toast(err.message || 'Registration failed ❌');
+  }
+}
+
+/* ══════════════ MENTOR OTP SCREEN ══════════════ */
+function showMentorOtpScreen(email) {
+  var userEl   = document.getElementById('login-user');
+  var mentorEl = document.getElementById('login-mentor');
+  var toggleEl = document.getElementById('login-toggle');
+  var otpEl    = document.getElementById('otp-screen');
+  var emailEl  = document.getElementById('otpEmailDisplay');
+
+  if (userEl)   userEl.style.display   = 'none';
+  if (mentorEl) mentorEl.style.display = 'none';
+  if (toggleEl) toggleEl.style.display = 'none';
+  if (otpEl)    otpEl.style.display    = 'block';
+  if (emailEl)  emailEl.textContent    = email;
+
+  window._pendingOtpEmail  = email;
+  window._pendingOtpRole   = 'mentor';
+}
+
+/* ══════════════ MENTOR VERIFY OTP ══════════════ */
+async function verifyMentorOtp() {
+  const otp   = document.getElementById('otpInput').value.trim();
+  const email = window._pendingOtpEmail;
+  if (!otp || otp.length !== 6) { toast('Please enter the 6-digit OTP ⚠️'); return; }
+
+  try {
+    const data = await apiFetch('/auth/mentor/verify-otp', {
+      method: 'POST',
+      body: JSON.stringify({ email, otp })
+    });
+
+    // Redirect to pending approval page
+    if (data.pendingApproval) {
+      sessionStorage.setItem('pendingMentorEmail', email);
+      sessionStorage.setItem('pendingMentorName',  data.name || '');
+      toast('Email verified! ✅ Redirecting...');
+      setTimeout(() => { location.href = 'mentor-pending.html'; }, 1000);
+      return;
+    }
+  } catch (err) {
+    toast(err.message || 'Invalid OTP ❌');
   }
 }
