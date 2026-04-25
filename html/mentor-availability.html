@@ -4,307 +4,237 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HeartWise — My Availability</title>
-  <script>
-    toggleDoc(false);
-    (function() {
-      var token = localStorage.getItem('token');
-      var role  = localStorage.getItem('role');
-      if (!token || role !== 'MENTOR') { window.location.replace('index.html'); }
-      else { toggleDoc(true); }
-    })();
-  </script>
+
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/navbar.css">
   <link rel="stylesheet" href="../css/components.css">
+
   <style>
     .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 80px; }
     .page-header { margin-bottom: 24px; }
     .page-header h2 { font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
     .page-header p  { font-size: 14px; color: var(--muted); }
-    .back-btn { display:inline-flex; align-items:center; gap:5px; color:var(--muted); font-size:13px; cursor:pointer; background:none; border:none; margin-bottom:16px; padding:0; }
-    .back-btn:hover { color:var(--text); }
 
-    .day-card { background:var(--card); border-radius:16px; border:1px solid var(--border); padding:18px 20px; margin-bottom:12px; transition:border .2s; }
+    .back-btn { display:inline-flex; align-items:center; gap:5px; color:var(--muted); font-size:13px; cursor:pointer; background:none; border:none; margin-bottom:16px; }
+    .day-card { background:var(--card); border-radius:16px; border:1px solid var(--border); padding:18px 20px; margin-bottom:12px; }
     .day-card.active-day { border-color:#7B5EA7; }
+
     .day-header { display:flex; align-items:center; gap:12px; }
-    .day-toggle { width:44px; height:24px; border-radius:20px; background:var(--border); border:none; cursor:pointer; position:relative; transition:background .2s; flex-shrink:0; }
-    .day-toggle::after { content:''; position:absolute; width:18px; height:18px; border-radius:50%; background:#fff; top:3px; left:3px; transition:transform .2s; }
+    .day-toggle { width:44px; height:24px; border-radius:20px; background:var(--border); border:none; cursor:pointer; position:relative; }
+    .day-toggle::after { content:''; position:absolute; width:18px; height:18px; border-radius:50%; background:#fff; top:3px; left:3px; }
     .day-toggle.on { background:#7B5EA7; }
     .day-toggle.on::after { transform:translateX(20px); }
-    .day-name { font-size:15px; font-weight:700; color:var(--text); flex:1; }
+
+    .day-name { font-size:15px; font-weight:700; flex:1; }
     .day-summary { font-size:12px; color:var(--muted); }
-    .day-settings { display:none; margin-top:16px; padding-top:16px; border-top:1px solid var(--border); }
+
+    .day-settings { display:none; margin-top:16px; }
     .day-settings.show { display:block; }
+
     .time-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
-    @media(max-width:480px) { .time-row { grid-template-columns:1fr 1fr; } }
-    .field label { display:block; font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
-    .field select, .field input { width:100%; padding:10px 12px; border:1.5px solid var(--border); border-radius:10px; font-size:13px; background:var(--bg); color:var(--text); outline:none; transition:border .2s; box-sizing:border-box; }
-    .field select:focus { border-color:#7B5EA7; }
 
-    .save-btn { width:100%; padding:14px; background:linear-gradient(135deg,#7B5EA7,#5A3E85); color:#fff; border:none; border-radius:14px; font-size:15px; font-weight:700; cursor:pointer; transition:opacity .2s; margin-top:20px; }
-    .save-btn:hover { opacity:.9; }
-
-    /* Preview */
-    .preview-card { background:var(--card); border-radius:16px; border:1px solid var(--border); padding:20px; margin-top:20px; }
-    .preview-title { font-size:13px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:14px; }
-
-    /* Slot colors */
-    .slot-grid { display:flex; flex-wrap:wrap; gap:8px; }
-    .slot-pill {
-      padding:6px 14px; border-radius:20px;
-      font-size:12px; font-weight:600;
+    .field label { font-size:11px; font-weight:700; }
+    .field input, .field select {
+      width:100%; padding:10px;
+      border:1px solid var(--border);
+      border-radius:10px;
     }
-    .slot-pill.available {
-      background:rgba(74,222,128,.15); color:#4ade80;
-      border:1px solid rgba(74,222,128,.3);
-    }
-    .slot-pill.booked {
-      background:rgba(232,82,106,.15); color:#E8526A;
-      border:1px solid rgba(232,82,106,.3);
-      text-decoration: line-through;
-    }
-    .no-slots { font-size:13px; color:var(--muted); }
-    .slot-legend { display:flex; gap:16px; margin-bottom:12px; font-size:12px; }
-    .legend-item { display:flex; align-items:center; gap:6px; }
-    .legend-dot { width:10px; height:10px; border-radius:50%; }
-    .legend-dot.green { background:#4ade80; }
-    .legend-dot.red   { background:#E8526A; }
 
-    .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:#1a1a2e; color:#fff; padding:12px 24px; border-radius:12px; font-size:14px; display:none; z-index:9999; }
+    .save-btn {
+      width:100%; padding:14px;
+      background:#7B5EA7; color:#fff;
+      border:none; border-radius:14px;
+      margin-top:20px;
+    }
+
+    .toast {
+      position:fixed;
+      bottom:20px;
+      left:50%;
+      transform:translateX(-50%);
+      background:#000;
+      color:#fff;
+      padding:10px 20px;
+      border-radius:10px;
+      display:none;
+    }
   </style>
 </head>
+
 <body>
 
-  <nav class="nav">
-    <a class="logo" href="dashboard.html">Heart<span>wise</span></a>
-    <div class="nav-right">
-      <div class="avatar-sm" id="navAvatar">M</div>
-    </div>
-  </nav>
+<nav class="nav">
+  <a class="logo" href="dashboard.html">Heart<span>wise</span></a>
+  <div class="nav-right">
+    <div class="avatar-sm" id="navAvatar">M</div>
+  </div>
+</nav>
 
-  <div class="wrap">
-    <button class="back-btn" onclick="location.href='dashboard.html'">← Back to Dashboard</button>
+<div class="wrap">
 
-    <div class="page-header">
-      <h2>📅 My Availability</h2>
-      <p>Set your weekly schedule. Green = Available, Red = Already Booked.</p>
-    </div>
+  <button class="back-btn" onclick="location.href='dashboard.html'">← Back</button>
 
-    <div id="dayCards"></div>
-
-    <button class="save-btn" onclick="saveAvailability()">💾 Save Availability</button>
-
-    <!-- Preview -->
-    <div class="preview-card">
-      <div class="preview-title">👁️ Live Preview — Next 7 Days</div>
-      <div class="slot-legend">
-        <div class="legend-item"><div class="legend-dot green"></div> Available</div>
-        <div class="legend-item"><div class="legend-dot red"></div> Booked</div>
-      </div>
-      <div class="slot-grid" id="previewSlots">
-        <div class="no-slots">Enable days above to see preview</div>
-      </div>
-    </div>
+  <div class="page-header">
+    <h2>My Availability</h2>
+    <p>Set your weekly schedule</p>
   </div>
 
-  <div class="toast" id="toast"></div>
+  <div id="dayCards"></div>
 
-  <script src="../js/utils.js"></script>
-  <script src="../js/api.js"></script>
-  <script>
-    const BASE_URL  = 'https://heartwise-backend-production.up.railway.app/api';
-    const MENTOR_ID = getStorage('userId');
-    const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  <button class="save-btn" onclick="saveAvailability()">Save</button>
 
-    const schedule = {};
-    DAYS.forEach(d => {
-      schedule[d] = { active:false, startTime:'09:00', endTime:'18:00', slotDuration:30 };
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="../js/utils.js"></script>
+<script src="../js/api.js"></script>
+
+<script>
+const BASE_URL = 'https://heartwise-backend-production.up.railway.app/api';
+const MENTOR_ID = localStorage.getItem('userId');
+const TOKEN = localStorage.getItem('token');
+
+const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+
+const schedule = {};
+DAYS.forEach(d => {
+  schedule[d] = { active:false, startTime:'09:00', endTime:'18:00', slotDuration:30 };
+});
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.innerText = msg;
+  t.style.display='block';
+  setTimeout(()=>t.style.display='none',3000);
+}
+
+function toggleDay(day){
+  schedule[day].active = !schedule[day].active;
+  buildUI();
+}
+
+function updateField(day, field, value){
+  schedule[day][field] = field==='slotDuration'? parseInt(value):value;
+}
+
+function buildUI(){
+  const container = document.getElementById('dayCards');
+  container.innerHTML='';
+
+  DAYS.forEach(day=>{
+    const s = schedule[day];
+
+    const div = document.createElement('div');
+    div.className = 'day-card'+(s.active?' active-day':'');
+
+    div.innerHTML = `
+      <div class="day-header">
+        <button class="day-toggle ${s.active?'on':''}" onclick="toggleDay('${day}')"></button>
+        <span class="day-name">${day}</span>
+        <span class="day-summary">${s.active ? s.startTime+" - "+s.endTime : 'Off'}</span>
+      </div>
+
+      <div class="day-settings ${s.active?'show':''}">
+        <div class="time-row">
+          <div class="field">
+            <label>Start</label>
+            <input type="time" value="${s.startTime}" onchange="updateField('${day}','startTime',this.value)">
+          </div>
+          <div class="field">
+            <label>End</label>
+            <input type="time" value="${s.endTime}" onchange="updateField('${day}','endTime',this.value)">
+          </div>
+          <div class="field">
+            <label>Duration</label>
+            <select onchange="updateField('${day}','slotDuration',this.value)">
+              <option value="30" ${s.slotDuration===30?'selected':''}>30</option>
+              <option value="60" ${s.slotDuration===60?'selected':''}>60</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    `;
+
+    container.appendChild(div);
+  });
+}
+
+function validateSchedule(){
+  for(let day of DAYS){
+    const s = schedule[day];
+    if(s.active){
+      if(s.startTime >= s.endTime){
+        toast(day+" end time must be after start time");
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+async function saveAvailability(){
+
+  if(!validateSchedule()) return;
+
+  const data = DAYS.map(day=>({
+    dayOfWeek: day,
+    ...schedule[day]
+  }));
+
+  try{
+    const res = await fetch(BASE_URL+'/availability/'+MENTOR_ID,{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer '+TOKEN
+      },
+      body:JSON.stringify(data)
     });
 
-    var bookedSlots = [];
+    if(res.ok) toast("Saved successfully");
+    else toast("Failed");
 
-    function toast(msg) {
-      var t = document.getElementById('toast');
-      t.textContent = msg; t.style.display = 'block';
-      setTimeout(() => t.style.display = 'none', 3000);
-    }
+  }catch(e){
+    toast("Error");
+  }
+}
 
-    function toggleDay(day) {
-      schedule[day].active = !schedule[day].active;
-      buildUI();
-      updatePreview();
-    }
-
-    function updateField(day, field, value) {
-      schedule[day][field] = field === 'slotDuration' ? parseInt(value) : value;
-      updateSummary(day);
-      updatePreview();
-    }
-
-    function updateSummary(day) {
-      var s   = schedule[day];
-      var el  = document.getElementById('summary-' + day);
-      if (el && s.active) {
-        el.textContent = s.startTime + ' – ' + s.endTime + ' · ' + s.slotDuration + ' min slots';
-      } else if (el) {
-        el.textContent = 'Off';
-      }
-    }
-
-    function buildUI() {
-      var container = document.getElementById('dayCards');
-      container.innerHTML = '';
-      DAYS.forEach(function(day) {
-        var s   = schedule[day];
-        var div = document.createElement('div');
-        div.className = 'day-card' + (s.active ? ' active-day' : '');
-        div.innerHTML =
-          '<div class="day-header">' +
-            '<button class="day-toggle ' + (s.active ? 'on' : '') + '" onclick="toggleDay(\'' + day + '\')"></button>' +
-            '<span class="day-name">' + day + '</span>' +
-            '<span class="day-summary" id="summary-' + day + '">' + (s.active ? s.startTime + ' – ' + s.endTime + ' · ' + s.slotDuration + ' min' : 'Off') + '</span>' +
-          '</div>' +
-          '<div class="day-settings ' + (s.active ? 'show' : '') + '" id="settings-' + day + '">' +
-            '<div class="time-row">' +
-              '<div class="field"><label>Start Time</label><input type="time" value="' + s.startTime + '" onchange="updateField(\'' + day + '\',\'startTime\',this.value)"></div>' +
-              '<div class="field"><label>End Time</label><input type="time" value="' + s.endTime + '" onchange="updateField(\'' + day + '\',\'endTime\',this.value)"></div>' +
-              '<div class="field"><label>Duration</label>' +
-                '<select onchange="updateField(\'' + day + '\',\'slotDuration\',this.value)">' +
-                  '<option value="30" ' + (s.slotDuration===30?'selected':'') + '>30 min</option>' +
-                  '<option value="60" ' + (s.slotDuration===60?'selected':'') + '>60 min</option>' +
-                  '<option value="90" ' + (s.slotDuration===90?'selected':'') + '>90 min</option>' +
-                '</select>' +
-              '</div>' +
-            '</div>' +
-          '</div>';
-        container.appendChild(div);
-      });
-    }
-
-    function generateSlots(day, startTime, endTime, duration) {
-      var slots = [];
-      var start = timeToMins(startTime);
-      var end   = timeToMins(endTime);
-      while (start + duration <= end) {
-        slots.push(minsToTime(start));
-        start += duration;
-      }
-      return slots;
-    }
-
-    function timeToMins(t) {
-      var parts = t.split(':');
-      return parseInt(parts[0]) * 60 + parseInt(parts[1]);
-    }
-
-    function minsToTime(m) {
-      var h    = Math.floor(m / 60);
-      var min  = m % 60;
-      var ampm = h >= 12 ? 'PM' : 'AM';
-      var h12  = h % 12 === 0 ? 12 : h % 12;
-      return h12 + (min === 0 ? '' : ':' + String(min).padStart(2,'0')) + ' ' + ampm;
-    }
-
-    function getDayLabel(offset) {
-      if (offset === 0) return 'Today';
-      if (offset === 1) return 'Tomorrow';
-      var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-      var d    = new Date(); d.setDate(d.getDate() + offset);
-      return days[d.getDay()];
-    }
-
-    function getDayName(offset) {
-      var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-      var d    = new Date(); d.setDate(d.getDate() + offset);
-      return days[d.getDay()];
-    }
-
-    function updatePreview() {
-      var container = document.getElementById('previewSlots');
-      var html      = '';
-      var any       = false;
-
-      for (var i = 0; i < 7; i++) {
-        var dayName = getDayName(i);
-        var s       = schedule[dayName];
-        if (!s || !s.active) continue;
-
-        var slots = generateSlots(dayName, s.startTime, s.endTime, s.slotDuration);
-        slots.forEach(function(slot) {
-          any = true;
-          var label    = getDayLabel(i) + ' ' + slot;
-          var isBooked = bookedSlots.includes(label);
-          html += '<div class="slot-pill ' + (isBooked ? 'booked' : 'available') + '">' +
-            (isBooked ? '🔴 ' : '🟢 ') + label +
-          '</div>';
-        });
-      }
-
-      container.innerHTML = any ? html : '<div class="no-slots">No slots yet. Enable days above.</div>';
-    }
-
-    async function saveAvailability() {
-      var data = DAYS.map(function(day) {
-        return {
-          dayOfWeek:    day,
-          startTime:    schedule[day].startTime,
-          endTime:      schedule[day].endTime,
-          slotDuration: schedule[day].slotDuration,
-          active:       schedule[day].active
-        };
-      });
-
-      try {
-        var res = await fetch(BASE_URL + '/availability/' + MENTOR_ID, {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify(data)
-        });
-        var result = await res.json();
-        if (res.ok) toast('Availability saved! ✅');
-        else        toast('Failed to save ❌');
-      } catch(e) {
-        toast('Error saving availability ❌');
-      }
-    }
-
-    async function loadAvailability() {
-      try {
-        var res  = await fetch(BASE_URL + '/availability/' + MENTOR_ID);
-        var data = await res.json();
-        if (data && data.length > 0) {
-          data.forEach(function(av) {
-            if (schedule[av.dayOfWeek]) {
-              schedule[av.dayOfWeek].active       = av.active;
-              schedule[av.dayOfWeek].startTime    = av.startTime;
-              schedule[av.dayOfWeek].endTime      = av.endTime;
-              schedule[av.dayOfWeek].slotDuration = av.slotDuration;
-            }
-          });
-        }
-      } catch(e) { console.log('No availability saved yet'); }
-    }
-
-    async function loadBookedSlots() {
-      try {
-        var sessions = await apiGetMentorSessions(MENTOR_ID);
-        bookedSlots = sessions
-          .filter(function(s) { return s.status === 'ACCEPTED' || s.status === 'PENDING'; })
-          .map(function(s)    { return s.slot; });
-      } catch(e) { bookedSlots = []; }
-    }
-
-    // Init
-    window.addEventListener('DOMContentLoaded', async function() {
-      requireMentor();
-      var name = getStorage('username') || 'M';
-      updateNavAvatar(name);
-      await loadAvailability();
-      await loadBookedSlots();
-      buildUI();
-      updatePreview();
+async function loadAvailability(){
+  try{
+    const res = await fetch(BASE_URL+'/availability/'+MENTOR_ID,{
+      headers:{ 'Authorization':'Bearer '+TOKEN }
     });
-  </script>
+
+    const data = await res.json();
+
+    data.forEach(av=>{
+      if(schedule[av.dayOfWeek]){
+        schedule[av.dayOfWeek]=av;
+      }
+    });
+
+  }catch(e){}
+}
+
+/* INIT */
+window.addEventListener('DOMContentLoaded', async ()=>{
+
+  if(!TOKEN || localStorage.getItem('role')!=='MENTOR'){
+    window.location='index.html';
+    return;
+  }
+
+  if(typeof requireMentor === "function"){
+    requireMentor();
+  }
+
+  await loadAvailability();
+  buildUI();
+
+});
+</script>
+
 </body>
 </html>
