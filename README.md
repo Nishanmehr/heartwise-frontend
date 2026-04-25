@@ -1,6 +1,6 @@
 #  HeartWise — Relationship Mentor Booking Platform
 
-> A full-stack web application connecting users with verified relationship mentors for chat and call sessions, featuring a relationship analyzer, love calculator, and real-time booking system.
+> A full-stack web application connecting users with verified relationship mentors for chat and call sessions, featuring a relationship analyzer, love calculator,AI Relationship Advisor and real-time booking system.
 
 ---
 
@@ -295,7 +295,6 @@ Same names always give the same result!
 - [ ] Real-time chat using WebSockets
 - [ ] Payment integration (Razorpay)
 - [ ] Video call sessions
-- [ ] Admin panel
 - [ ] Push notifications
 - [ ] Mobile app (React Native)
 
