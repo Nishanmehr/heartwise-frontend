@@ -140,3 +140,42 @@ window.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('profile-error').style.display   = 'block';
   }
 });
+
+
+/* ══ Load mentor availability slots ══ */
+async function loadMentorSlots(mentorId) {
+  const BASE_URL = 'https://heartwise-backend-production.up.railway.app/api';
+  try {
+    const res   = await fetch(BASE_URL + '/availability/' + mentorId + '/slots');
+    const slots = await res.json();
+
+    // Get booked slots
+    const sessions    = await apiGetMentorSessions(mentorId);
+    const bookedSlots = sessions
+      .filter(s => s.status === 'ACCEPTED' || s.status === 'PENDING')
+      .map(s => s.slot);
+
+    const slotGrid = document.querySelector('.slot-grid');
+    if (!slotGrid) return;
+    slotGrid.innerHTML = '';
+
+    if (!slots || slots.length === 0) {
+      slotGrid.innerHTML = '<p style="color:var(--muted);font-size:13px;">No slots available. Check back later.</p>';
+      return;
+    }
+
+    slots.forEach(function(slot) {
+      const isBooked = bookedSlots.includes(slot.label);
+      const div      = document.createElement('div');
+      div.className  = 'slot' + (isBooked ? ' taken' : '');
+      div.style.cssText = isBooked
+        ? 'background:rgba(232,82,106,.12);color:#E8526A;border:1px solid rgba(232,82,106,.3);cursor:not-allowed;'
+        : 'background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.3);cursor:pointer;';
+      div.textContent = (isBooked ? '🔴 ' : '🟢 ') + slot.label + ' · ' + slot.duration;
+      if (!isBooked) div.onclick = function() { selSlot(this); };
+      slotGrid.appendChild(div);
+    });
+  } catch(e) {
+    console.log('Could not load slots:', e);
+  }
+}

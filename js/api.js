@@ -3,7 +3,8 @@
    Depends on: utils.js
    ============================================= */
 
-const BASE_URL = 'https://heartwise-backend-production.up.railway.app/api';
+const BASE_URL = 'http://localhost:8080/api';
+
 async function apiFetch(endpoint, options = {}) {
   const token = getStorage('token');
 
@@ -141,5 +142,17 @@ async function apiSaveAnalyzerResult(score, result) {
   return apiFetch('/analyzer/result', {
     method: 'POST',
     body: JSON.stringify({ score, result }),
+  });
+}
+
+/* ── AVAILABILITY ── */
+async function apiGetAvailabilitySlots(mentorId) {
+  return apiFetch('/availability/' + mentorId + '/slots');
+}
+
+async function apiSaveAvailability(mentorId, data) {
+  return apiFetch('/availability/' + mentorId, {
+    method: 'POST',
+    body: JSON.stringify(data),
   });
 }
