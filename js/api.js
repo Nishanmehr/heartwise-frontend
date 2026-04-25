@@ -3,8 +3,7 @@
    Depends on: utils.js
    ============================================= */
 
-const BASE_URL = 'http://localhost:8080/api';
-
+const BASE_URL = 'https://heartwise-backend-production.up.railway.app/api';
 async function apiFetch(endpoint, options = {}) {
   const token = getStorage('token');
 
