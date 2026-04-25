@@ -1,122 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HeartWise — My Availability</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HeartWise — My Availability</title>
 
-  <link rel="stylesheet" href="../css/variables.css">
-  <link rel="stylesheet" href="../css/base.css">
-  <link rel="stylesheet" href="../css/navbar.css">
-  <link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/base.css">
+<link rel="stylesheet" href="../css/navbar.css">
+<link rel="stylesheet" href="../css/components.css">
 
-  <style>
-    .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 80px; }
-    .page-header { margin-bottom: 24px; }
-    .page-header h2 { font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
-    .page-header p  { font-size: 14px; color: var(--muted); }
-
-    .back-btn { display:inline-flex; align-items:center; gap:5px; color:var(--muted); font-size:13px; cursor:pointer; background:none; border:none; margin-bottom:16px; }
-    .day-card { background:var(--card); border-radius:16px; border:1px solid var(--border); padding:18px 20px; margin-bottom:12px; }
-    .day-card.active-day { border-color:#7B5EA7; }
-
-    .day-header { display:flex; align-items:center; gap:12px; }
-    .day-toggle { width:44px; height:24px; border-radius:20px; background:var(--border); border:none; cursor:pointer; position:relative; }
-    .day-toggle::after { content:''; position:absolute; width:18px; height:18px; border-radius:50%; background:#fff; top:3px; left:3px; }
-    .day-toggle.on { background:#7B5EA7; }
-    .day-toggle.on::after { transform:translateX(20px); }
-
-    .day-name { font-size:15px; font-weight:700; flex:1; }
-    .day-summary { font-size:12px; color:var(--muted); }
-
-    .day-settings { display:none; margin-top:16px; }
-    .day-settings.show { display:block; }
-
-    .time-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
-
-    .field label { font-size:11px; font-weight:700; }
-    .field input, .field select {
-      width:100%; padding:10px;
-      border:1px solid var(--border);
-      border-radius:10px;
-    }
-
-    .save-btn {
-      width:100%; padding:14px;
-      background:#7B5EA7; color:#fff;
-      border:none; border-radius:14px;
-      margin-top:20px;
-    }
-
-    .toast {
-      position:fixed;
-      bottom:20px;
-      left:50%;
-      transform:translateX(-50%);
-      background:#000;
-      color:#fff;
-      padding:10px 20px;
-      border-radius:10px;
-      display:none;
-    }
-  </style>
+<style>
+.wrap { max-width: 680px; margin: auto; padding: 20px; }
+.day-card { border:1px solid #ccc; padding:15px; margin-bottom:10px; border-radius:10px; }
+.day-settings { display:none; margin-top:10px; }
+.day-settings.show { display:block; }
+.slot { background:#4ade80; padding:6px 10px; margin:4px; border-radius:8px; display:inline-block; }
+</style>
 </head>
 
 <body>
 
-<nav class="nav">
-  <a class="logo" href="dashboard.html">Heart<span>wise</span></a>
-  <div class="nav-right">
-    <div class="avatar-sm" id="navAvatar">M</div>
-  </div>
-</nav>
-
 <div class="wrap">
+<h2>My Availability</h2>
 
-  <button class="back-btn" onclick="location.href='dashboard.html'">← Back</button>
+<div id="dayCards"></div>
 
-  <div class="page-header">
-    <h2>My Availability</h2>
-    <p>Set your weekly schedule</p>
-  </div>
+<button onclick="saveAvailability()">Save</button>
 
-  <div id="dayCards"></div>
-
-  <button class="save-btn" onclick="saveAvailability()">Save</button>
+<h3>Preview</h3>
+<div id="previewSlots"></div>
 
 </div>
 
-<div class="toast" id="toast"></div>
-
-<script src="../js/utils.js"></script>
-<script src="../js/api.js"></script>
-
 <script>
 const BASE_URL = 'https://heartwise-backend-production.up.railway.app/api';
-const MENTOR_ID = localStorage.getItem('userId');
 const TOKEN = localStorage.getItem('token');
+const MENTOR_ID = localStorage.getItem('userId');
 
 const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 
 const schedule = {};
-DAYS.forEach(d => {
+DAYS.forEach(d=>{
   schedule[d] = { active:false, startTime:'09:00', endTime:'18:00', slotDuration:30 };
 });
-
-function toast(msg){
-  const t = document.getElementById('toast');
-  t.innerText = msg;
-  t.style.display='block';
-  setTimeout(()=>t.style.display='none',3000);
-}
 
 function toggleDay(day){
   schedule[day].active = !schedule[day].active;
   buildUI();
+  updatePreview();
 }
 
 function updateField(day, field, value){
   schedule[day][field] = field==='slotDuration'? parseInt(value):value;
+  updatePreview();
 }
 
 function buildUI(){
@@ -127,33 +64,20 @@ function buildUI(){
     const s = schedule[day];
 
     const div = document.createElement('div');
-    div.className = 'day-card'+(s.active?' active-day':'');
+    div.className='day-card';
 
-    div.innerHTML = `
-      <div class="day-header">
-        <button class="day-toggle ${s.active?'on':''}" onclick="toggleDay('${day}')"></button>
-        <span class="day-name">${day}</span>
-        <span class="day-summary">${s.active ? s.startTime+" - "+s.endTime : 'Off'}</span>
-      </div>
+    div.innerHTML=`
+      <b>${day}</b>
+      <button onclick="toggleDay('${day}')">${s.active?'ON':'OFF'}</button>
 
       <div class="day-settings ${s.active?'show':''}">
-        <div class="time-row">
-          <div class="field">
-            <label>Start</label>
-            <input type="time" value="${s.startTime}" onchange="updateField('${day}','startTime',this.value)">
-          </div>
-          <div class="field">
-            <label>End</label>
-            <input type="time" value="${s.endTime}" onchange="updateField('${day}','endTime',this.value)">
-          </div>
-          <div class="field">
-            <label>Duration</label>
-            <select onchange="updateField('${day}','slotDuration',this.value)">
-              <option value="30" ${s.slotDuration===30?'selected':''}>30</option>
-              <option value="60" ${s.slotDuration===60?'selected':''}>60</option>
-            </select>
-          </div>
-        </div>
+        Start: <input type="time" value="${s.startTime}" onchange="updateField('${day}','startTime',this.value)">
+        End: <input type="time" value="${s.endTime}" onchange="updateField('${day}','endTime',this.value)">
+        Duration:
+        <select onchange="updateField('${day}','slotDuration',this.value)">
+          <option value="30" ${s.slotDuration==30?'selected':''}>30</option>
+          <option value="60" ${s.slotDuration==60?'selected':''}>60</option>
+        </select>
       </div>
     `;
 
@@ -161,30 +85,72 @@ function buildUI(){
   });
 }
 
-function validateSchedule(){
-  for(let day of DAYS){
-    const s = schedule[day];
-    if(s.active){
-      if(s.startTime >= s.endTime){
-        toast(day+" end time must be after start time");
-        return false;
-      }
-    }
-  }
-  return true;
+/* SLOT LOGIC */
+function timeToMins(t){
+  let [h,m]=t.split(':');
+  return parseInt(h)*60+parseInt(m);
 }
 
+function minsToTime(m){
+  let h=Math.floor(m/60);
+  let min=m%60;
+  let ampm=h>=12?'PM':'AM';
+  let h12=h%12===0?12:h%12;
+  return h12+':'+String(min).padStart(2,'0')+' '+ampm;
+}
+
+function generateSlots(startTime,endTime,duration){
+  let slots=[];
+  let start=timeToMins(startTime);
+  let end=timeToMins(endTime);
+
+  if(start>=end) return [];
+
+  while(start+duration<=end){
+    slots.push(minsToTime(start));
+    start+=duration;
+  }
+  return slots;
+}
+
+function updatePreview(){
+  const container=document.getElementById('previewSlots');
+  let html='';
+  let any=false;
+
+  DAYS.forEach(day=>{
+    let s=schedule[day];
+    if(!s.active) return;
+
+    let slots=generateSlots(s.startTime,s.endTime,s.slotDuration);
+
+    slots.forEach(slot=>{
+      any=true;
+      html+=`<div class="slot">${day} ${slot}</div>`;
+    });
+  });
+
+  container.innerHTML = any?html:'No slots';
+}
+
+/* API */
 async function saveAvailability(){
 
-  if(!validateSchedule()) return;
+  for(let d of DAYS){
+    let s=schedule[d];
+    if(s.active && s.startTime>=s.endTime){
+      alert(d+" invalid time");
+      return;
+    }
+  }
 
-  const data = DAYS.map(day=>({
-    dayOfWeek: day,
+  let data=DAYS.map(day=>({
+    dayOfWeek:day,
     ...schedule[day]
   }));
 
   try{
-    const res = await fetch(BASE_URL+'/availability/'+MENTOR_ID,{
+    let res=await fetch(BASE_URL+'/availability/'+MENTOR_ID,{
       method:'POST',
       headers:{
         'Content-Type':'application/json',
@@ -193,21 +159,21 @@ async function saveAvailability(){
       body:JSON.stringify(data)
     });
 
-    if(res.ok) toast("Saved successfully");
-    else toast("Failed");
+    if(res.ok) alert("Saved");
+    else alert("Failed");
 
   }catch(e){
-    toast("Error");
+    alert("Error");
   }
 }
 
 async function loadAvailability(){
   try{
-    const res = await fetch(BASE_URL+'/availability/'+MENTOR_ID,{
-      headers:{ 'Authorization':'Bearer '+TOKEN }
+    let res=await fetch(BASE_URL+'/availability/'+MENTOR_ID,{
+      headers:{'Authorization':'Bearer '+TOKEN}
     });
 
-    const data = await res.json();
+    let data=await res.json();
 
     data.forEach(av=>{
       if(schedule[av.dayOfWeek]){
@@ -219,21 +185,16 @@ async function loadAvailability(){
 }
 
 /* INIT */
-window.addEventListener('DOMContentLoaded', async ()=>{
-
+window.onload=async ()=>{
   if(!TOKEN || localStorage.getItem('role')!=='MENTOR'){
     window.location='index.html';
     return;
   }
 
-  if(typeof requireMentor === "function"){
-    requireMentor();
-  }
-
   await loadAvailability();
   buildUI();
-
-});
+  updatePreview();
+};
 </script>
 
 </body>
