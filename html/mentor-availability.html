@@ -1,201 +1,275 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HeartWise — My Availability</title>
-
-<link rel="stylesheet" href="../css/variables.css">
-<link rel="stylesheet" href="../css/base.css">
-<link rel="stylesheet" href="../css/navbar.css">
-<link rel="stylesheet" href="../css/components.css">
-
-<style>
-.wrap { max-width: 680px; margin: auto; padding: 20px; }
-.day-card { border:1px solid #ccc; padding:15px; margin-bottom:10px; border-radius:10px; }
-.day-settings { display:none; margin-top:10px; }
-.day-settings.show { display:block; }
-.slot { background:#4ade80; padding:6px 10px; margin:4px; border-radius:8px; display:inline-block; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeartWise — My Availability</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/navbar.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .wrap { max-width: 680px; margin: 0 auto; padding: 24px 16px 80px; }
+    .page-header { margin-bottom: 24px; }
+    .page-header h2 { font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+    .page-header p  { font-size: 14px; color: var(--muted); }
+    .back-btn { display:inline-flex; align-items:center; gap:5px; color:var(--muted); font-size:13px; cursor:pointer; background:none; border:none; margin-bottom:16px; padding:0; }
+    .back-btn:hover { color:var(--text); }
+    .day-card { background:var(--card); border-radius:16px; border:1px solid var(--border); padding:18px 20px; margin-bottom:12px; transition:border .2s; }
+    .day-card.active-day { border-color:#7B5EA7; }
+    .day-header { display:flex; align-items:center; gap:12px; }
+    .day-toggle { width:44px; height:24px; border-radius:20px; background:var(--border); border:none; cursor:pointer; position:relative; transition:background .2s; flex-shrink:0; }
+    .day-toggle::after { content:''; position:absolute; width:18px; height:18px; border-radius:50%; background:#fff; top:3px; left:3px; transition:transform .2s; }
+    .day-toggle.on { background:#7B5EA7; }
+    .day-toggle.on::after { transform:translateX(20px); }
+    .day-name { font-size:15px; font-weight:700; color:var(--text); flex:1; }
+    .day-summary { font-size:12px; color:var(--muted); }
+    .day-settings { display:none; margin-top:16px; padding-top:16px; border-top:1px solid var(--border); }
+    .day-settings.show { display:block; }
+    .time-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+    @media(max-width:480px) { .time-row { grid-template-columns:1fr 1fr; } }
+    .field label { display:block; font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
+    .field select, .field input { width:100%; padding:10px 12px; border:1.5px solid var(--border); border-radius:10px; font-size:13px; background:var(--bg); color:var(--text); outline:none; transition:border .2s; box-sizing:border-box; }
+    .field select:focus { border-color:#7B5EA7; }
+    .save-btn { width:100%; padding:14px; background:linear-gradient(135deg,#7B5EA7,#5A3E85); color:#fff; border:none; border-radius:14px; font-size:15px; font-weight:700; cursor:pointer; transition:opacity .2s; margin-top:20px; }
+    .save-btn:hover { opacity:.9; }
+    .preview-card { background:var(--card); border-radius:16px; border:1px solid var(--border); padding:20px; margin-top:20px; }
+    .preview-title { font-size:13px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:14px; }
+    .slot-grid { display:flex; flex-wrap:wrap; gap:8px; }
+    .slot-pill { padding:6px 14px; border-radius:20px; font-size:12px; font-weight:600; }
+    .slot-pill.available { background:rgba(74,222,128,.15); color:#4ade80; border:1px solid rgba(74,222,128,.3); }
+    .slot-pill.booked { background:rgba(232,82,106,.15); color:#E8526A; border:1px solid rgba(232,82,106,.3); text-decoration:line-through; }
+    .no-slots { font-size:13px; color:var(--muted); }
+    .slot-legend { display:flex; gap:16px; margin-bottom:12px; font-size:12px; }
+    .legend-item { display:flex; align-items:center; gap:6px; }
+    .legend-dot { width:10px; height:10px; border-radius:50%; }
+    .legend-dot.green { background:#4ade80; }
+    .legend-dot.red   { background:#E8526A; }
+    .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:#1a1a2e; color:#fff; padding:12px 24px; border-radius:12px; font-size:14px; display:none; z-index:9999; }
+  </style>
 </head>
-
 <body>
 
-<div class="wrap">
-<h2>My Availability</h2>
+  <nav class="nav">
+    <a class="logo" href="dashboard.html">Heart<span>wise</span></a>
+    <div class="nav-right">
+      <div class="avatar-sm" id="navAvatar">M</div>
+    </div>
+  </nav>
 
-<div id="dayCards"></div>
-
-<button onclick="saveAvailability()">Save</button>
-
-<h3>Preview</h3>
-<div id="previewSlots"></div>
-
-</div>
-
-<script>
-const BASE_URL = 'https://heartwise-backend-production.up.railway.app/api';
-const TOKEN = localStorage.getItem('token');
-const MENTOR_ID = localStorage.getItem('userId');
-
-const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-
-const schedule = {};
-DAYS.forEach(d=>{
-  schedule[d] = { active:false, startTime:'09:00', endTime:'18:00', slotDuration:30 };
-});
-
-function toggleDay(day){
-  schedule[day].active = !schedule[day].active;
-  buildUI();
-  updatePreview();
-}
-
-function updateField(day, field, value){
-  schedule[day][field] = field==='slotDuration'? parseInt(value):value;
-  updatePreview();
-}
-
-function buildUI(){
-  const container = document.getElementById('dayCards');
-  container.innerHTML='';
-
-  DAYS.forEach(day=>{
-    const s = schedule[day];
-
-    const div = document.createElement('div');
-    div.className='day-card';
-
-    div.innerHTML=`
-      <b>${day}</b>
-      <button onclick="toggleDay('${day}')">${s.active?'ON':'OFF'}</button>
-
-      <div class="day-settings ${s.active?'show':''}">
-        Start: <input type="time" value="${s.startTime}" onchange="updateField('${day}','startTime',this.value)">
-        End: <input type="time" value="${s.endTime}" onchange="updateField('${day}','endTime',this.value)">
-        Duration:
-        <select onchange="updateField('${day}','slotDuration',this.value)">
-          <option value="30" ${s.slotDuration==30?'selected':''}>30</option>
-          <option value="60" ${s.slotDuration==60?'selected':''}>60</option>
-        </select>
+  <div class="wrap">
+    <button class="back-btn" onclick="location.href='dashboard.html'">← Back to Dashboard</button>
+    <div class="page-header">
+      <h2>📅 My Availability</h2>
+      <p>Set your weekly schedule. Green = Available, Red = Already Booked.</p>
+    </div>
+    <div id="dayCards"></div>
+    <button class="save-btn" id="saveBtn">💾 Save Availability</button>
+    <div class="preview-card">
+      <div class="preview-title">👁️ Live Preview — Next 7 Days</div>
+      <div class="slot-legend">
+        <div class="legend-item"><div class="legend-dot green"></div> Available</div>
+        <div class="legend-item"><div class="legend-dot red"></div> Booked</div>
       </div>
-    `;
+      <div class="slot-grid" id="previewSlots">
+        <div class="no-slots">Enable days above to see preview</div>
+      </div>
+    </div>
+  </div>
 
-    container.appendChild(div);
-  });
-}
+  <div class="toast" id="toast"></div>
 
-/* SLOT LOGIC */
-function timeToMins(t){
-  let [h,m]=t.split(':');
-  return parseInt(h)*60+parseInt(m);
-}
+  <script src="../js/utils.js"></script>
+  <script src="../js/api.js"></script>
+  <script>
+    var API     = 'https://heartwise-backend-production.up.railway.app/api';
+    var MID     = localStorage.getItem('userId');
+    var DAYS    = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+    var booked  = [];
+    var sched   = {};
 
-function minsToTime(m){
-  let h=Math.floor(m/60);
-  let min=m%60;
-  let ampm=h>=12?'PM':'AM';
-  let h12=h%12===0?12:h%12;
-  return h12+':'+String(min).padStart(2,'0')+' '+ampm;
-}
-
-function generateSlots(startTime,endTime,duration){
-  let slots=[];
-  let start=timeToMins(startTime);
-  let end=timeToMins(endTime);
-
-  if(start>=end) return [];
-
-  while(start+duration<=end){
-    slots.push(minsToTime(start));
-    start+=duration;
-  }
-  return slots;
-}
-
-function updatePreview(){
-  const container=document.getElementById('previewSlots');
-  let html='';
-  let any=false;
-
-  DAYS.forEach(day=>{
-    let s=schedule[day];
-    if(!s.active) return;
-
-    let slots=generateSlots(s.startTime,s.endTime,s.slotDuration);
-
-    slots.forEach(slot=>{
-      any=true;
-      html+=`<div class="slot">${day} ${slot}</div>`;
+    DAYS.forEach(function(d) {
+      sched[d] = { active:false, startTime:'09:00', endTime:'18:00', slotDuration:30 };
     });
-  });
 
-  container.innerHTML = any?html:'No slots';
-}
-
-/* API */
-async function saveAvailability(){
-
-  for(let d of DAYS){
-    let s=schedule[d];
-    if(s.active && s.startTime>=s.endTime){
-      alert(d+" invalid time");
-      return;
+    function showToast(msg) {
+      var t = document.getElementById('toast');
+      t.textContent = msg; t.style.display = 'block';
+      setTimeout(function() { t.style.display = 'none'; }, 3000);
     }
-  }
 
-  let data=DAYS.map(day=>({
-    dayOfWeek:day,
-    ...schedule[day]
-  }));
+    function timeToMins(t) {
+      var p = t.split(':'); return parseInt(p[0])*60 + parseInt(p[1]);
+    }
 
-  try{
-    let res=await fetch(BASE_URL+'/availability/'+MENTOR_ID,{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'Authorization':'Bearer '+TOKEN
-      },
-      body:JSON.stringify(data)
-    });
+    function minsToLabel(m) {
+      var h = Math.floor(m/60), min = m%60;
+      var ap = h >= 12 ? 'PM' : 'AM';
+      var h12 = h%12 === 0 ? 12 : h%12;
+      return h12 + (min === 0 ? '' : ':' + String(min).padStart(2,'0')) + ' ' + ap;
+    }
 
-    if(res.ok) alert("Saved");
-    else alert("Failed");
+    function getDayLabel(offset) {
+      if (offset === 0) return 'Today';
+      if (offset === 1) return 'Tomorrow';
+      var names = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      var d = new Date(); d.setDate(d.getDate() + offset);
+      return names[d.getDay()];
+    }
 
-  }catch(e){
-    alert("Error");
-  }
-}
+    function getDayName(offset) {
+      var names = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      var d = new Date(); d.setDate(d.getDate() + offset);
+      return names[d.getDay()];
+    }
 
-async function loadAvailability(){
-  try{
-    let res=await fetch(BASE_URL+'/availability/'+MENTOR_ID,{
-      headers:{'Authorization':'Bearer '+TOKEN}
-    });
+    function buildUI() {
+      var c = document.getElementById('dayCards');
+      c.innerHTML = '';
+      DAYS.forEach(function(day) {
+        var s   = sched[day];
+        var div = document.createElement('div');
+        div.className = 'day-card' + (s.active ? ' active-day' : '');
+        div.id = 'card-' + day;
+        div.innerHTML =
+          '<div class="day-header">' +
+            '<button class="day-toggle ' + (s.active ? 'on' : '') + '" id="tog-' + day + '"></button>' +
+            '<span class="day-name">' + day + '</span>' +
+            '<span class="day-summary" id="sum-' + day + '">' +
+              (s.active ? s.startTime + ' – ' + s.endTime + ' · ' + s.slotDuration + ' min' : 'Off') +
+            '</span>' +
+          '</div>' +
+          '<div class="day-settings ' + (s.active ? 'show' : '') + '" id="set-' + day + '">' +
+            '<div class="time-row">' +
+              '<div class="field"><label>Start</label>' +
+                '<input type="time" id="st-' + day + '" value="' + s.startTime + '"></div>' +
+              '<div class="field"><label>End</label>' +
+                '<input type="time" id="et-' + day + '" value="' + s.endTime + '"></div>' +
+              '<div class="field"><label>Duration</label>' +
+                '<select id="dur-' + day + '">' +
+                  '<option value="30"' + (s.slotDuration===30?' selected':'') + '>30 min</option>' +
+                  '<option value="60"' + (s.slotDuration===60?' selected':'') + '>60 min</option>' +
+                  '<option value="90"' + (s.slotDuration===90?' selected':'') + '>90 min</option>' +
+                '</select>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        c.appendChild(div);
 
-    let data=await res.json();
+        // Toggle button
+        document.getElementById('tog-' + day).addEventListener('click', function() {
+          sched[day].active = !sched[day].active;
+          buildUI();
+          updatePreview();
+        });
 
-    data.forEach(av=>{
-      if(schedule[av.dayOfWeek]){
-        schedule[av.dayOfWeek]=av;
+        // Field changes
+        document.getElementById('st-' + day).addEventListener('change', function() {
+          sched[day].startTime = this.value;
+          updateSummary(day);
+          updatePreview();
+        });
+        document.getElementById('et-' + day).addEventListener('change', function() {
+          sched[day].endTime = this.value;
+          updateSummary(day);
+          updatePreview();
+        });
+        document.getElementById('dur-' + day).addEventListener('change', function() {
+          sched[day].slotDuration = parseInt(this.value);
+          updateSummary(day);
+          updatePreview();
+        });
+      });
+    }
+
+    function updateSummary(day) {
+      var s  = sched[day];
+      var el = document.getElementById('sum-' + day);
+      if (el) el.textContent = s.active ? s.startTime + ' – ' + s.endTime + ' · ' + s.slotDuration + ' min' : 'Off';
+    }
+
+    function updatePreview() {
+      var c   = document.getElementById('previewSlots');
+      var html = '';
+      var any  = false;
+      for (var i = 0; i < 7; i++) {
+        var dayName = getDayName(i);
+        var s       = sched[dayName];
+        if (!s || !s.active) continue;
+        var start = timeToMins(s.startTime);
+        var end   = timeToMins(s.endTime);
+        var dur   = s.slotDuration;
+        while (start + dur <= end) {
+          any = true;
+          var label    = getDayLabel(i) + ' ' + minsToLabel(start);
+          var isBooked = booked.indexOf(label) !== -1;
+          html += '<div class="slot-pill ' + (isBooked ? 'booked' : 'available') + '">' +
+            (isBooked ? '🔴 ' : '🟢 ') + label + '</div>';
+          start += dur;
+        }
       }
+      c.innerHTML = any ? html : '<div class="no-slots">No slots yet. Enable days above.</div>';
+    }
+
+    document.getElementById('saveBtn').addEventListener('click', async function() {
+      var data = DAYS.map(function(day) {
+        return {
+          dayOfWeek:    day,
+          startTime:    sched[day].startTime,
+          endTime:      sched[day].endTime,
+          slotDuration: sched[day].slotDuration,
+          active:       sched[day].active
+        };
+      });
+      try {
+        var res = await fetch(API + '/availability/' + MID, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify(data)
+        });
+        if (res.ok) showToast('Availability saved! ✅');
+        else        showToast('Failed to save ❌');
+      } catch(e) { showToast('Error ❌'); }
     });
 
-  }catch(e){}
-}
+    async function init() {
+      if (!localStorage.getItem('token') || localStorage.getItem('role') !== 'MENTOR') {
+        location.replace('index.html'); return;
+      }
+      var name = localStorage.getItem('username') || 'M';
+      var av   = document.getElementById('navAvatar');
+      if (av) av.textContent = name.charAt(0).toUpperCase();
 
-/* INIT */
-window.onload=async ()=>{
-  if(!TOKEN || localStorage.getItem('role')!=='MENTOR'){
-    window.location='index.html';
-    return;
-  }
+      // Load saved availability
+      try {
+        var res  = await fetch(API + '/availability/' + MID);
+        var data = await res.json();
+        if (data && data.length > 0) {
+          data.forEach(function(av) {
+            if (sched[av.dayOfWeek]) {
+              sched[av.dayOfWeek].active       = av.active;
+              sched[av.dayOfWeek].startTime    = av.startTime;
+              sched[av.dayOfWeek].endTime      = av.endTime;
+              sched[av.dayOfWeek].slotDuration = av.slotDuration;
+            }
+          });
+        }
+      } catch(e) {}
 
-  await loadAvailability();
-  buildUI();
-  updatePreview();
-};
-</script>
+      // Load booked slots
+      try {
+        var res2 = await fetch(API + '/sessions/mentor/' + MID);
+        var sess = await res2.json();
+        booked   = sess
+          .filter(function(s) { return s.status === 'ACCEPTED' || s.status === 'PENDING'; })
+          .map(function(s)    { return s.slot; });
+      } catch(e) { booked = []; }
 
+      buildUI();
+      updatePreview();
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
 </body>
 </html>
