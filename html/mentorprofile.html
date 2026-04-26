@@ -94,16 +94,8 @@
         </div>
       </div>
       <div class="slot-label">Pick a slot</div>
-      <div class="slot-grid">
-        <div class="slot"       onclick="selSlot(this)">Today 4 PM</div>
-        <div class="slot"       onclick="selSlot(this)">Today 6 PM</div>
-        <div class="slot taken">Today 8 PM</div>
-        <div class="slot"       onclick="selSlot(this)">Tue 10 AM</div>
-        <div class="slot"       onclick="selSlot(this)">Tue 2 PM</div>
-        <div class="slot"       onclick="selSlot(this)">Tue 5 PM</div>
-        <div class="slot"       onclick="selSlot(this)">Wed 11 AM</div>
-        <div class="slot taken">Wed 3 PM</div>
-        <div class="slot"       onclick="selSlot(this)">Thu 9 AM</div>
+      <div class="slot-grid" id="dynamicSlotGrid">
+        <div style="color:var(--muted);font-size:13px;padding:8px;">Loading available slots...</div>
       </div>
       <button class="btn-primary" onclick="confirmBooking()">Confirm Booking →</button>
     </div>

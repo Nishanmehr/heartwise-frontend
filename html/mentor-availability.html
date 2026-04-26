@@ -271,8 +271,9 @@
           headers: { 'Content-Type': 'application/json' },
           body:    JSON.stringify(data)
         });
-        if (res.ok) showToast('Availability saved! ✅ Users can now see your slots.');
-        else        showToast('Failed to save ❌');
+        var result = await res.json();
+        if (res.ok) showToast('✅ ' + (result.message || 'Availability saved!'));
+        else        showToast('❌ Failed to save');
       } catch(e) {
         showToast('Error saving ❌');
       }

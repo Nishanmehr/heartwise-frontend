@@ -63,6 +63,9 @@ function renderProfile(mentor) {
   // Show the profile, hide loading
   document.getElementById('profile-loading').style.display = 'none';
   document.getElementById('profile-content').style.display = 'block';
+
+  // Load dynamic slots
+  loadMentorSlots(mentor.id);
 }
 
 /* Switch profile tabs */
