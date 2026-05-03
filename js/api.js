@@ -2,9 +2,7 @@
    api.js — All Backend API Calls
    Depends on: utils.js
    ============================================= */
-
-const BASE_URL = 'https://heartwise-backend-7y6y.onrender.com';
-async function apiFetch(endpoint, options = {}) {
+  const BASE_URL = 'https://heartwise-backend-7y6y.onrender.com/api';
   const token = getStorage('token');
 
   const headers = {
