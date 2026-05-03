@@ -3,7 +3,7 @@
    Depends on: utils.js
    ============================================= */
 
-const BASE_URL = 'https://heartwise-backend-production.up.railway.app/api';
+const BASE_URL = 'https://heartwise-backend-7y6y.onrender.com';
 async function apiFetch(endpoint, options = {}) {
   const token = getStorage('token');
 
