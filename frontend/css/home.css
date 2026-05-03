@@ -1,0 +1,147 @@
+/* =============================================
+   home.css — User Home Page Styles
+   ============================================= */
+
+.home-hero {
+  background: linear-gradient(135deg, #FFF0F2 0%, #F3EFF9 100%);
+  padding: 36px var(--spacing-lg);
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+.home-hero h2 {
+  font-family: var(--font-head);
+  font-size: 30px;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+.home-hero p {
+  color: var(--muted);
+  font-size: 14px;
+  max-width: 480px;
+  margin: 0 auto 20px;
+}
+.hero-btns { display: flex; justify-content: center; gap: 12px; }
+
+/* Analyzer Banner */
+.analyzer-banner {
+  background: linear-gradient(135deg, var(--dark), #3D1E4A);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin: 0 var(--spacing-lg) 28px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+}
+.analyzer-banner:hover { transform: translateY(-2px); }
+.analyzer-banner::before {
+  content: '🔮';
+  position: absolute;
+  right: 24px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 64px;
+  opacity: .15;
+}
+.analyzer-banner h3 {
+  font-family: var(--font-head);
+  font-size: 20px;
+  color: var(--white);
+  margin-bottom: 6px;
+}
+.analyzer-banner p {
+  color: rgba(255,255,255,.6);
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+
+/* Sections */
+.section { padding: 28px var(--spacing-lg); }
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+.section-title {
+  font-family: var(--font-head);
+  font-size: 20px;
+  color: var(--dark);
+}
+.see-all {
+  font-size: 13px;
+  color: var(--rose);
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+
+/* Mentor Grid */
+.mentor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+.mentor-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+}
+.mentor-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+  border-color: var(--rose-mid);
+}
+.mentor-card .verified-badge {
+  position: absolute;
+  top: 14px; right: 14px;
+}
+.mentor-avatar {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--white);
+}
+.mentor-name {
+  font-family: var(--font-head);
+  font-size: 16px;
+  color: var(--dark);
+  margin-bottom: 2px;
+}
+.mentor-spec { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+.stars {
+  color: #F5A623;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+.stars span { color: var(--mid); font-size: 12px; }
+.mentor-price { font-size: 13px; font-weight: 600; color: var(--sage); }
+.mentor-price em { font-style: normal; font-weight: 400; color: var(--muted); font-size: 11px; }
+.card-actions { display: flex; gap: 8px; margin-top: 14px; }
+.btn-card {
+  flex: 1;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--mid);
+  font-family: var(--font-body);
+  transition: var(--transition);
+}
+.btn-card.primary { background: var(--rose); border-color: var(--rose); color: var(--white); }
+.btn-card:hover:not(.primary) { background: var(--rose-light); border-color: var(--rose-mid); }

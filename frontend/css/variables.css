@@ -1,0 +1,53 @@
+/* =============================================
+   variables.css — Design Tokens
+   All colors, fonts, spacing in one place.
+   Change here → updates everywhere.
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  /* Colors */
+  --rose:        #FF2A5F;
+  --rose-light:  #FFF0F5;
+  --rose-mid:    #FF8DA1;
+  --gold:        #FF6B81;
+  --gold-light:  #FFE7EE;
+  --sage:        #E91E63;
+  --sage-light:  #FCE4EC;
+  --lavender:    #C2185B;
+  --lav-light:   #FCE4EC;
+  --dark:        #350017;
+  --mid:         #7A103D;
+  --muted:       #B56586;
+  --border:      #F8CFDE;
+  --surface:     #FFF5F8;
+  --white:       #FFFFFF;
+
+  /* Typography */
+  --font-head: 'Playfair Display', serif;
+  --font-body: 'DM Sans', sans-serif;
+
+  /* Spacing */
+  --spacing-xs:  4px;
+  --spacing-sm:  8px;
+  --spacing-md:  16px;
+  --spacing-lg:  24px;
+  --spacing-xl:  32px;
+  --spacing-2xl: 48px;
+
+  /* Border Radius */
+  --radius-sm:  10px;
+  --radius-md:  16px;
+  --radius-lg:  24px;
+  --radius-xl:  32px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 4px 12px rgba(255, 42, 95, 0.04);
+  --shadow-md: 0 8px 24px rgba(255, 42, 95, 0.08);
+  --shadow-lg: 0 12px 40px rgba(255, 42, 95, 0.15);
+
+  /* Transitions */
+  --transition: all 0.2s ease;
+}

@@ -1,0 +1,31 @@
+/* =============================================
+   base.css — Reset & Base Styles
+   ============================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  background: radial-gradient(circle at top left, var(--surface), var(--rose-light) 120%);
+  color: var(--dark);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
