@@ -247,7 +247,7 @@
       if (!email) { alert('Please login to check status.'); return; }
 
       try {
-        var res  = await fetch('https://heartwise-backend-production.up.railway.app/api/auth/mentor/status?email=' + encodeURIComponent(email));
+        var res  = await fetch('https://heartwise-backend-7y6y.onrender.com/api/auth/mentor/status?email=' + encodeURIComponent(email));
         var data = await res.json();
         if (data.approved) {
           alert('🎉 Congratulations! Your profile has been approved! Please login now.');

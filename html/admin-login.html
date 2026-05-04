@@ -78,7 +78,7 @@
       if (!email || !password) { errorMsg.textContent = 'Please fill all fields'; errorMsg.style.display = 'block'; return; }
 
       try {
-        const res  = await fetch('https://heartwise-backend-production.up.railway.app/api/admin/login', {
+        const res  = await fetch('https://heartwise-backend-7y6y.onrender.com/api/admin/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
