@@ -147,7 +147,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 /* ══ Load mentor availability slots ══ */
 async function loadMentorSlots(mentorId) {
-  const BASE_URL = 'https://heartwise-backend-production.up.railway.app/api';
+  const BASE_URL = 'https://heartwise-backend-7y6y.onrender.com/api';
   try {
     const res   = await fetch(BASE_URL + '/availability/' + mentorId + '/slots');
     const slots = await res.json();
