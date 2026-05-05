@@ -93,8 +93,7 @@ function selSlot(el) {
 /* Confirm booking */
 async function confirmBooking() {
   const sessionEl = document.querySelector('.session-type.sel');
-  const slotEl    = document.querySelector('.slot.sel');
-
+  const slotEl = document.querySelector('.dslot.sel');
   if (!sessionEl) {
     toast('Please select a session type ⚠️');
     return;
@@ -105,8 +104,7 @@ async function confirmBooking() {
   }
 
   const type = sessionEl.querySelector('h5').textContent.trim();
-  const slot = slotEl.textContent.trim();
-
+ const slot = window.selectedSlotText;
   try {
     await apiBookSession(currentMentorId, type, slot);
     toast('Booking request sent! ✅ Awaiting mentor confirmation.');
