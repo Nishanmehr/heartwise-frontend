@@ -147,7 +147,7 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 /* ══ Load mentor availability slots ══ */
 async function loadMentorSlots(mentorId) {
-  var BASE = 'https://heartwise-backend-production.up.railway.app/api';
+  var BASE = 'https://heartwise-backend-7y6y.onrender.com/api';
   var grid = document.getElementById('dynamicSlotGrid') || document.querySelector('.slot-grid');
   if (!grid) return;
 
