@@ -147,38 +147,82 @@ window.addEventListener('DOMContentLoaded', async () => {
 
 /* ══ Load mentor availability slots ══ */
 async function loadMentorSlots(mentorId) {
-  const BASE_URL = 'https://heartwise-backend-7y6y.onrender.com/api';
+  var BASE = 'https://heartwise-backend-production.up.railway.app/api';
+  var grid = document.getElementById('dynamicSlotGrid') || document.querySelector('.slot-grid');
+  if (!grid) return;
+
+  // Add styles
+  if (!document.getElementById('dslot-style')) {
+    var s = document.createElement('style');
+    s.id  = 'dslot-style';
+    s.textContent =
+      '.dslot{padding:10px 16px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid;transition:all .2s;text-align:center;}' +
+      '.dslot.avail{background:rgba(74,222,128,.1);color:#166534;border-color:rgba(74,222,128,.4);}' +
+      '.dslot.avail:hover{background:rgba(74,222,128,.2);}' +
+      '.dslot.booked{background:rgba(232,82,106,.1);color:#E8526A;border-color:rgba(232,82,106,.4);cursor:not-allowed;opacity:.8;}' +
+      '.dslot.sel{background:linear-gradient(135deg,#7B5EA7,#5A3E85)!important;color:#fff!important;border-color:#7B5EA7!important;box-shadow:0 4px 12px rgba(123,94,167,.4);}';
+    document.head.appendChild(s);
+  }
+
   try {
-    const res   = await fetch(BASE_URL + '/availability/' + mentorId + '/slots');
-    const slots = await res.json();
+    var res   = await fetch(BASE + '/availability/' + mentorId + '/slots');
+    var slots = await res.json();
+    var res2  = await fetch(BASE + '/sessions/mentor/' + mentorId);
+    var sess  = await res2.json();
+    var booked = (sess || [])
+      .filter(function(s) { return s.status === 'ACCEPTED' || s.status === 'PENDING'; })
+      .map(function(s) { return s.slot || ''; });
 
-    // Get booked slots
-    const sessions    = await apiGetMentorSessions(mentorId);
-    const bookedSlots = sessions
-      .filter(s => s.status === 'ACCEPTED' || s.status === 'PENDING')
-      .map(s => s.slot);
-
-    const slotGrid = document.querySelector('.slot-grid');
-    if (!slotGrid) return;
-    slotGrid.innerHTML = '';
+    grid.innerHTML = '';
 
     if (!slots || slots.length === 0) {
-      slotGrid.innerHTML = '<p style="color:var(--muted);font-size:13px;">No slots available. Check back later.</p>';
+      grid.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:8px;">No slots available today. Check back later!</p>';
       return;
     }
 
     slots.forEach(function(slot) {
-      const isBooked = bookedSlots.includes(slot.label);
-      const div      = document.createElement('div');
-      div.className  = 'slot' + (isBooked ? ' taken' : '');
-      div.style.cssText = isBooked
-        ? 'background:rgba(232,82,106,.12);color:#E8526A;border:1px solid rgba(232,82,106,.3);cursor:not-allowed;'
-        : 'background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.3);cursor:pointer;';
-      div.textContent = (isBooked ? '🔴 ' : '🟢 ') + slot.label + ' · ' + slot.duration;
-      if (!isBooked) div.onclick = function() { selSlot(this); };
-      slotGrid.appendChild(div);
+      var isBooked = booked.some(function(b) { return b && b.includes(slot.label); });
+
+      // Format: "Today 1:00 PM - 1:30 PM"
+      var startFmt  = fmtTime(slot.time);
+      var endFmt    = addMins(slot.time, parseInt((slot.duration||'30').toString()));
+      var dayPart   = slot.label ? slot.label.split(' ')[0] : 'Today';
+      var niceLabel = dayPart + ' ' + startFmt + ' - ' + endFmt;
+
+      var div = document.createElement('div');
+      div.className = 'dslot ' + (isBooked ? 'booked' : 'avail');
+      div.textContent = (isBooked ? '🔴 ' : '🟢 ') + niceLabel;
+      div.dataset.slot = niceLabel;
+
+      if (!isBooked) {
+        div.addEventListener('click', function() {
+          document.querySelectorAll('.dslot.sel').forEach(function(el) {
+            el.classList.remove('sel'); el.classList.add('avail');
+          });
+          div.classList.remove('avail');
+          div.classList.add('sel');
+          window.selectedSlotText = niceLabel;
+        });
+      }
+      grid.appendChild(div);
     });
   } catch(e) {
-    console.log('Could not load slots:', e);
+    console.log('Slots error:', e);
+    grid.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:8px;">Could not load slots.</p>';
   }
+}
+
+function fmtTime(t) {
+  if (!t) return '';
+  var p = t.split(':'), h = parseInt(p[0]), m = parseInt(p[1]||0);
+  var ap = h >= 12 ? 'PM' : 'AM', h12 = h%12===0?12:h%12;
+  return h12 + ':' + String(m).padStart(2,'0') + ' ' + ap;
+}
+
+function addMins(t, mins) {
+  if (!t) return '';
+  var p = t.split(':'), total = parseInt(p[0])*60 + parseInt(p[1]||0) + mins;
+  var h = Math.floor(total/60), m = total%60;
+  var ap = h >= 12 ? 'PM' : 'AM', h12 = h%12===0?12:h%12;
+  return h12 + ':' + String(m).padStart(2,'0') + ' ' + ap;
 }
