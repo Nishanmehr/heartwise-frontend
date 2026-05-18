@@ -209,6 +209,17 @@ function timeToMins(t) {
   var p = t.split(':');
   return parseInt(p[0]) * 60 + parseInt(p[1]);
 }
+
+function formatTime(t) {
+  var p = t.split(':');
+  var h = parseInt(p[0]);
+  var m = parseInt(p[1]);
+
+  var ampm = h >= 12 ? 'PM' : 'AM';
+  var h12 = h % 12 === 0 ? 12 : h % 12;
+
+  return h12 + (m === 0 ? '' : ':' + String(m).padStart(2, '0')) + ' ' + ampm;
+}
     function addSlot() {
       var start    = document.getElementById('slotStart').value;
       var end      = document.getElementById('slotEnd').value;
