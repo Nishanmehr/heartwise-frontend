@@ -205,7 +205,10 @@
     t.style.display = 'none';
   }, 3000);
 }
-
+function timeToMins(t) {
+  var p = t.split(':');
+  return parseInt(p[0]) * 60 + parseInt(p[1]);
+}
     function addSlot() {
       var start    = document.getElementById('slotStart').value;
       var end      = document.getElementById('slotEnd').value;
