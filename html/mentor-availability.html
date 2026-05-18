@@ -94,8 +94,21 @@
     }
     .save-btn:hover { opacity: .9; transform: translateY(-1px); }
 
-    .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:#1a1a2e; color:#fff; padding:12px 24px; border-radius:12px; font-size:14px; display:none; z-index:9999; }
-  </style>
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a1a2e;
+  color: white;
+  padding: 14px 26px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  display: none;
+  z-index: 999999999;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+}  </style>
 </head>
 <body>
 
@@ -175,22 +188,23 @@
       days[TODAY.getDay()] + ', ' + TODAY.getDate() + ' ' + months[TODAY.getMonth()] + ' ' + TODAY.getFullYear();
 
     function showToast(msg) {
-      var t = document.getElementById('toast');
-      t.textContent = msg; t.style.display = 'block';
-      setTimeout(function() { t.style.display = 'none'; }, 3000);
-    }
 
-    function timeToMins(t) {
-      var p = t.split(':'); return parseInt(p[0])*60 + parseInt(p[1]);
-    }
+  console.log("Toast called:", msg);
 
-    function formatTime(t) {
-      var p    = t.split(':');
-      var h    = parseInt(p[0]), m = parseInt(p[1]);
-      var ampm = h >= 12 ? 'PM' : 'AM';
-      var h12  = h % 12 === 0 ? 12 : h % 12;
-      return h12 + (m === 0 ? '' : ':' + String(m).padStart(2,'0')) + ' ' + ampm;
-    }
+  var t = document.getElementById('toast');
+
+  if (!t) {
+    console.log("Toast element not found");
+    return;
+  }
+
+  t.innerHTML = msg;
+  t.style.display = 'block';
+
+  setTimeout(function () {
+    t.style.display = 'none';
+  }, 3000);
+}
 
     function addSlot() {
       var start    = document.getElementById('slotStart').value;
@@ -267,7 +281,9 @@
 
   try {
 
-    var res = await fetch(API + '/availability/' + MID + '/slots', {
+      console.log("Save button clicked");
+  showToast("Saving...");
+    var res = await fetch(API + '/availability/' + MID, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
