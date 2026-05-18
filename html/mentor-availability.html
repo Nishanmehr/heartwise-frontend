@@ -266,11 +266,14 @@
       });
 
       try {
-        var res = await fetch(API + '/availability/' + mentorId + '/slots', {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify(data)
-        });
+var res = await fetch(API + '/availability/' + MID + '/slots', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + localStorage.getItem('token')
+  },
+  body: JSON.stringify(data)
+});
         var result = await res.json();
         if (res.ok) showToast('✅ ' + (result.message || 'Availability saved!'));
         else        showToast('❌ Failed to save');
@@ -295,7 +298,11 @@
 
       // Load today's saved slots
       try {
-        var res2 = await ffetch(API + '/availability/' + mentorId + '/slots');
+       var res2 = await fetch(API + '/availability/' + MID + '/slots', {
+  headers: {
+    'Authorization': 'Bearer ' + localStorage.getItem('token')
+  }
+});
         var data = await res2.json();
         if (data && data.length > 0) {
           var todayDay = days[TODAY.getDay()];
