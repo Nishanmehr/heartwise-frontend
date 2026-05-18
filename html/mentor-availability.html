@@ -95,20 +95,33 @@
     .save-btn:hover { opacity: .9; transform: translateY(-1px); }
 
 .toast {
-  position: fixed;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #1a1a2e;
-  color: white;
-  padding: 14px 26px;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 600;
+  position: fixed !important;
+  bottom: 30px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+
+  background: #1a1a2e !important;
+  color: white !important;
+
+  padding: 14px 26px !important;
+  border-radius: 12px !important;
+
+  font-size: 14px !important;
+  font-weight: 600 !important;
+
   display: none;
-  z-index: 999999999;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.4);
-}  </style>
+
+  z-index: 999999999 !important;
+
+  opacity: 1 !important;
+  visibility: visible !important;
+
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4) !important;
+
+  min-width: 250px;
+  text-align: center;
+}
+  </style>
 </head>
 <body>
 
@@ -165,7 +178,7 @@
     <button class="save-btn" onclick="saveSlots()">💾 Save Today's Availability</button>
   </div>
 
-  <div class="toast" id="toast"></div>
+<div class="toast" id="toast"></div>
 
   <script src="../js/utils.js"></script>
   <script src="../js/api.js"></script>
@@ -186,20 +199,29 @@
     var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     document.getElementById('todayDate').textContent =
       days[TODAY.getDay()] + ', ' + TODAY.getDate() + ' ' + months[TODAY.getMonth()] + ' ' + TODAY.getFullYear();
-
-    function showToast(msg) {
-
-  console.log("Toast called:", msg);
+function showToast(msg) {
 
   var t = document.getElementById('toast');
 
-  if (!t) {
-    console.log("Toast element not found");
-    return;
-  }
-
   t.innerHTML = msg;
+
+  // RESET
   t.style.display = 'block';
+  t.style.opacity = '1';
+  t.style.visibility = 'visible';
+
+  // FORCE FRONT
+  t.style.position = 'fixed';
+  t.style.bottom = '30px';
+  t.style.left = '50%';
+  t.style.transform = 'translateX(-50%)';
+  t.style.zIndex = '999999';
+
+  // COLORS
+  t.style.background = '#1a1a2e';
+  t.style.color = '#fff';
+
+  console.log("TOAST SHOWING");
 
   setTimeout(function () {
     t.style.display = 'none';
