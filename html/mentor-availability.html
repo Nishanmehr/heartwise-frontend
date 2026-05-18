@@ -249,38 +249,44 @@
     }
 
     async function saveSlots() {
-      var dateStr  = TODAY.toISOString().split('T')[0];
-      var dayName  = days[TODAY.getDay()];
 
-      // Convert slots to availability format
-      var data = slots.map(function(s) {
-        return {
-          dayOfWeek:    dayName,
-          startTime:    s.start,
-          endTime:      s.end,
-          slotDuration: s.duration,
-          active:       true,
-          date:         dateStr,
-          label:        s.label
-        };
-      });
+  var dateStr = TODAY.toISOString().split('T')[0];
+  var dayName = days[TODAY.getDay()];
 
-      try {
-var res = await fetch(API + '/availability/' + MID + '/slots', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ' + localStorage.getItem('token')
-  },
-  body: JSON.stringify(data)
-});
-        var result = await res.json();
-        if (res.ok) showToast('✅ ' + (result.message || 'Availability saved!'));
-        else        showToast('❌ Failed to save');
-      } catch(e) {
-        showToast('Error saving ❌');
-      }
+  var data = slots.map(function(s) {
+    return {
+      dayOfWeek: dayName.toUpperCase(),
+      startTime: s.start,
+      endTime: s.end,
+      slotDuration: s.duration,
+      active: true,
+      date: dateStr,
+      label: s.label
+    };
+  });
+
+  try {
+
+    var res = await fetch(API + '/availability/' + MID + '/slots', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (res.ok) {
+      showToast('✅ Availability Saved Successfully');
+    } else {
+      showToast('❌ Failed To Save Availability');
     }
+
+  } catch(e) {
+    console.log(e);
+    showToast('❌ Error Saving Availability');
+  }
+}
 
     async function init() {
       var name = localStorage.getItem('username') || 'M';
