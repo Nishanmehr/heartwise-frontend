@@ -304,8 +304,8 @@
 
       // Load today's saved slots
       try {
-       var res2 = await fetch(API + '/availability/' + MID + '/slots', {
-  headers: {
+var res2 = await fetch(API + '/availability/' + MID, { 
+   headers: {
     'Authorization': 'Bearer ' + localStorage.getItem('token')
   }
 });
