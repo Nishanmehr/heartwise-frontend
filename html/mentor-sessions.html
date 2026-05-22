@@ -74,6 +74,21 @@
       color: var(--muted); font-size: 13px; cursor: pointer;
       margin-bottom: 16px; background: none; border: none;
     }
+    /* ── Chat button ── */
+    .chat-btn {
+      font-size: 12px; padding: 6px 14px; border-radius: 10px;
+      background: linear-gradient(135deg,#7B5EA7,#5A3E85);
+      color: #fff; border: none; cursor: pointer;
+      white-space: nowrap; text-decoration: none;
+      display: inline-block; font-weight: 600;
+      transition: opacity .2s; flex-shrink: 0;
+    }
+    .chat-btn:hover { opacity: 0.85; }
+    /* right-side action area */
+    .card-actions {
+      display: flex; flex-direction: column;
+      align-items: flex-end; gap: 6px; flex-shrink: 0;
+    }
   </style>
 </head>
 <body>
@@ -147,6 +162,7 @@
         const color   = avatarColors[i % avatarColors.length];
         const isCall  = (s.sessionType || '').toLowerCase().includes('call');
         const status  = s.status || 'PENDING';
+
         const statusClass = status === 'ACCEPTED' ? 'status-accepted'
                           : status === 'DECLINED' ? 'status-declined'
                           : 'status-pending';
@@ -154,15 +170,28 @@
                           : status === 'DECLINED' ? '❌ Declined'
                           : '⏳ Pending';
 
+        // Chat URL — mentor is the current user, peer is the booking's user
+        const chatUrl = `chat.html?bookingId=${s.id}`
+          + `&peerId=${s.userId}`
+          + `&peerName=${encodeURIComponent(s.userName || 'User')}`
+          + `&peerPic=`;
+
+        const chatBtn = status === 'ACCEPTED'
+          ? `<a class="chat-btn" href="${chatUrl}">💬 Chat</a>`
+          : '';
+
         return `
           <div class="session-card">
             <div class="session-av" style="background:${color};">${letter}</div>
             <div class="session-info">
               <div class="session-name">${s.userName || 'User'}</div>
               <div class="session-slot">📅 ${s.slot || '—'}</div>
+              <span class="session-type ${isCall ? 'type-call' : 'type-chat'}">${isCall ? '📞 Call' : '💬 Chat'}</span>
             </div>
-            <span class="session-type ${isCall ? 'type-call' : 'type-chat'}">${isCall ? '📞 Call' : '💬 Chat'}</span>
-            <span class="status-badge-sm ${statusClass}">${statusLabel}</span>
+            <div class="card-actions">
+              <span class="status-badge-sm ${statusClass}">${statusLabel}</span>
+              ${chatBtn}
+            </div>
           </div>
         `;
       }).join('');
