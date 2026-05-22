@@ -289,7 +289,7 @@
 <!-- Header -->
 <div id="chat-header">
   <button id="back-btn" onclick="history.back()">&#8592;</button>
-  <img id="chat-avatar" src="../assets/default-avatar.png" alt="Avatar"/>
+  <img id="chat-avatar" src="https://ui-avatars.com/api/?name=U&background=c4b5fd&color=fff" alt="Avatar"/>
   <div>
     <div id="chat-peer-name">Loading…</div>
     <div id="connection-status">
@@ -322,8 +322,8 @@
 
 <script>
 // ─── State ────────────────────────────────────────────────────────────────────
-const BASE_URL  = 'https://heartwise-backend-7y6y.onrender.com';
-const API_URL   = BASE_URL + '/api';
+const CHAT_BASE_URL = 'https://heartwise-backend-7y6y.onrender.com';
+const API_URL       = CHAT_BASE_URL + '/api';
 
 const myId      = parseInt(localStorage.getItem('userId'));
 const myName    = localStorage.getItem('username') || 'You';
@@ -374,7 +374,7 @@ async function loadHistory() {
 
 // ─── WebSocket ────────────────────────────────────────────────────────────────
 function connectWebSocket() {
-  const sock   = new SockJS(BASE_URL + '/ws');
+  const sock   = new SockJS(CHAT_BASE_URL + '/ws');
   stompClient  = Stomp.over(sock);
   stompClient.debug = null; // silence debug logs
 
