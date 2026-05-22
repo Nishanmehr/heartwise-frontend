@@ -71,9 +71,19 @@
       font-size: 12px; padding: 6px 12px; border-radius: 10px;
       background: none; border: 1px solid var(--border);
       color: var(--muted); cursor: pointer; transition: all .2s;
-      white-space: nowrap;
+      white-space: nowrap; text-decoration: none; display: inline-block;
     }
     .book-again-btn:hover { border-color: #E8526A; color: #E8526A; }
+    /* ── Chat button ── */
+    .chat-btn {
+      font-size: 12px; padding: 6px 14px; border-radius: 10px;
+      background: linear-gradient(135deg,#7B5EA7,#5A3E85);
+      color: #fff; border: none; cursor: pointer;
+      white-space: nowrap; text-decoration: none;
+      display: inline-block; font-weight: 600;
+      transition: opacity .2s;
+    }
+    .chat-btn:hover { opacity: 0.85; }
     .back-btn {
       display: flex; align-items: center; gap: 6px;
       color: var(--muted); font-size: 13px; cursor: pointer;
@@ -165,6 +175,18 @@
                           : status === 'DECLINED' ? '❌ Declined'
                           : '⏳ Pending';
 
+        // Build chat URL — only for ACCEPTED bookings
+        const chatUrl = `chat.html?bookingId=${b.id}`
+          + `&peerId=${b.mentorId}`
+          + `&peerName=${encodeURIComponent(name)}`
+          + `&peerPic=${encodeURIComponent(b.mentorPicture || '')}`;
+
+        const actionBtn = status === 'ACCEPTED'
+          ? `<a class="chat-btn" href="${chatUrl}">💬 Chat</a>`
+          : status === 'DECLINED'
+          ? `<a class="book-again-btn" href="mentorprofile.html?id=${b.mentorId}">Book Again</a>`
+          : '';
+
         return `
           <div class="booking-card">
             <div class="booking-av" style="background:${color};">${letter}</div>
@@ -175,9 +197,7 @@
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
               <span class="status-badge-sm ${statusClass}">${statusLabel}</span>
-              ${status === 'DECLINED'
-                ? `<button class="book-again-btn" onclick="location.href='mentorprofile.html?id=${b.mentorId}'">Book Again</button>`
-                : ''}
+              ${actionBtn}
             </div>
           </div>
         `;
