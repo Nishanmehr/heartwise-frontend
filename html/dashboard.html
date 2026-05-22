@@ -35,23 +35,16 @@
       transform: scale(1.08);
       box-shadow: 0 4px 12px rgba(123,94,167,0.4);
     }
-
-    /* ── Dropdown ── */
     .profile-dropdown {
       position: absolute; right: 0; top: 50px;
-      width: 260px;
-      background: #fff;
+      width: 260px; background: #fff;
       border-radius: 16px;
       box-shadow: 0 8px 40px rgba(0,0,0,0.15);
-      z-index: 9999;
-      overflow: hidden;
+      z-index: 9999; overflow: hidden;
       border: 1px solid #f0f0f0;
     }
-
-    /* ── Header ── */
     .pd-header {
-      padding: 20px 16px 16px;
-      text-align: center;
+      padding: 20px 16px 16px; text-align: center;
       background: linear-gradient(135deg, rgba(123,94,167,0.08), rgba(90,62,133,0.05));
       border-bottom: 1px solid #f0f0f0;
     }
@@ -63,31 +56,16 @@
       margin: 0 auto 10px;
       border: 3px solid rgba(123,94,167,0.2);
     }
-    .pd-name {
-      font-size: 16px; font-weight: 700;
-      color: #1a1a2e; margin-bottom: 3px;
-    }
-    .pd-email {
-      font-size: 12px; color: #888;
-      margin-bottom: 3px;
-    }
-    .pd-spec {
-      font-size: 11px; color: #7B5EA7;
-      font-weight: 600;
-    }
-
-    /* ── Stats Row ── */
+    .pd-name  { font-size: 16px; font-weight: 700; color: #1a1a2e; margin-bottom: 3px; }
+    .pd-email { font-size: 12px; color: #888; margin-bottom: 3px; }
+    .pd-spec  { font-size: 11px; color: #7B5EA7; font-weight: 600; }
     .pd-stats {
       display: flex; justify-content: space-around;
-      padding: 12px 16px;
-      border-bottom: 1px solid #f0f0f0;
-      background: #fafafa;
+      padding: 12px 16px; border-bottom: 1px solid #f0f0f0; background: #fafafa;
     }
     .pd-stat { text-align: center; }
     .pd-stat-val { font-size: 16px; font-weight: 700; color: #1a1a2e; }
     .pd-stat-lbl { font-size: 10px; color: #888; margin-top: 2px; }
-
-    /* ── Menu Items ── */
     .pd-menu { padding: 6px 0; }
     .pd-item {
       display: flex; align-items: center; gap: 12px;
@@ -101,6 +79,47 @@
     .pd-item.danger:hover { background: #fff0f2; }
     .pd-icon { font-size: 18px; width: 24px; text-align: center; }
     .pd-divider { height: 1px; background: #f0f0f0; margin: 4px 0; }
+
+    /* ═══ ACTIVE CHATS SECTION ═══ */
+    .chat-section {
+      margin: 0 0 24px 0;
+    }
+    .chat-section-title {
+      font-size: 16px; font-weight: 700; color: var(--text);
+      margin-bottom: 12px; display: flex; align-items: center;
+      justify-content: space-between;
+    }
+    .chat-section-title a {
+      font-size: 13px; color: #7B5EA7;
+      text-decoration: none; font-weight: 600;
+    }
+    .chat-cards { display: flex; flex-direction: column; gap: 10px; }
+    .chat-card {
+      background: var(--card); border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 14px 16px;
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none; transition: box-shadow .2s, border-color .2s;
+    }
+    .chat-card:hover {
+      box-shadow: 0 4px 16px rgba(123,94,167,.15);
+      border-color: #7B5EA7;
+    }
+    .chat-card-av {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg,#E8526A,#C03A55);
+      color: #fff; font-size: 17px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .chat-card-info { flex: 1; }
+    .chat-card-name { font-size: 14px; font-weight: 700; color: var(--text); }
+    .chat-card-slot { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .chat-card-badge {
+      font-size: 11px; font-weight: 700; padding: 3px 10px;
+      border-radius: 20px; background: rgba(123,94,167,.12); color: #7B5EA7;
+    }
+    .chat-card-arrow { font-size: 18px; color: #7B5EA7; font-weight: 700; }
   </style>
 </head>
 <body>
@@ -109,24 +128,17 @@
   <nav class="nav">
     <a class="logo" href="dashboard.html">Heart<span>wise</span></a>
     <div class="nav-right" style="display:flex;align-items:center;gap:10px;">
-
-      <!-- Profile Button + Dropdown -->
       <div class="profile-wrap">
         <button class="profile-avatar-btn" id="profileBtn" onclick="toggleProfile()">
           <span id="navAvatar">M</span>
         </button>
-
         <div class="profile-dropdown" id="profileDropdown" style="display:none;">
-
-          <!-- Header -->
           <div class="pd-header">
             <div class="pd-avatar" id="pdAvatar">M</div>
             <div class="pd-name"  id="pdName">Mentor</div>
             <div class="pd-email" id="pdEmail">—</div>
             <div class="pd-spec"  id="pdSpec">—</div>
           </div>
-
-          <!-- Stats -->
           <div class="pd-stats">
             <div class="pd-stat">
               <div class="pd-stat-val" id="pdStatTotal">—</div>
@@ -141,8 +153,6 @@
               <div class="pd-stat-lbl">Declined</div>
             </div>
           </div>
-
-          <!-- Menu -->
           <div class="pd-menu">
             <button class="pd-item" onclick="location.href='mentor-edit-profile.html'">
               <span class="pd-icon">👤</span> Edit Profile
@@ -150,18 +160,16 @@
             <button class="pd-item" onclick="location.href='mentor-sessions.html'">
               <span class="pd-icon">📋</span> Session History
             </button>
-            <button class="profile-menu-item" onclick="location.href='mentor-availability.html'">
-  <span class="menu-icon">📅</span> My Availability
-</button>
+            <button class="pd-item" onclick="location.href='mentor-availability.html'">
+              <span class="pd-icon">📅</span> My Availability
+            </button>
             <div class="pd-divider"></div>
             <button class="pd-item danger" onclick="logout()">
               <span class="pd-icon">🚪</span> Logout
             </button>
           </div>
-
         </div>
       </div>
-
     </div>
   </nav>
 
@@ -207,6 +215,15 @@
       <span>Exceeding 10 rejections will block your account.</span>
     </div>
 
+    <!-- ═══ ACTIVE CHATS ═══ -->
+    <div class="chat-section" id="activeChatSection" style="display:none;">
+      <div class="chat-section-title">
+        💬 Active Chats
+        <a href="mentor-sessions.html">See all →</a>
+      </div>
+      <div class="chat-cards" id="activeChatList"></div>
+    </div>
+
     <div class="requests-section">
       <div class="requests-title">
         <div class="req-dot"></div>
@@ -231,14 +248,11 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    /* Toggle dropdown */
     function toggleProfile() {
       const d = document.getElementById('profileDropdown');
       if (!d) return;
       d.style.display = d.style.display === 'block' ? 'none' : 'block';
     }
-
-    /* Close on outside click */
     document.addEventListener('click', function(e) {
       var btn = document.getElementById('profileBtn');
       var d   = document.getElementById('profileDropdown');
@@ -246,25 +260,20 @@
         d.style.display = 'none';
       }
     });
-
-    /* Fill profile data */
     function fillProfileDropdown(sessions) {
       var name    = localStorage.getItem('username') || 'Mentor';
       var email   = localStorage.getItem('email')    || '—';
       var initial = name.charAt(0).toUpperCase();
-
       var els = {
-        navAvatar:   document.getElementById('navAvatar'),
-        pdAvatar:    document.getElementById('pdAvatar'),
-        pdName:      document.getElementById('pdName'),
-        pdEmail:     document.getElementById('pdEmail'),
+        navAvatar: document.getElementById('navAvatar'),
+        pdAvatar:  document.getElementById('pdAvatar'),
+        pdName:    document.getElementById('pdName'),
+        pdEmail:   document.getElementById('pdEmail'),
       };
-
       if (els.navAvatar) els.navAvatar.textContent = initial;
       if (els.pdAvatar)  els.pdAvatar.textContent  = initial;
       if (els.pdName)    els.pdName.textContent     = name;
       if (els.pdEmail)   els.pdEmail.textContent    = email;
-
       if (sessions) {
         var total    = sessions.length;
         var accepted = sessions.filter(function(s){ return s.status === 'ACCEPTED'; }).length;
@@ -281,5 +290,68 @@
 
   <script src="../js/api.js"></script>
   <script src="../js/dashboard.js"></script>
+
+  <!-- ACTIVE CHATS LOADER FOR MENTOR -->
+  <script>
+    const avatarColorsDash = [
+      'linear-gradient(135deg,#E8526A,#C03A55)',
+      'linear-gradient(135deg,#7B5EA7,#5A3E85)',
+      'linear-gradient(135deg,#3D7A6A,#235A4D)',
+      'linear-gradient(135deg,#C9922B,#A0701A)',
+    ];
+
+    // helper — tries all possible field names your API might use
+    function getSessionUserName(s) {
+      return s.userName || s.username || s.clientName || s.name || s.userFirstName || 'User';
+    }
+    function getSessionUserId(s) {
+      return s.userId || s.user_id || s.clientId || '';
+    }
+
+    async function loadMentorActiveChats() {
+      const mentorId = localStorage.getItem('userId');
+      const token    = localStorage.getItem('token');
+      if (!mentorId || !token) return;
+
+      try {
+        const sessions = await apiGetMentorSessions(mentorId);
+        const accepted = sessions.filter(s => s.status === 'ACCEPTED');
+        if (accepted.length === 0) return;
+
+        const section = document.getElementById('activeChatSection');
+        const list    = document.getElementById('activeChatList');
+        section.style.display = 'block';
+
+        list.innerHTML = accepted.map((s, i) => {
+          const userName = getSessionUserName(s);
+          const userId   = getSessionUserId(s);
+          const letter   = userName.charAt(0).toUpperCase();
+          const color    = avatarColorsDash[i % avatarColorsDash.length];
+
+          const chatUrl = `chat.html?bookingId=${s.id}`
+            + `&peerId=${userId}`
+            + `&peerName=${encodeURIComponent(userName)}`
+            + `&peerPic=`;
+
+          return `
+            <a class="chat-card" href="${chatUrl}">
+              <div class="chat-card-av" style="background:${color};">${letter}</div>
+              <div class="chat-card-info">
+                <div class="chat-card-name">${userName}</div>
+                <div class="chat-card-slot">📅 ${s.slot || '—'}</div>
+              </div>
+              <span class="chat-card-badge">💬 Chat</span>
+              <span class="chat-card-arrow">›</span>
+            </a>
+          `;
+        }).join('');
+      } catch (e) {
+        console.warn('Could not load active chats:', e);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', loadMentorActiveChats);
+  </script>
+
 </body>
 </html>

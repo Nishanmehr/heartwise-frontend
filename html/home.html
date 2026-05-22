@@ -116,8 +116,6 @@
     }
     .love-calc-btn:hover   { opacity: .9; }
     .love-calc-btn:active  { transform: scale(.97); }
-
-    /* Result */
     .love-result-names {
       font-size: 15px; font-weight: 600; color: var(--text);
       margin: 20px 0 12px;
@@ -138,12 +136,8 @@
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       margin-bottom: 8px;
     }
-    .love-message {
-      font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 6px;
-    }
+    .love-message { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
     .love-emoji { font-size: 32px; }
-
-    /* ── Love Breakdown ── */
     .love-breakdown {
       margin-top: 20px; padding: 16px;
       background: var(--bg); border-radius: 14px;
@@ -162,12 +156,9 @@
     .lb-bar span {
       display: block; height: 100%;
       background: linear-gradient(90deg, #E8526A, #ff8fa3);
-      border-radius: 20px;
-      transition: width 1s ease;
+      border-radius: 20px; transition: width 1s ease;
     }
     .lb-val { width: 36px; text-align: right; font-weight: 700; color: #E8526A; font-size: 12px; }
-
-
 
     /* Profile dropdown */
     .profile-wrap { position: relative; z-index: 9999; }
@@ -199,13 +190,8 @@
       display: flex; align-items: center; justify-content: center;
       margin: 0 auto 8px;
     }
-    .profile-header-name {
-      font-size: 15px; font-weight: 700; color: #1a1a2e;
-      margin-bottom: 2px;
-    }
-    .profile-header-email {
-      font-size: 12px; color: #666;
-    }
+    .profile-header-name { font-size: 15px; font-weight: 700; color: #1a1a2e; margin-bottom: 2px; }
+    .profile-header-email { font-size: 12px; color: #666; }
     .profile-menu-item {
       display: flex; align-items: center; gap: 10px;
       padding: 12px 16px; font-size: 14px; color: #333;
@@ -218,6 +204,46 @@
     .profile-menu-item.danger:hover { background: #fff0f2; }
     .profile-menu-item .menu-icon { font-size: 16px; width: 20px; }
     .profile-divider { height: 1px; background: #f0f0f0; margin: 4px 0; }
+
+    /* ═══ ACTIVE CHATS SECTION ═══ */
+    .chat-section {
+      margin: 0 0 24px 0;
+    }
+    .chat-section-title {
+      font-size: 16px; font-weight: 700; color: var(--text);
+      margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+    }
+    .chat-cards {
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .chat-card {
+      background: var(--card); border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 14px 16px;
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none; transition: box-shadow .2s, border-color .2s;
+    }
+    .chat-card:hover {
+      box-shadow: 0 4px 16px rgba(123,94,167,.15);
+      border-color: #7B5EA7;
+    }
+    .chat-card-av {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg,#7B5EA7,#5A3E85);
+      color: #fff; font-size: 17px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .chat-card-info { flex: 1; }
+    .chat-card-name { font-size: 14px; font-weight: 700; color: var(--text); }
+    .chat-card-slot { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .chat-card-arrow {
+      font-size: 18px; color: #7B5EA7; font-weight: 700;
+    }
+    .chat-card-badge {
+      font-size: 11px; font-weight: 700; padding: 3px 10px;
+      border-radius: 20px; background: rgba(123,94,167,.12); color: #7B5EA7;
+    }
 
     /* ═══════════════ NOVA CHATBOT ═══════════════ */
     .nova-fab {
@@ -235,7 +261,6 @@
       0%,100% { box-shadow: 0 4px 20px rgba(123,94,167,.5); }
       50%      { box-shadow: 0 4px 28px rgba(123,94,167,.8); }
     }
-
     .nova-tooltip {
       position: fixed; bottom: 92px; right: 24px;
       background: #1a1a2e; color: #fff;
@@ -250,11 +275,8 @@
       content: ''; position: absolute;
       bottom: -6px; right: 22px;
       border: 6px solid transparent;
-      border-top-color: #1a1a2e;
-      border-bottom: none;
+      border-top-color: #1a1a2e; border-bottom: none;
     }
-
-    /* Chat Window */
     .nova-window {
       position: fixed; bottom: 96px; right: 24px;
       width: 360px; height: 520px;
@@ -270,8 +292,6 @@
       to   { opacity:1; transform: translateY(0); }
     }
     .nova-window.open { display: flex; }
-
-    /* Chat Header */
     .nova-header {
       background: linear-gradient(135deg, #7B5EA7, #E8526A);
       padding: 14px 16px;
@@ -294,27 +314,19 @@
       align-items: center; justify-content: center;
     }
     .nova-close:hover { background: rgba(255,255,255,.35); }
-
-    /* Messages */
     .nova-messages {
       flex: 1; overflow-y: auto; padding: 16px;
       display: flex; flex-direction: column; gap: 12px;
-      scroll-behavior: smooth;
-      background: #ffffff;
+      scroll-behavior: smooth; background: #ffffff;
     }
     .nova-messages::-webkit-scrollbar { width: 4px; }
     .nova-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-    .msg {
-      display: flex; gap: 8px; align-items: flex-end;
-      animation: fadeInMsg .2s ease;
-    }
+    .msg { display: flex; gap: 8px; align-items: flex-end; animation: fadeInMsg .2s ease; }
     @keyframes fadeInMsg {
       from { opacity:0; transform: translateY(6px); }
       to   { opacity:1; transform: translateY(0); }
     }
     .msg.user { flex-direction: row-reverse; }
-
     .msg-avatar {
       width: 28px; height: 28px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
@@ -322,29 +334,16 @@
     }
     .msg.nova .msg-avatar { background: linear-gradient(135deg,#7B5EA7,#E8526A); }
     .msg.user .msg-avatar { background: linear-gradient(135deg,#E8526A,#C03A55); color:#fff; font-size:11px; font-weight:700; }
-
     .msg-bubble {
       max-width: 75%; padding: 10px 14px;
       border-radius: 16px; font-size: 13px; line-height: 1.5;
     }
-    .msg.nova .msg-bubble {
-      background: #f5f0ff; color: #1a1a2e;
-      border-bottom-left-radius: 4px;
-      border: 1px solid #e0d5f5;
-    }
-    .msg.user .msg-bubble {
-      background: linear-gradient(135deg,#7B5EA7,#E8526A);
-      color: #fff; border-bottom-right-radius: 4px;
-    }
-
-    /* Typing indicator */
-    .typing-dots {
-      display: flex; gap: 4px; padding: 4px 0;
-    }
+    .msg.nova .msg-bubble { background: #f5f0ff; color: #1a1a2e; border-bottom-left-radius: 4px; border: 1px solid #e0d5f5; }
+    .msg.user .msg-bubble { background: linear-gradient(135deg,#7B5EA7,#E8526A); color: #fff; border-bottom-right-radius: 4px; }
+    .typing-dots { display: flex; gap: 4px; padding: 4px 0; }
     .typing-dots span {
       width: 7px; height: 7px; background: var(--muted);
-      border-radius: 50%;
-      animation: typing .8s infinite alternate;
+      border-radius: 50%; animation: typing .8s infinite alternate;
     }
     .typing-dots span:nth-child(2) { animation-delay: .2s; }
     .typing-dots span:nth-child(3) { animation-delay: .4s; }
@@ -352,17 +351,12 @@
       from { opacity:.3; transform: translateY(0); }
       to   { opacity:1; transform: translateY(-4px); }
     }
-
-    /* Input area */
     .nova-input-wrap {
-      padding: 12px 14px;
-      border-top: 1px solid #e0e0e0;
-      display: flex; gap: 8px; align-items: center;
-      background: #ffffff;
+      padding: 12px 14px; border-top: 1px solid #e0e0e0;
+      display: flex; gap: 8px; align-items: center; background: #ffffff;
     }
     .nova-input {
-      flex: 1; padding: 10px 14px;
-      border: 1.5px solid #ddd; border-radius: 20px;
+      flex: 1; padding: 10px 14px; border: 1.5px solid #ddd; border-radius: 20px;
       font-size: 13px; background: #f8f8f8; color: #1a1a2e;
       outline: none; resize: none; font-family: inherit;
       transition: border .2s; max-height: 80px; overflow-y: auto;
@@ -377,12 +371,7 @@
     }
     .nova-send:hover { transform: scale(1.1); }
     .nova-send:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-
-    /* Quick suggestions */
-    .nova-suggestions {
-      padding: 8px 14px 0;
-      display: flex; gap: 6px; flex-wrap: wrap;
-    }
+    .nova-suggestions { padding: 8px 14px 0; display: flex; gap: 6px; flex-wrap: wrap; }
     .sugg-btn {
       padding: 5px 10px; border-radius: 12px;
       border: 1px solid var(--border); background: var(--bg);
@@ -390,7 +379,6 @@
       transition: all .2s; white-space: nowrap;
     }
     .sugg-btn:hover { border-color: #7B5EA7; color: #7B5EA7; }
-
     @media(max-width:400px) {
       .nova-window { width: calc(100vw - 32px); right: 16px; bottom: 88px; }
       .nova-fab { bottom: 16px; right: 16px; }
@@ -404,8 +392,6 @@
   <nav class="nav">
     <a class="logo" href="home.html">Heart<span>wise</span></a>
     <div class="nav-right" style="display:flex;align-items:center;gap:10px;">
-
-      <!-- Notification Bell -->
       <div class="notif-wrap">
         <button class="notif-bell" id="notif-bell" onclick="toggleNotifications()" title="Notifications">
           🔔
@@ -418,22 +404,16 @@
           </div>
         </div>
       </div>
-
-      <!-- Profile Dropdown -->
       <div class="profile-wrap">
         <button class="profile-avatar-btn" id="profileBtn" onclick="toggleProfile()">
           <span id="navAvatar">U</span>
         </button>
         <div class="profile-dropdown" id="profileDropdown">
-
-          <!-- Header -->
           <div class="profile-header">
             <div class="profile-header-avatar" id="profileBigAvatar">U</div>
             <div class="profile-header-name"   id="profileName">User</div>
             <div class="profile-header-email"  id="profileEmail">—</div>
           </div>
-
-          <!-- Menu Items -->
           <div style="padding: 6px 0;">
             <button class="profile-menu-item" onclick="toggleNotifications(); toggleProfile();">
               <span class="menu-icon">🔔</span> Notifications
@@ -447,7 +427,6 @@
               <span class="menu-icon">🚪</span> Logout
             </button>
           </div>
-
         </div>
       </div>
     </div>
@@ -463,14 +442,21 @@
     </div>
   </div>
 
+  <!-- ═══ ACTIVE CHATS SECTION ═══ -->
+  <div class="section" id="activeChatSection" style="display:none;">
+    <div class="section-header">
+      <span class="section-title">💬 Your Active Chats</span>
+      <a href="bookings.html" style="font-size:13px;color:#7B5EA7;text-decoration:none;font-weight:600;">See all →</a>
+    </div>
+    <div class="chat-cards" id="activeChatList"></div>
+  </div>
+
   <!-- ANALYZER BANNER -->
   <div class="analyzer-banner" onclick="location.href='analyzer.html'">
     <h3>Is your partner a 🚩 or 💚?</h3>
     <p>Answer 5 quick questions about their behavior. Get your instant report.</p>
     <button class="btn-gold">Start Analyzer →</button>
   </div>
-
-
 
   <!-- LOVE LETTER BANNER -->
   <div class="analyzer-banner" style="background:linear-gradient(135deg,#1a0a0f,#3d1525);cursor:pointer;" onclick="location.href='love-letter.html'">
@@ -497,7 +483,6 @@
         </div>
       </div>
       <button class="love-calc-btn" onclick="calculateLove()">Calculate Love 💕</button>
-
       <div id="loveResult" style="display:none;">
         <div class="love-result-names" id="loveResultNames"></div>
         <div class="love-meter">
@@ -516,7 +501,6 @@
       <span class="section-title">Verified Mentors</span>
       <button class="see-all">See all →</button>
     </div>
-    <!-- FILTER BAR -->
     <div class="filter-bar">
       <div class="filter-group">
         <label>💞 Specialty</label>
@@ -552,21 +536,12 @@
       </div>
       <button class="filter-reset" onclick="resetFilters()">✕ Reset</button>
     </div>
-
     <div class="mentor-grid" id="mentorList"></div>
   </div>
 
-
-  <!-- ═══════════ NOVA CHATBOT ═══════════ -->
-  <!-- Tooltip -->
+  <!-- NOVA CHATBOT -->
   <div class="nova-tooltip" id="novaTooltip">💬 Chat with Nova AI</div>
-
-  <!-- FAB Button -->
-  <button class="nova-fab" id="novaFab" title="Chat with Nova">
-    🌟
-  </button>
-
-  <!-- Chat Window -->
+  <button class="nova-fab" id="novaFab" title="Chat with Nova">🌟</button>
   <div class="nova-window" id="novaWindow">
     <div class="nova-header">
       <div class="nova-avatar">🌟</div>
@@ -576,9 +551,7 @@
       </div>
       <button class="nova-close" id="novaClose">✕</button>
     </div>
-
     <div class="nova-messages" id="novaMessages">
-      <!-- Welcome message -->
       <div class="msg nova">
         <div class="msg-avatar">🌟</div>
         <div class="msg-bubble">
@@ -587,18 +560,14 @@
         </div>
       </div>
     </div>
-
-    <!-- Quick suggestions -->
     <div class="nova-suggestions" id="novaSuggestions">
       <button class="sugg-btn">💔 Breakup advice</button>
       <button class="sugg-btn">💬 Communication tips</button>
       <button class="sugg-btn">😤 We had a fight</button>
       <button class="sugg-btn">💕 Express feelings</button>
     </div>
-
     <div class="nova-input-wrap">
-      <textarea class="nova-input" id="novaInput" placeholder="Type your message..."
-        rows="1" id="novaInputArea"></textarea>
+      <textarea class="nova-input" id="novaInput" placeholder="Type your message..." rows="1"></textarea>
       <button class="nova-send" id="novaSend">➤</button>
     </div>
   </div>
@@ -615,16 +584,67 @@
   <script src="../js/api.js"></script>
   <script src="../js/home.js"></script>
 
+  <!-- ACTIVE CHATS LOADER -->
+  <script>
+    const HOME_API = 'https://heartwise-backend-7y6y.onrender.com/api';
+    const avatarColors = [
+      'linear-gradient(135deg,#7B5EA7,#5A3E85)',
+      'linear-gradient(135deg,#E8526A,#C03A55)',
+      'linear-gradient(135deg,#3D7A6A,#235A4D)',
+      'linear-gradient(135deg,#C9922B,#A0701A)',
+    ];
+
+    async function loadActiveChats() {
+      const userId = localStorage.getItem('userId');
+      const token  = localStorage.getItem('token');
+      if (!userId || !token) return;
+
+      try {
+        const bookings = await apiGetUserSessions(userId);
+        const accepted = bookings.filter(b => b.status === 'ACCEPTED');
+        if (accepted.length === 0) return;
+
+        const section = document.getElementById('activeChatSection');
+        const list    = document.getElementById('activeChatList');
+        section.style.display = 'block';
+
+        list.innerHTML = accepted.map((b, i) => {
+          const name   = b.mentorName || 'Mentor';
+          const letter = name.charAt(0).toUpperCase();
+          const color  = avatarColors[i % avatarColors.length];
+          const chatUrl = `chat.html?bookingId=${b.id}`
+            + `&peerId=${b.mentorId}`
+            + `&peerName=${encodeURIComponent(name)}`
+            + `&peerPic=${encodeURIComponent(b.mentorPicture || '')}`;
+
+          return `
+            <a class="chat-card" href="${chatUrl}">
+              <div class="chat-card-av" style="background:${color};">${letter}</div>
+              <div class="chat-card-info">
+                <div class="chat-card-name">${name}</div>
+                <div class="chat-card-slot">📅 ${b.slot || '—'}</div>
+              </div>
+              <span class="chat-card-badge">💬 Chat</span>
+              <span class="chat-card-arrow">›</span>
+            </a>
+          `;
+        }).join('');
+      } catch (e) {
+        console.warn('Could not load active chats:', e);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', loadActiveChats);
+  </script>
+
   <!-- NOVA CHATBOT SCRIPT -->
   <script>
     var NOVA_API = 'https://heartwise-backend-7y6y.onrender.com/api/ai/chat';
-
-    // Attach all event listeners after DOM is ready
     document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('novaFab').addEventListener('click', toggleNova);
       document.getElementById('novaClose').addEventListener('click', toggleNova);
       document.getElementById('novaSend').addEventListener('click', sendNovaMessage);
-      var inp = document.getElementById('novaInputArea') || document.getElementById('novaInput');
+      var inp = document.getElementById('novaInput');
       if (inp) inp.addEventListener('keydown', handleNovaKey);
       document.querySelectorAll('.sugg-btn').forEach(function(btn) {
         btn.addEventListener('click', function() { sendSuggestion(this); });
@@ -633,50 +653,39 @@
     var novaOpen = false;
     var novaHistory = [];
     var tooltipHidden = false;
-
     setTimeout(function() {
       var t = document.getElementById('novaTooltip');
       if (t && !tooltipHidden) t.style.display = 'block';
     }, 3000);
-
     function toggleNova() {
       novaOpen = !novaOpen;
-      var win     = document.getElementById('novaWindow');
-      var fab     = document.getElementById('novaFab');
+      var win = document.getElementById('novaWindow');
+      var fab = document.getElementById('novaFab');
       var tooltip = document.getElementById('novaTooltip');
       if (novaOpen) {
-        win.classList.add('open');
-        fab.innerHTML = '✕';
+        win.classList.add('open'); fab.innerHTML = '✕';
         if (tooltip) tooltip.style.display = 'none';
         tooltipHidden = true;
-        var ni = document.getElementById('novaInputArea') || document.getElementById('novaInput'); if(ni) ni.focus();
+        var ni = document.getElementById('novaInput'); if(ni) ni.focus();
       } else {
-        win.classList.remove('open');
-        fab.innerHTML = '🌟';
+        win.classList.remove('open'); fab.innerHTML = '🌟';
       }
     }
-
     function handleNovaKey(e) {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendNovaMessage();
-      }
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendNovaMessage(); }
     }
-
     function sendSuggestion(btn) {
       document.getElementById('novaInput').value = btn.textContent.trim();
       document.getElementById('novaSuggestions').style.display = 'none';
       sendNovaMessage();
     }
-
     function addMessage(role, text) {
-      var msgs     = document.getElementById('novaMessages');
+      var msgs = document.getElementById('novaMessages');
       var username = localStorage.getItem('username') || 'You';
-      var initial  = username.charAt(0).toUpperCase();
-      var div      = document.createElement('div');
+      var initial = username.charAt(0).toUpperCase();
+      var div = document.createElement('div');
       div.className = 'msg ' + role;
-      var safeText = text
-        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+      var safeText = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
       if (role === 'nova') {
         div.innerHTML = '<div class="msg-avatar">🌟</div><div class="msg-bubble">' + safeText + '</div>';
       } else {
@@ -685,27 +694,19 @@
       msgs.appendChild(div);
       msgs.scrollTop = msgs.scrollHeight;
     }
-
     function showTyping() {
       var msgs = document.getElementById('novaMessages');
-      var id   = 'typing-' + Date.now();
-      var div  = document.createElement('div');
-      div.className = 'msg nova';
-      div.id = id;
+      var id = 'typing-' + Date.now();
+      var div = document.createElement('div');
+      div.className = 'msg nova'; div.id = id;
       div.innerHTML = '<div class="msg-avatar">🌟</div><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
-      msgs.appendChild(div);
-      msgs.scrollTop = msgs.scrollHeight;
+      msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight;
       return id;
     }
-
-    function removeTyping(id) {
-      var el = document.getElementById(id);
-      if (el) el.remove();
-    }
-
+    function removeTyping(id) { var el = document.getElementById(id); if (el) el.remove(); }
     async function sendNovaMessage() {
-      var input = document.getElementById('novaInputArea') || document.getElementById('novaInput');
-      var text  = input.value.trim();
+      var input = document.getElementById('novaInput');
+      var text = input.value.trim();
       if (!text) return;
       document.getElementById('novaSuggestions').style.display = 'none';
       addMessage('user', text);
