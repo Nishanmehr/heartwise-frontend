@@ -289,8 +289,9 @@
 <!-- Header -->
 <div id="chat-header">
   <button id="back-btn" onclick="history.back()">&#8592;</button>
-  <img id="chat-avatar" src="https://ui-avatars.com/api/?name=U&background=c4b5fd&color=fff" alt="Avatar"/>
-  <div>
+<img id="chat-avatar" src="" alt="Avatar" 
+  onerror="this.src='https://ui-avatars.com/api/?name=U&background=c4b5fd&color=fff'"/>
+    <div>
     <div id="chat-peer-name">Loading…</div>
     <div id="connection-status">
       <span class="status-dot" id="status-dot"></span>
@@ -464,13 +465,14 @@ function appendMessage(msg, animate) {
   row.className = `msg-row ${isMe ? 'me' : 'them'}`;
   if (animate) row.style.animation = 'none'; // could add fade-in later
 
-  const avatarSrc = isMe
-    ? (localStorage.getItem('profilePic') || '../assets/default-avatar.png')
-    : (peerPic || '../assets/default-avatar.png');
+const avatarSrc = isMe
+  ? (localStorage.getItem('profilePic') || `https://ui-avatars.com/api/?name=${encodeURIComponent(myName)}&background=7c3aed&color=fff`)
+  : (peerPic || `https://ui-avatars.com/api/?name=${encodeURIComponent(peerName)}&background=e8526a&color=fff`);
+
 
   row.innerHTML = `
     <img class="msg-avatar" src="${avatarSrc}" alt="avatar"
-         onerror="this.src='../assets/default-avatar.png'"/>
+onerror="this.src='https://ui-avatars.com/api/?name=U&background=c4b5fd&color=fff'"/>
     <div>
       <div class="bubble">
         ${escapeHtml(msg.message)}
