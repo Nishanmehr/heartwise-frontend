@@ -321,18 +321,18 @@
 </div>
 
 <!-- Messages -->
-<div id="messages"></div>
-
-<!-- Typing indicator -->
-<div id="typing-row">
-  <div class="msg-avatar-wrap">
-    <div class="msg-av" id="typing-av">?</div>
-  </div>
-  <div class="typing-bubble">
-    <div class="typing-dot"></div>
-    <div class="typing-dot"></div>
-    <div class="typing-dot"></div>
-    <span id="typing-label"></span>
+<div id="messages">
+  <!-- Typing indicator sits inside messages so insertBefore works -->
+  <div id="typing-row" style="display:none;align-items:flex-end;gap:6px;margin-bottom:4px;">
+    <div class="msg-avatar-wrap">
+      <div class="msg-av" id="typing-av">?</div>
+    </div>
+    <div class="typing-bubble">
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <span id="typing-label"></span>
+    </div>
   </div>
 </div>
 
@@ -677,7 +677,7 @@ function appendMessage(msg, animate, tickStatus) {
     </div>
   `;
 
-  container.insertBefore(row, document.getElementById('typing-row'));
+container.appendChild(row);
   if (animate) scrollToBottom();
   return row;
 }
@@ -707,7 +707,7 @@ function updateLastMsgTick(status) {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function scrollToBottom() {
   const el = document.getElementById('messages');
-  el.scrollTop = el.scrollHeight;
+  requestAnimationFrame(() => { el.scrollTop = el.scrollHeight; });
 }
 function autoResize(el) {
   el.style.height = 'auto';
