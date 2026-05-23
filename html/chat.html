@@ -554,7 +554,7 @@ function sendMessage() {
     type:       'TEXT'
   };
 
-  const el = appendMessage({ ...payload, sentAt: new Date().toISOString() }, true, 'delivered');
+  const el = appendMessage({ ...payload, sentAt: new Date(new Date() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 19) }, true, 'delivered');
   lastMsgEl = el;
   stompClient.send('/app/chat.send', {}, JSON.stringify(payload));
 
@@ -578,7 +578,7 @@ function sendImage() {
     type:       'IMAGE'
   };
 
-  const el = appendMessage({ ...payload, sentAt: new Date().toISOString() }, true, 'delivered');
+  const el = appendMessage({ ...payload, sentAt: new Date(new Date() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 19) }, true, 'delivered');
   lastMsgEl = el;
   stompClient.send('/app/chat.send', {}, JSON.stringify(payload));
 
@@ -610,12 +610,17 @@ function sendTypingEvent(typing) {
 }
 
 function showTyping() {
-  document.getElementById('typing-row').style.display = 'flex';
+  const row = document.getElementById('typing-row');
+  row.style.display = 'flex';
+  row.style.alignItems = 'flex-end';
+  row.style.gap = '6px';
+  row.style.marginBottom = '4px';
   document.getElementById('typing-label').textContent = peerName.split(' ')[0] + ' is typing';
   scrollToBottom();
 }
-function hideTyping() { document.getElementById('typing-row').style.display = 'none'; }
-
+function hideTyping() {
+  document.getElementById('typing-row').style.display = 'none';
+}
 // ─── Append message ───────────────────────────────────────────────────────────
 function appendMessage(msg, animate, tickStatus) {
   const container = document.getElementById('messages');
@@ -725,11 +730,13 @@ function showError(msg) {
 }
 function formatTime(isoStr) {
   if (!isoStr) return '';
-  return new Date(isoStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const d = new Date(isoStr.replace('T', ' '));
+  return isNaN(d) ? '' : d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
 }
 function formatDate(isoStr) {
   if (!isoStr) return 'Today';
-  const d = new Date(isoStr), now = new Date();
+  const d   = new Date(isoStr.replace('T', ' '));
+  const now = new Date();
   if (d.toDateString() === now.toDateString()) return 'Today';
   const yest = new Date(now); yest.setDate(now.getDate() - 1);
   if (d.toDateString() === yest.toDateString()) return 'Yesterday';
