@@ -459,13 +459,17 @@ function onConnected() {
   });
 
   stompClient.subscribe(`/topic/typing/${bookingId}`, (frame) => {
-    const data = JSON.parse(frame.body);
-    if (String(data.senderId) !== String(myId)) {
-      data.typing ? showTyping() : hideTyping();
+  const data = JSON.parse(frame.body);
+  console.log('Typing received:', data, 'myId:', myId); // debug
+  // Compare as strings
+  if (String(data.senderId) !== String(myId)) {
+    if (data.typing === true || data.typing === 'true') {
+      showTyping();
+    } else {
+      hideTyping();
     }
-  });
-}
-
+  }
+});
 function onError() {
   setStatus(false);
   hideLoading();
@@ -605,8 +609,12 @@ function handleInput(el) {
 function sendTypingEvent(typing) {
   if (!stompClient || !connected) return;
   try {
-    stompClient.send('/app/chat.typing', {}, JSON.stringify({ bookingId, senderId: myId, typing }));
-  } catch(e) {}
+    stompClient.send('/app/chat.typing', {}, JSON.stringify({ 
+      bookingId: bookingId,  // ensure it's a number
+      senderId: String(myId), // send as string for consistent comparison
+      typing: typing 
+    }));
+  } catch(e) { console.error('Typing send error:', e); }
 }
 
 function showTyping() {
@@ -730,12 +738,28 @@ function showError(msg) {
 }
 function formatTime(isoStr) {
   if (!isoStr) return '';
-  const d = new Date(isoStr.replace('T', ' '));
-  return isNaN(d) ? '' : d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+  // Backend sends "2024-01-15T07:23:00" (IST, no Z)
+  // We need to treat it as IST (+5:30) explicitly
+  let d;
+  if (isoStr.includes('Z') || isoStr.includes('+')) {
+    d = new Date(isoStr); // already has timezone info
+  } else {
+    // No timezone = assume IST, add +05:30
+    d = new Date(isoStr + '+05:30');
+  }
+  return isNaN(d) ? '' : d.toLocaleTimeString([], { 
+    hour: '2-digit', minute: '2-digit', hour12: true 
+  });
 }
+
 function formatDate(isoStr) {
   if (!isoStr) return 'Today';
-  const d   = new Date(isoStr.replace('T', ' '));
+  let d;
+  if (isoStr.includes('Z') || isoStr.includes('+')) {
+    d = new Date(isoStr);
+  } else {
+    d = new Date(isoStr + '+05:30');
+  }
   const now = new Date();
   if (d.toDateString() === now.toDateString()) return 'Today';
   const yest = new Date(now); yest.setDate(now.getDate() - 1);
