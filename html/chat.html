@@ -619,12 +619,15 @@ function sendTypingEvent(typing) {
 }
 
 function showTyping() {
+  const container = document.getElementById('messages');
   const row = document.getElementById('typing-row');
-  row.style.display = 'flex';
-  row.style.alignItems = 'flex-end';
-  row.style.gap = '6px';
+  // Move typing row to bottom every time it shows
+  container.appendChild(row);
+  row.style.display      = 'flex';
+  row.style.alignItems   = 'flex-end';
+  row.style.gap          = '6px';
   row.style.marginBottom = '4px';
-  document.getElementById('typing-label').textContent = peerName.split(' ')[0] + ' is typing';
+  document.getElementById('typing-label').textContent = peerName.split(' ')[0] + ' is typing…';
   scrollToBottom();
 }
 function hideTyping() {
@@ -633,16 +636,21 @@ function hideTyping() {
 // ─── Append message ───────────────────────────────────────────────────────────
 function appendMessage(msg, animate, tickStatus) {
   const container = document.getElementById('messages');
+  const typingRow = document.getElementById('typing-row');
   const isMe      = String(msg.senderId) === String(myId);
   const isImage   = msg.type === 'IMAGE' || (msg.message && msg.message.startsWith('data:image'));
 
-  // Date separator
   const msgDate = formatDate(msg.sentAt);
   if (msgDate !== lastDate) {
     const sep = document.createElement('div');
     sep.className = 'date-separator';
     sep.textContent = msgDate;
-    container.appendChild(sep);
+    // Insert before typing row if it's still at top, else append
+    if (typingRow.parentNode === container) {
+      container.insertBefore(sep, typingRow);
+    } else {
+      container.appendChild(sep);
+    }
     lastDate = msgDate; lastSender = null;
   }
 
@@ -658,7 +666,6 @@ function appendMessage(msg, animate, tickStatus) {
 
   const tickHtml = isMe && tickStatus ? buildTick(tickStatus) : '';
 
-  // Build bubble content
   let bubbleContent = '';
   if (isImage) {
     bubbleContent = `
@@ -667,9 +674,8 @@ function appendMessage(msg, animate, tickStatus) {
         <img class="chat-img" src="${msg.message}"
           style="display:none;"
           onload="this.previousElementSibling.remove(); this.style.display='block';"
-          onerror="this.previousElementSibling.remove(); this.style.display='block'; this.src='https://ui-avatars.com/api/?name=IMG&background=f3e8ff&color=7c3aed';"
-          onclick="openLightbox(this.src)"
-          alt="Photo"/>
+          onerror="this.previousElementSibling.remove(); this.style.display='block';"
+          onclick="openLightbox(this.src)" alt="Photo"/>
       </div>`;
   } else {
     bubbleContent = `<div class="bubble">${escapeHtml(msg.message)}</div>`;
@@ -691,7 +697,13 @@ function appendMessage(msg, animate, tickStatus) {
     </div>
   `;
 
-container.appendChild(row);
+  // Always insert before typing row so typing stays at bottom
+  if (typingRow.parentNode === container) {
+    container.insertBefore(row, typingRow);
+  } else {
+    container.appendChild(row);
+  }
+
   if (animate) scrollToBottom();
   return row;
 }
