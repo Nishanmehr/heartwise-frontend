@@ -825,9 +825,10 @@ window.addEventListener('resize', () => {
     setTimeout(() => scrollToBottom(), 100);
   }
 });
+   function escapeHtml(str){
   if(!str)return'';
   return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br/>');
-
+   }
 </script>
 </body>
 </html>
