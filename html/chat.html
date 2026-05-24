@@ -221,6 +221,7 @@
 
     /* ── Bubble ── */
     .bubble {
+      white-space: pre-wrap;
       padding: 10px 15px;
       border-radius: 22px;
       font-size: 14px; line-height: 1.55;
@@ -661,8 +662,24 @@ function onConnected(){
     }
   });
 }
-function onError(){setStatus(false);hideLoading();setTimeout(connectWebSocket,5000);}
+let reconnecting = false;
 
+function onError() {
+
+  setStatus(false);
+  hideLoading();
+
+  if (reconnecting) return;
+
+  reconnecting = true;
+
+  setTimeout(() => {
+
+    reconnecting = false;
+    connectWebSocket();
+
+  }, 5000);
+}
 function handlePhotoSelected(e){
   const file=e.target.files[0]; if(!file)return;
   if(file.size>5*1024*1024){alert('Max 5MB please.');e.target.value='';return;}
@@ -768,8 +785,14 @@ function appendMessage(msg,animate,tickStatus){
         onclick="openLightbox(this.src)" alt="Photo"/>
     </div>`;
   }else{
-    bubbleContent=`<div class="bubble">${escapeHtml(msg.message)}</div>`;
-  }
+
+  bubbleContent = `
+    <div class="bubble">
+      ${escapeHtml(msg.message)}
+    </div>
+  `;
+
+}
   const tickHtml=isMe&&tickStatus?`<span class="tick${tickStatus==='seen'?' seen':''}">✓✓</span>`:'';
 
   row.innerHTML=`
@@ -797,8 +820,27 @@ function updateLastMsgTick(status){
   const tick=lastMsgEl.querySelector('.tick');
   if(tick)tick.className=`tick${status==='seen'?' seen':''}`;
 }
-function scrollToBottom(){const el=document.getElementById('messages');requestAnimationFrame(()=>{el.scrollTop=el.scrollHeight;});}
-function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
+function isNearBottom() {
+
+  const el = document.getElementById('messages');
+
+  return (
+    el.scrollHeight - el.scrollTop - el.clientHeight < 150
+  );
+}
+
+function scrollToBottom(force = false) {
+
+  const el = document.getElementById('messages');
+
+  if (force || isNearBottom()) {
+
+    requestAnimationFrame(() => {
+      el.scrollTop = el.scrollHeight;
+    });
+
+  }
+}function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
 function setStatus(online){
   document.getElementById('s-dot').classList.toggle('on',online);
   document.getElementById('s-label').textContent=online?'Online':'Reconnecting…';
@@ -845,10 +887,7 @@ input.addEventListener('focus', () => {
 
   }, 300);
 });
-   function escapeHtml(str){
-  if(!str)return'';
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br/>');
-   }
+  
    if (window.visualViewport) {
 
   window.visualViewport.addEventListener('resize', () => {
@@ -867,6 +906,15 @@ input.addEventListener('focus', () => {
   });
 
 }
+window.addEventListener('beforeunload', () => {
+
+  clearTimeout(typingTimer);
+
+  if (stompClient) {
+    stompClient.disconnect();
+  }
+
+});
 </script>
 </body>
 </html>
