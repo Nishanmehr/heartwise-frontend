@@ -16,136 +16,161 @@
   </script>
   <link rel="stylesheet" href="../css/navbar.css">
   <style>
-    /* Kill base.css body gradient */
-    body {
-      background: #f0ecfb !important;
-      background-image: none !important;
+    html, body {
       margin: 0; padding: 0;
+      background: #f3eefb !important;
+      background-image: none !important;
       font-family: 'DM Sans', sans-serif;
+      height: 100%;
+      overflow: hidden;
     }
-
     * { box-sizing: border-box; }
 
-    /* ══ FULL PAGE WRAPPER ══ */
+    /* ══ PAGE WRAPPER ══ */
     .hw-page {
-      display: flex;
-      min-height: calc(100vh - 60px);
+      position: relative;
+      height: calc(100vh - 60px);
+      overflow: hidden;
+      background: linear-gradient(135deg, #f6f3fb 0%, #f1ecf9 25%, #ede5f7 50%, #f3e6ef 75%, #faeef2 100%);
+    }
+
+    /* Top-right floating icons (bell + avatar) like image 2 */
+    .hw-top-icons {
+      position: absolute;
+      top: 24px; right: 32px;
+      display: flex; align-items: center; gap: 14px;
+      z-index: 10;
+    }
+    .hw-icon-circle {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.55);
+      box-shadow: 0 2px 10px rgba(123,94,167,0.12);
+    }
+    .hw-icon-circle.avatar {
+      background: linear-gradient(135deg, #9B59C4, #7B5EA7);
     }
 
     /* ════════════════════════════════
-       LEFT SIDE — White Login Form
-       (matches image 1: white card left)
+       LEFT — White Card (form)
     ════════════════════════════════ */
     .hw-form-side {
-      flex: 0 0 500px;
+      position: absolute;
+      top: 26px;
+      left: 26px;
+      bottom: 26px;
+      width: 478px;
       background: #ffffff !important;
-      background-image: none !important;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 36px;
-      box-shadow: 4px 0 40px rgba(123,94,167,0.08);
-      position: relative;
-      z-index: 2;
+      border-radius: 26px;
+      box-shadow: 0 24px 64px rgba(60,30,100,0.18);
+      z-index: 5;
+      padding: 32px 44px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: block;
     }
+    .hw-form-side::-webkit-scrollbar { width: 0; }
 
-    .hw-card {
-      width: 100%;
-      max-width: 400px;
-    }
+    .hw-card { width: 100%; min-height: 100%; display: flex; flex-direction: column; justify-content: center; }
 
-    /* ── HeartWise logo inside form ── */
+    /* ── Logo ── */
     .hw-logo-row {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 28px;
+      gap: 11px;
+      margin-bottom: 18px;
     }
     .hw-logo-icon {
-      width: 44px; height: 44px;
-      background: linear-gradient(135deg, #9B59C4, #7B5EA7);
+      width: 46px; height: 46px;
+      background: linear-gradient(135deg, #A855D4, #6B3A9C);
       border-radius: 13px;
       display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
     }
-    .hw-logo-icon svg { width: 24px; height: 24px; }
+    .hw-logo-icon svg { width: 26px; height: 26px; }
     .hw-logo-name {
-      font-size: 22px; font-weight: 800; color: #1a0a3d;
-      letter-spacing: -0.3px;
+      font-size: 24px; font-weight: 800; color: #1a0a3d;
+      letter-spacing: -0.4px; line-height: 1.1;
     }
-    .hw-logo-name span { color: #9B59C4; }
-    .hw-logo-tag { font-size: 11px; color: #9a8abf; font-weight: 500; }
+    .hw-logo-name span {
+      background: linear-gradient(135deg, #A855D4, #E8526A);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hw-logo-tag { font-size: 12px; color: #9a8abf; font-weight: 500; margin-top: 1px; }
 
     /* ── Role toggle ── */
     .hw-role-toggle {
       display: flex;
-      background: #f3f0fb;
+      background: #f3eefb;
       border-radius: 50px;
       padding: 4px;
-      margin-bottom: 26px;
-      border: 1px solid #e0d6f5;
+      margin-bottom: 18px;
     }
     .hw-role-btn {
-      flex: 1; padding: 10px 14px; border-radius: 50px;
+      flex: 1; padding: 11px 14px; border-radius: 50px;
       border: none; background: none;
-      font-size: 14px; font-weight: 700; color: #7B5EA7;
+      font-size: 14px; font-weight: 700; color: #9a85c0;
       cursor: pointer; transition: all .22s; font-family: 'DM Sans', sans-serif;
     }
     .hw-role-btn.active {
-      background: linear-gradient(135deg, #9B59C4, #7B5EA7);
+      background: linear-gradient(135deg, #A855D4, #7B5EA7);
       color: #fff;
-      box-shadow: 0 3px 14px rgba(123,94,167,0.35);
+      box-shadow: 0 4px 14px rgba(123,94,167,0.35);
     }
 
     /* ── Mode tabs ── */
     .hw-mode-tabs {
-      display: flex; gap: 8px;
-      border-bottom: 2px solid #f0eafa;
-      padding-bottom: 14px; margin-bottom: 20px;
+      display: flex; gap: 8px; align-items: baseline;
+      border-bottom: 1.5px solid #f0eafa;
+      padding-bottom: 12px; margin-bottom: 18px;
     }
     .hw-mode-btn {
       background: none; border: none;
       font-size: 14px; font-weight: 700;
-      color: #c0b0d8; cursor: pointer;
-      padding: 4px 0; transition: color .2s;
+      color: #c3b5dd; cursor: pointer;
+      padding: 2px 0; transition: color .2s;
       position: relative; font-family: 'DM Sans', sans-serif;
     }
     .hw-mode-btn.active { color: #7B5EA7; }
     .hw-mode-btn.active::after {
       content: ''; position: absolute;
-      bottom: -16px; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(135deg, #9B59C4, #E8526A);
+      bottom: -13px; left: 0; right: 0;
+      height: 2.5px;
+      background: linear-gradient(135deg, #A855D4, #E8526A);
       border-radius: 2px;
     }
-    .hw-mode-sep { color: #e0d6f5; font-size: 16px; display: flex; align-items: center; }
+    .hw-mode-sep { color: #e0d6f5; font-size: 14px; }
 
     /* ── Title ── */
     .hw-title {
-      font-size: 26px; font-weight: 800; color: #1a0a3d;
-      margin-bottom: 4px; letter-spacing: -0.3px;
+      font-size: 27px; font-weight: 800; color: #1a0a3d;
+      margin-bottom: 5px; letter-spacing: -0.4px;
     }
-    .hw-sub { font-size: 13px; color: #9a8abf; margin-bottom: 22px; line-height: 1.55; }
+    .hw-sub { font-size: 13px; color: #a596c4; margin-bottom: 20px; line-height: 1.5; }
 
     /* ── Fields ── */
     .hw-field { margin-bottom: 14px; }
     .hw-field label {
-      display: block; font-size: 10px; font-weight: 700;
-      color: #a090c0; text-transform: uppercase;
-      letter-spacing: .8px; margin-bottom: 6px;
-    }
+  display: block; font-size: 11px; font-weight: 700;
+  color: #1a0a3d;        /* ← color change kiya, light purple se dark black */
+  text-transform: uppercase;
+  letter-spacing: .6px; margin-bottom: 6px;
+}
     .hw-field-wrap { position: relative; }
     .hw-field-ic {
-      position: absolute; left: 12px; top: 50%;
+      position: absolute; left: 14px; top: 50%;
       transform: translateY(-50%);
-      width: 18px; height: 18px;
+      width: 17px; height: 17px;
       display: flex; align-items: center; justify-content: center;
       pointer-events: none;
     }
     .hw-field input, .hw-field select {
       width: 100%;
       padding: 13px 14px 13px 40px;
-      background: #f8f5ff;
-      border: 1.5px solid #e8e0f8;
+      background: #f6f2fc;
+      border: 1.5px solid #ece4f8;
       border-radius: 13px;
       font-size: 14px; color: #1a0a3d;
       outline: none;
@@ -153,11 +178,11 @@
       font-family: 'DM Sans', sans-serif;
     }
     .hw-field input:focus, .hw-field select:focus {
-      border-color: #9B59C4;
+      border-color: #A855D4;
       background: #fff;
-      box-shadow: 0 0 0 4px rgba(155,89,196,0.1);
+      box-shadow: 0 0 0 3px rgba(168,85,212,0.1);
     }
-    .hw-field input::placeholder { color: #c8b8e0; }
+    .hw-field input::placeholder { color: #c5b8dc; }
     .hw-field input.no-ic, .hw-field select.no-ic { padding-left: 14px; }
 
     /* ── Extras row ── */
@@ -166,220 +191,201 @@
       margin: -2px 0 16px;
     }
     .hw-extras label {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 13px; color: #9a8abf; cursor: pointer; font-weight: 500;
+      display: flex; align-items: center; gap: 7px;
+      font-size: 13px; color: #8a7aaa; cursor: pointer; font-weight: 500;
     }
-    .hw-extras input[type=checkbox] { accent-color: #9B59C4; }
-    .hw-forgot { font-size: 13px; color: #9B59C4; font-weight: 700; cursor: pointer; }
+    .hw-extras input[type=checkbox] { accent-color: #A855D4; width: 15px; height: 15px; }
+    .hw-forgot { font-size: 13px; color: #A855D4; font-weight: 700; cursor: pointer; }
 
     /* ── Primary button ── */
     .hw-btn {
-      width: 100%; padding: 15px;
-      background: linear-gradient(135deg, #A855D4, #7B5EA7);
-      color: #fff; border: none; border-radius: 16px;
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, #8B4FD4 0%, #A855D4 45%, #D454B8 100%);
+      color: #fff; border: none; border-radius: 15px;
       font-size: 15px; font-weight: 700;
-      cursor: pointer; transition: all .22s; margin-top: 6px;
-      box-shadow: 0 4px 18px rgba(123,94,167,0.35);
+      cursor: pointer; transition: all .22s;
+      box-shadow: 0 6px 18px rgba(168,85,180,0.35);
       font-family: 'DM Sans', sans-serif; letter-spacing: 0.2px;
     }
-    .hw-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 26px rgba(123,94,167,0.45); }
-    .hw-btn.mentor-btn {
-      background: linear-gradient(135deg,#7B5EA7,#5A3E85);
-    }
+    .hw-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(168,85,180,0.45); }
+    .hw-btn.mentor-btn { background: linear-gradient(135deg,#7B5EA7,#5A3E85); }
 
     /* ── Divider ── */
     .hw-divider {
-      display: flex; align-items: center; gap: 10px;
+      display: flex; align-items: center; gap: 12px;
       margin: 18px 0;
-      font-size: 11px; color: #c8b8e0; font-weight: 600;
+      font-size: 12px; color: #c5b8dc; font-weight: 600;
     }
     .hw-divider::before, .hw-divider::after {
-      content: ''; flex: 1; height: 1px; background: #ede8f8;
+      content: ''; flex: 1; height: 1px; background: #ece4f8;
     }
 
     /* ── OAuth ── */
-    .hw-oauth { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 9px; margin-bottom: 16px; }
+    .hw-oauth { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 18px; }
     .hw-oauth-btn {
       display: flex; align-items: center; justify-content: center; gap: 6px;
-      padding: 11px 8px;
-      background: #fff !important; border: 1.5px solid #e8e0f8;
+      padding: 11px 6px;
+      background: #fff; border: 1.5px solid #ece4f8;
       border-radius: 12px;
       font-size: 13px; font-weight: 600; color: #2d1b69;
       cursor: pointer; transition: all .18s; font-family: 'DM Sans', sans-serif;
     }
-    .hw-oauth-btn:hover { background: #f8f5ff !important; border-color: #c0a8e8; }
+    .hw-oauth-btn:hover { background: #f6f2fc; border-color: #d4bdf0; }
 
     /* ── Links ── */
-    .hw-switch { text-align: left; margin-top: 8px; font-size: 13px; color: #9a8abf; }
-    .hw-link { color: #9B59C4; font-weight: 700; cursor: pointer; }
-    .hw-note { font-size: 12px; color: #c0b0d8; text-align: center; margin-top: 12px; }
+    .hw-switch { text-align: left; margin-top: 7px; font-size: 13px; color: #8a7aaa; }
+    .hw-link { color: #A855D4; font-weight: 700; cursor: pointer; }
+    .hw-note { font-size: 12px; color: #c5b8dc; text-align: center; margin-top: 10px; }
 
     /* ── Mentor badge ── */
     .hw-mbadge {
-      background: linear-gradient(135deg,rgba(123,94,167,.1),rgba(155,89,196,.06));
+      background: linear-gradient(135deg,rgba(168,85,212,.1),rgba(123,94,167,.06));
       color: #7B5EA7; font-size: 12px; font-weight: 700;
       padding: 10px 14px; border-radius: 12px; margin-bottom: 14px;
-      text-align: center; border: 1px solid rgba(123,94,167,0.15);
+      text-align: center; border: 1px solid rgba(168,85,212,0.15);
     }
 
     /* ── 2-col grid ── */
     .hw-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-    /* ── Trust strip at bottom ── */
+    /* ── Trust strip ── */
     .hw-trust-strip {
-      display: flex; gap: 0;
-      margin-top: 28px; padding-top: 20px;
+      display: flex;
+      margin-top: 18px; padding-top: 16px;
       border-top: 1px solid #f0eafa;
       justify-content: space-between;
     }
-    .hw-ts-item { text-align: center; flex: 1; }
-    .hw-ts-item .ts-ic { font-size: 22px; margin-bottom: 4px; }
-    .hw-ts-item .ts-lb { font-size: 10px; color: #7B5EA7; font-weight: 700; }
-    .hw-ts-item .ts-sb { font-size: 9px; color: #c0b0d8; margin-top: 1px; }
+    .hw-ts-item { text-align: center; flex: 1; padding: 0 4px; }
+    .hw-ts-item .ts-ic-wrap {
+      width: 34px; height: 34px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 6px; font-size: 16px;
+    }
+    .hw-ts-item .ts-lb { font-size: 11px; color: #2d1b69; font-weight: 700; }
+    .hw-ts-item .ts-sb { font-size: 9px; color: #b0a0d0; margin-top: 2px; line-height: 1.3; }
 
     /* ════════════════════════════════
-       RIGHT SIDE — Teddy + Purple BG
-       (matches image 1: teddy right)
+       RIGHT — Visual / Teddy zone
     ════════════════════════════════ */
     .hw-visual-side {
-      flex: 1;
-      position: relative;
+      position: absolute;
+      inset: 0;
       overflow: hidden;
-      background: linear-gradient(145deg, #e8e2f8 0%, #d8cfF4 20%, #ccc1f0 45%, #c8baf0 65%, #f0c0d8 100%);
+      z-index: 1;
     }
-
-    /* Pink glow top-right */
     .hw-visual-side::before {
       content: '';
       position: absolute;
-      width: 420px; height: 420px;
-      background: radial-gradient(circle, rgba(255,172,210,0.6) 0%, transparent 65%);
-      top: -80px; right: -60px;
+      width: 460px; height: 460px;
+      background: radial-gradient(circle, rgba(255,200,220,0.4) 0%, transparent 65%);
+      top: -100px; right: -80px;
       pointer-events: none;
     }
-    /* Purple glow center */
     .hw-visual-side::after {
       content: '';
       position: absolute;
-      width: 350px; height: 350px;
-      background: radial-gradient(circle, rgba(160,120,240,0.35) 0%, transparent 65%);
-      top: 30%; left: 10%;
+      width: 380px; height: 380px;
+      background: radial-gradient(circle, rgba(200,170,235,0.22) 0%, transparent 65%);
+      top: 35%; left: 36%;
       pointer-events: none;
     }
 
-    /* ── Floating bubbles ── */
+    /* Floating bubbles */
     .hw-bubble {
       position: absolute;
-      background: rgba(255,255,255,0.92);
+      background: rgba(255,255,255,0.95);
       border-radius: 18px;
-      padding: 10px 16px;
-      box-shadow: 0 4px 22px rgba(100,80,180,0.18);
-      display: flex; align-items: center; gap: 9px;
-      font-size: 13px; font-weight: 700; color: #2d1b69;
+      padding: 11px 18px;
+      box-shadow: 0 6px 24px rgba(100,70,170,0.18);
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14px; font-weight: 700; color: #2d1b69;
       white-space: nowrap;
-      z-index: 3;
-      backdrop-filter: blur(6px);
+      z-index: 4;
     }
     .hw-bic {
-      width: 30px; height: 30px; border-radius: 9px;
+      width: 32px; height: 32px; border-radius: 10px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 15px; flex-shrink: 0;
+      font-size: 16px; flex-shrink: 0;
     }
-
-    /* Bubble positions (scattered around teddy like image 1) */
-    .hw-b1 { top: 12%;  left: 8%;   animation: hw-float 4s ease-in-out infinite 0s; }
-    .hw-b2 { top: 8%;   right: 6%;  animation: hw-float 4s ease-in-out infinite 0.7s; }
-    .hw-b3 { top: 42%;  left: 4%;   animation: hw-float 4s ease-in-out infinite 1.4s; }
-    .hw-b4 { top: 38%;  right: 4%;  animation: hw-float 4s ease-in-out infinite 2.1s; }
-    .hw-b5 { bottom: 28%; right: 6%; animation: hw-float 4s ease-in-out infinite 2.8s; }
+    .hw-b1 { top: 12%;  left: 50%;   animation: hw-float 4s ease-in-out infinite 0s; }
+    .hw-b2 { top: 9%;   right: 6%;  animation: hw-float 4s ease-in-out infinite 0.7s; }
+    .hw-b3 { top: 40%;  left: 42%;   animation: hw-float 4s ease-in-out infinite 1.4s; }
+    .hw-b4 { top: 37%;  right: 4%;  animation: hw-float 4s ease-in-out infinite 2.1s; }
+    .hw-b5 { bottom: 26%; right: 5%; animation: hw-float 4s ease-in-out infinite 2.8s; }
 
     @keyframes hw-float {
       0%,100% { transform: translateY(0); }
       50%      { transform: translateY(-10px); }
     }
 
-    /* Floating hearts */
-    .hw-heart {
-      position: absolute;
-      font-size: 20px;
-      z-index: 2;
-      animation: hw-float 3.5s ease-in-out infinite;
-      opacity: 0.7;
-    }
-    .hw-h1 { top: 28%; left: 35%; font-size: 16px; animation-delay: 0.5s; }
-    .hw-h2 { top: 18%; left: 55%; font-size: 22px; animation-delay: 1.2s; color: #E8526A; }
-    .hw-h3 { top: 58%; left: 8%;  font-size: 14px; animation-delay: 2s; color: #9B59C4; }
+    .hw-heart { position: absolute; z-index: 3; animation: hw-float 3.5s ease-in-out infinite; opacity: 0.8; }
+    .hw-h1 { top: 27%; left: 56%; font-size: 16px; animation-delay: 0.5s; }
+    .hw-h2 { top: 14%; left: 78%; font-size: 24px; animation-delay: 1.2s; }
+    .hw-h3 { top: 60%; left: 47%; font-size: 14px; animation-delay: 2s; }
 
-    /* ── SVG Teddy — centered, large ── */
-    .hw-teddy-wrap {
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 150%;
-      max-width: 900px;
-      z-index: 2;
-      animation: hw-teddyfloat 3.8s ease-in-out infinite;
-    }
-    @keyframes hw-teddyfloat {
-      0%,100% { transform: translateX(-50%) translateY(0); }
-      50%      { transform: translateX(-50%) translateY(-16px); }
-    }
-    .hw-teddy-wrap svg { width: 100%; height: auto; }
-
-    /* ── Bottom decorations ── */
-    .hw-deco-plant {
-      position: absolute;
-      bottom: 10px; left: 6%;
-      font-size: 48px; z-index: 3;
-      animation: hw-float 5s ease-in-out infinite 1s;
-    }
-    .hw-deco-heart-neon {
-      position: absolute;
-      bottom: 18%; right: 5%;
-      font-size: 48px; z-index: 3;
-      filter: drop-shadow(0 0 12px rgba(232,82,106,0.7));
-      animation: hw-float 3.5s ease-in-out infinite 0.8s;
-    }
-
-    /* Books stack bottom-right */
-    .hw-books {
-      position: absolute;
-      bottom: 0; right: 4%;
-      z-index: 3;
-    }
-
-    /* Sparkle dots */
     .hw-sparkle {
-      position: absolute;
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: rgba(155,89,196,0.5);
-      z-index: 2;
+      position: absolute; width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(155,89,196,0.5); z-index: 2;
       animation: hw-sparkle 3s ease-in-out infinite;
     }
     @keyframes hw-sparkle {
       0%,100% { opacity: 0.3; transform: scale(0.8); }
       50%      { opacity: 1; transform: scale(1.3); }
     }
-    .hw-sp1 { top: 15%; left: 42%; animation-delay: 0s; }
-    .hw-sp2 { top: 35%; right: 14%; animation-delay: 0.8s; width: 8px; height: 8px; background: rgba(232,82,106,0.5); }
-    .hw-sp3 { top: 60%; left: 20%; animation-delay: 1.6s; }
-    .hw-sp4 { bottom: 35%; right: 20%; animation-delay: 2.4s; width: 5px; height: 5px; }
+    .hw-sp1 { top: 18%; left: 64%; animation-delay: 0s; }
+    .hw-sp2 { top: 38%; right: 16%; animation-delay: 0.8s; width: 8px; height: 8px; background: rgba(232,82,106,0.5); }
+    .hw-sp3 { top: 62%; left: 58%; animation-delay: 1.6s; }
+    .hw-sp4 { bottom: 38%; right: 22%; animation-delay: 2.4s; width: 5px; height: 5px; }
+
+    /* Teddy */
+    .hw-teddy-wrap {
+      position: absolute;
+      bottom: 0;
+      left: 58%;
+      transform: translateX(-50%);
+      width: 80%;
+      max-width: 1000px;
+      z-index: 3;
+      animation: hw-teddyfloat 3.8s ease-in-out infinite;
+    }
+    @keyframes hw-teddyfloat {
+      0%,100% { transform: translateX(-50%) translateY(0); }
+      50%      { transform: translateX(-50%) translateY(-14px); }
+    }
+    .hw-teddy-wrap svg, .hw-teddy-wrap img { width: 100%; height: auto; display: block; }
+
+    /* Plant */
+    .hw-deco-plant {
+      position: absolute;
+      bottom: 6%; left: 46%;
+      font-size: 50px; z-index: 4;
+      animation: hw-float 5s ease-in-out infinite 1s;
+    }
+    /* Neon heart */
+    .hw-deco-heart-neon {
+      position: absolute;
+      bottom: 16%; right: 6%;
+      font-size: 50px; z-index: 4;
+      filter: drop-shadow(0 0 14px rgba(232,82,106,0.7));
+      animation: hw-float 3.5s ease-in-out infinite 0.8s;
+    }
+    /* Books */
+    .hw-books { position: absolute; bottom: 0; right: 5%; z-index: 4; }
 
     /* ── MOBILE ── */
-    @media (max-width: 900px) { .hw-form-side { flex: 0 0 420px; } }
+    @media (max-width: 900px) { .hw-form-side { width: 400px; } }
     @media (max-width: 768px) {
+      html, body { overflow-y: auto; height: auto; }
       .hw-visual-side { display: none !important; }
-      .hw-page { flex-direction: column; }
+      .hw-page { position: relative; background: #f3eefb !important; overflow-y: auto; height: auto; min-height: calc(100vh - 60px); }
+      .hw-top-icons { display: none; }
       .hw-form-side {
-        flex: 1; padding: 20px 16px;
-        background: #f0ecfb !important;
-        box-shadow: none;
+        position: relative; top: 0; left: 0; bottom: 0;
+        width: 100%; padding: 24px 18px;
+        box-shadow: none; border-radius: 0;
       }
       .hw-card {
-        max-width: 100%; background: #fff;
-        border-radius: 24px; padding: 28px 20px;
+        background: #fff; border-radius: 24px; padding: 26px 20px;
         box-shadow: 0 4px 24px rgba(123,94,167,0.13);
       }
     }
@@ -396,15 +402,33 @@
 
   <div class="hw-page">
 
-    <!-- ═══════════ LEFT — LOGIN FORM ═══════════ -->
-    <div class="hw-form-side" style="background:#ffffff !important;">
+    <!-- Top-right floating icons -->
+    <div class="hw-top-icons">
+      <div class="hw-icon-circle">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7B5EA7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </div>
+      <div class="hw-icon-circle avatar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </div>
+    </div>
+
+    <!-- ═══════════ LEFT — LOGIN FORM CARD ═══════════ -->
+    <div class="hw-form-side">
       <div class="hw-card">
 
         <!-- Logo -->
         <div class="hw-logo-row">
-          <div class="hw-logo-icon">
-            <svg viewBox="0 0 24 24" fill="white"><path d="M12 21C12 21 3 15 3 9C3 6.5 5 4 7.5 4C9.5 4 11 5.5 12 7C13 5.5 14.5 4 16.5 4C19 4 21 6.5 21 9C21 15 12 21 12 21Z"/></svg>
-          </div>
+          <svg width="40" height="40" viewBox="0 0 40 40" style="flex-shrink:0;">
+            <path d="M20 30C20 30 7 22 7 13C7 9 10 6 14 6C16.8 6 18.8 7.6 20 9.4C21.2 7.6 23.2 6 26 6C30 6 33 9 33 13C33 22 20 30 20 30Z" fill="none" stroke="url(#hwGrad)" stroke-width="2.6" stroke-linejoin="round"/>
+            <circle cx="14" cy="9" r="2" fill="#A855D4"/>
+            <circle cx="26" cy="9" r="2" fill="#E8526A"/>
+            <defs>
+              <linearGradient id="hwGrad" x1="7" y1="6" x2="33" y2="30">
+                <stop offset="0%" stop-color="#A855D4"/>
+                <stop offset="100%" stop-color="#E8526A"/>
+              </linearGradient>
+            </defs>
+          </svg>
           <div>
             <div class="hw-logo-name">Heart<span>Wise</span></div>
             <div class="hw-logo-tag">Better relationships. Brighter tomorrows.</div>
@@ -421,7 +445,7 @@
         <div id="login-user">
           <div class="hw-mode-tabs">
             <button class="hw-mode-btn active" id="user-mode-login"    onclick="switchMode('user','login')">Sign In</button>
-            <span class="hw-mode-sep">&nbsp;|&nbsp;</span>
+            <span class="hw-mode-sep">|</span>
             <button class="hw-mode-btn"        id="user-mode-register" onclick="switchMode('user','register')">Create Account</button>
           </div>
 
@@ -479,17 +503,17 @@
 
             <div class="hw-trust-strip">
               <div class="hw-ts-item">
-                <div class="ts-ic">🔒</div>
-                <div class="ts-lb">Private & Secure</div>
+                <div class="ts-ic-wrap" style="background:#ede4fb;">🔒</div>
+                <div class="ts-lb">Private &amp; Secure</div>
                 <div class="ts-sb">100% confidential</div>
               </div>
               <div class="hw-ts-item">
-                <div class="ts-ic">👩‍💼</div>
+                <div class="ts-ic-wrap" style="background:#fbe4ea;">👩‍💼</div>
                 <div class="ts-lb">Expert Mentors</div>
                 <div class="ts-sb">Connect with guides</div>
               </div>
               <div class="hw-ts-item">
-                <div class="ts-ic">💜</div>
+                <div class="ts-ic-wrap" style="background:#ede4fb;">💜</div>
                 <div class="ts-lb">For Every Relationship</div>
                 <div class="ts-sb">All stages, all people</div>
               </div>
@@ -514,7 +538,7 @@
           <div class="hw-mbadge">🏅 Verified Mentor Portal — restricted access</div>
           <div class="hw-mode-tabs">
             <button class="hw-mode-btn active" id="mentor-mode-login"    onclick="switchMode('mentor','login')">Sign In</button>
-            <span class="hw-mode-sep">&nbsp;|&nbsp;</span>
+            <span class="hw-mode-sep">|</span>
             <button class="hw-mode-btn"        id="mentor-mode-register" onclick="switchMode('mentor','register')">Apply as Mentor</button>
           </div>
           <div id="mentor-login-form">
@@ -550,8 +574,8 @@
             </div>
             <div class="hw-field">
               <label>Profile Picture *</label>
-              <input class="no-ic" type="file" id="regMentorPic" accept="image/*" onchange="previewPic(this)" style="padding:8px;border:1.5px solid #e8e0f8;border-radius:10px;width:100%;font-size:13px;background:#f8f5ff;color:#1a0a3d;">
-              <img id="picPreview" src="" alt="" style="display:none;width:70px;height:70px;border-radius:50%;object-fit:cover;margin-top:8px;border:3px solid #9B59C4;">
+              <input class="no-ic" type="file" id="regMentorPic" accept="image/*" onchange="previewPic(this)" style="padding:8px;border:1.5px solid #ece4f8;border-radius:10px;width:100%;font-size:13px;background:#f6f2fc;color:#1a0a3d;">
+              <img id="picPreview" src="" alt="" style="display:none;width:70px;height:70px;border-radius:50%;object-fit:cover;margin-top:8px;border:3px solid #A855D4;">
             </div>
             <button class="hw-btn mentor-btn" onclick="registerMentor()">Create Mentor Account</button>
             <p class="hw-note" style="margin-top:10px;">Your profile will be listed after verification.</p>
@@ -560,18 +584,18 @@
 
         <!-- ══ OTP SCREEN ══ -->
         <div id="otp-screen" style="display:none;">
-          <div style="text-align:center;margin-bottom:28px;">
-            <div style="font-size:54px;margin-bottom:14px;">📧</div>
+          <div style="text-align:center;margin-bottom:24px;">
+            <div style="font-size:50px;margin-bottom:12px;">📧</div>
             <h2 class="hw-title">Check your email!</h2>
             <p class="hw-sub">We sent a 6-digit code to<br><strong id="otpEmailDisplay" style="color:#7B5EA7;">—</strong></p>
           </div>
           <div class="hw-field">
             <label>Enter OTP</label>
             <input class="no-ic" type="text" id="otpInput" placeholder="000000" maxlength="6"
-              style="text-align:center;font-size:26px;font-weight:800;letter-spacing:10px;padding:16px;border-radius:16px;">
+              style="text-align:center;font-size:24px;font-weight:800;letter-spacing:9px;padding:14px;border-radius:14px;">
           </div>
           <button class="hw-btn" onclick="verifyOtp()">Verify Email ✅</button>
-          <p class="hw-note" style="margin-top:16px;">Didn't receive it? <button onclick="resendOtp()" style="background:none;border:none;color:#9B59C4;font-weight:700;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;">Resend OTP</button></p>
+          <p class="hw-note" style="margin-top:14px;">Didn't receive it? <button onclick="resendOtp()" style="background:none;border:none;color:#A855D4;font-weight:700;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;">Resend OTP</button></p>
         </div>
 
       </div><!-- /hw-card -->
@@ -580,177 +604,30 @@
     <!-- ═══════════ RIGHT — VISUAL / TEDDY ═══════════ -->
     <div class="hw-visual-side">
 
-      <!-- Sparkles -->
       <div class="hw-sparkle hw-sp1"></div>
       <div class="hw-sparkle hw-sp2"></div>
       <div class="hw-sparkle hw-sp3"></div>
       <div class="hw-sparkle hw-sp4"></div>
 
-      <!-- Floating hearts -->
       <div class="hw-heart hw-h1">💜</div>
       <div class="hw-heart hw-h2">💗</div>
       <div class="hw-heart hw-h3">💜</div>
 
-      <!-- Bubbles -->
-      <div class="hw-bubble hw-b1"><div class="hw-bic" style="background:#fde8ec;">❤️</div> Stronger Connections</div>
-      <div class="hw-bubble hw-b2"><div class="hw-bic" style="background:#ede8f8;">👥</div> Expert Guidance</div>
-      <div class="hw-bubble hw-b3"><div class="hw-bic" style="background:#e8f4f0;">💬</div> Better Communication</div>
-      <div class="hw-bubble hw-b4"><div class="hw-bic" style="background:#e0e8f8;">🤝</div> Build Trust</div>
-      <div class="hw-bubble hw-b5"><div class="hw-bic" style="background:#fef8e8;">⭐</div> Grow Together</div>
+      <div class="hw-bubble hw-b1"><div class="hw-bic" style="background:#fbdde4;">❤️</div> Stronger Connections</div>
+      <div class="hw-bubble hw-b2"><div class="hw-bic" style="background:#f9d9df;">👥</div> Expert Guidance</div>
+      <div class="hw-bubble hw-b3"><div class="hw-bic" style="background:#e6ddf7;">💬</div> Better Communication</div>
+      <div class="hw-bubble hw-b4"><div class="hw-bic" style="background:#e6ddf7;">🤝</div> Build Trust</div>
+      <div class="hw-bubble hw-b5"><div class="hw-bic" style="background:#fdf0cf;">⭐</div> Grow Together</div>
 
-      <!-- Plant decoration -->
-      <div class="hw-deco-plant">🪴</div>
-
-      <!-- Neon heart -->
       <div class="hw-deco-heart-neon">🤍</div>
 
-      <!-- Books stack -->
-      <div class="hw-books">
-        <svg width="160" height="100" viewBox="0 0 160 100">
-          <!-- Book 3 (bottom) -->
-          <rect x="10" y="68" width="140" height="22" rx="4" fill="#6B3A8C"/>
-          <text x="80" y="83" text-anchor="middle" fill="white" font-size="11" font-weight="700" font-family="DM Sans">Love &amp; Respect</text>
-          <!-- Book 2 -->
-          <rect x="16" y="46" width="128" height="22" rx="4" fill="#8B5EAC"/>
-          <text x="80" y="61" text-anchor="middle" fill="white" font-size="11" font-weight="700" font-family="DM Sans">Empathy</text>
-          <!-- Book 1 (top) -->
-          <rect x="22" y="24" width="116" height="22" rx="4" fill="#A87CC8"/>
-          <text x="80" y="39" text-anchor="middle" fill="white" font-size="11" font-weight="700" font-family="DM Sans">Understanding</text>
-          <!-- Hearts on books -->
-          <text x="18" y="82" font-size="10">💗</text>
-          <text x="148" y="60" font-size="10">💗</text>
-        </svg>
-      </div>
+
 
       <!-- ══ TEDDY SVG ══ -->
-     <div class="hw-teddy-wrap">
-  <img src="../screenshots/heartwise.png" alt="HeartWise Teddy" style="width:100%;height:auto;object-fit:contain;">
+      
+      <div class="hw-teddy-wrap">
+  <img src="../screenshots/heartwis.png" alt="HeartWise Teddy">
 </div>
-          <!-- Shadow -->
-          <ellipse cx="200" cy="448" rx="110" ry="14" fill="rgba(100,60,160,0.18)"/>
-
-          <!-- ── BODY ── -->
-          <ellipse cx="200" cy="320" rx="105" ry="115" fill="#C8845A"/>
-          <!-- Tummy -->
-          <ellipse cx="200" cy="338" rx="65" ry="75" fill="#DFA882"/>
-
-          <!-- ── ARMS ── -->
-          <!-- Left arm (holding notebook) -->
-          <ellipse cx="84" cy="308" rx="32" ry="54" fill="#B8744A" transform="rotate(-15 84 308)"/>
-          <!-- Right arm (holding mug) -->
-          <ellipse cx="316" cy="308" rx="32" ry="54" fill="#B8744A" transform="rotate(15 316 308)"/>
-
-          <!-- ── LEGS ── -->
-          <ellipse cx="152" cy="418" rx="38" ry="28" fill="#B8744A"/>
-          <ellipse cx="248" cy="418" rx="38" ry="28" fill="#B8744A"/>
-          <!-- Feet -->
-          <ellipse cx="144" cy="438" rx="44" ry="20" fill="#A86840"/>
-          <ellipse cx="256" cy="438" rx="44" ry="20" fill="#A86840"/>
-          <!-- Foot pads -->
-          <ellipse cx="144" cy="441" rx="26" ry="11" fill="#C8845A"/>
-          <ellipse cx="256" cy="441" rx="26" ry="11" fill="#C8845A"/>
-
-          <!-- ── HEAD ── -->
-          <circle cx="200" cy="175" r="112" fill="#C8845A"/>
-
-          <!-- ── EARS ── -->
-          <circle cx="104" cy="88" r="46" fill="#B8744A"/>
-          <circle cx="104" cy="88" r="28" fill="#DFA882"/>
-          <circle cx="296" cy="88" r="46" fill="#B8744A"/>
-          <circle cx="296" cy="88" r="28" fill="#DFA882"/>
-
-          <!-- ── FACE MUZZLE ── -->
-          <ellipse cx="200" cy="195" rx="70" ry="60" fill="#DFA882"/>
-
-          <!-- ── EYES ── -->
-          <!-- Left eye -->
-          <circle cx="170" cy="164" r="22" fill="white"/>
-          <circle cx="173" cy="167" r="14" fill="#2d1008"/>
-          <circle cx="178" cy="162" r="5" fill="white"/>
-          <!-- Right eye -->
-          <circle cx="230" cy="164" r="22" fill="white"/>
-          <circle cx="233" cy="167" r="14" fill="#2d1008"/>
-          <circle cx="238" cy="162" r="5" fill="white"/>
-
-          <!-- ── NOSE ── -->
-          <ellipse cx="200" cy="200" rx="16" ry="11" fill="#2d1008"/>
-          <ellipse cx="196" cy="198" rx="5" ry="3.5" fill="rgba(255,255,255,0.35)"/>
-
-          <!-- ── SMILE ── -->
-          <path d="M178 218 Q200 236 222 218" stroke="#2d1008" stroke-width="3.5" stroke-linecap="round" fill="none"/>
-
-          <!-- ── CHEEK BLUSH ── -->
-          <ellipse cx="146" cy="208" rx="24" ry="15" fill="rgba(232,82,106,0.28)"/>
-          <ellipse cx="254" cy="208" rx="24" ry="15" fill="rgba(232,82,106,0.28)"/>
-
-          <!-- ── EYEBROWS (cute slight furrow) ── -->
-          <path d="M156 148 Q170 142 184 148" stroke="#8B5030" stroke-width="3" stroke-linecap="round" fill="none"/>
-          <path d="M216 148 Q230 142 244 148" stroke="#8B5030" stroke-width="3" stroke-linecap="round" fill="none"/>
-
-          <!-- ── PURPLE JACKET ── -->
-          <!-- Jacket back/body -->
-          <path d="M104 288 Q96 252 108 232 Q148 216 200 216 Q252 216 292 232 Q304 252 296 288 Z" fill="#6B3A9C"/>
-          <!-- Jacket lower body -->
-          <path d="M96 288 Q92 348 98 390 Q150 404 200 404 Q250 404 302 390 Q308 348 304 288 Z" fill="#6B3A9C"/>
-          <!-- Jacket shading -->
-          <path d="M104 288 Q96 252 108 232 Q148 216 200 216 Q252 216 292 232 Q304 252 296 288 Z" fill="rgba(0,0,0,0.06)"/>
-
-          <!-- Jacket lapels -->
-          <path d="M108 232 Q136 224 168 216 L152 258 Q126 260 108 252 Z" fill="#7B4AAC"/>
-          <path d="M292 232 Q264 224 232 216 L248 258 Q274 260 292 252 Z" fill="#7B4AAC"/>
-
-          <!-- V-neck -->
-          <path d="M168 216 L200 252 L232 216" stroke="#9B6ACC" stroke-width="2" fill="none"/>
-
-          <!-- Jacket buttons -->
-          <circle cx="200" cy="278" r="6" fill="#9B6ACC"/>
-          <circle cx="200" cy="302" r="6" fill="#9B6ACC"/>
-          <circle cx="200" cy="326" r="6" fill="#9B6ACC"/>
-
-          <!-- Rose/flower badge -->
-          <circle cx="228" cy="240" r="11" fill="#E8526A"/>
-          <circle cx="228" cy="240" r="5.5" fill="#FF8DA1"/>
-
-          <!-- HeartWise badge on jacket -->
-          <circle cx="172" cy="256" r="13" fill="white" opacity="0.88"/>
-          <path d="M166 254 Q166 250 170 250 Q174 250 174 254 Q174 258 170 261 Q166 258 166 254Z" fill="#E8526A"/>
-
-          <!-- ── MUG (right hand) ── -->
-          <rect x="276" y="298" width="52" height="42" rx="7" fill="#5A2E7A"/>
-          <!-- Mug handle -->
-          <path d="M328 308 Q346 308 346 319 Q346 330 328 330" stroke="#7B4AAC" stroke-width="4" fill="none" stroke-linecap="round"/>
-          <!-- Mug HeartWise logo -->
-          <circle cx="302" cy="316" r="11" fill="rgba(255,255,255,0.15)"/>
-          <path d="M296 315 Q296 311 300 311 Q304 311 304 315 Q304 319 300 322 Q296 319 296 315Z" fill="white" opacity="0.9"/>
-          <!-- Steam -->
-          <path d="M288 296 Q290 288 288 280" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-          <path d="M300 293 Q302 285 300 277" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-          <path d="M312 296 Q314 288 312 280" stroke="rgba(255,255,255,0.45)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-
-          <!-- ── NOTEBOOK (left hand) ── -->
-          <rect x="72" y="300" width="64" height="80" rx="6" fill="#B8844A"/>
-          <rect x="78" y="306" width="52" height="68" rx="4" fill="#EDD4A0"/>
-          <!-- Spiral binding -->
-          <circle cx="72" cy="316" r="5" fill="#987040"/>
-          <circle cx="72" cy="330" r="5" fill="#987040"/>
-          <circle cx="72" cy="344" r="5" fill="#987040"/>
-          <circle cx="72" cy="358" r="5" fill="#987040"/>
-          <circle cx="72" cy="372" r="5" fill="#987040"/>
-          <!-- Notebook lines -->
-          <line x1="84" y1="322" x2="122" y2="322" stroke="#C8A070" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="84" y1="334" x2="122" y2="334" stroke="#C8A070" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="84" y1="346" x2="118" y2="346" stroke="#C8A070" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="84" y1="358" x2="116" y2="358" stroke="#C8A070" stroke-width="1.5" stroke-linecap="round"/>
-          <!-- Notebook heart -->
-          <path d="M92 370 Q92 366 96 366 Q100 366 100 370 Q100 374 96 377 Q92 374 92 370Z" fill="#E8526A" opacity="0.85"/>
-
-          <!-- Better Conversations text on notebook -->
-          <text x="104" y="320" text-anchor="middle" fill="#8B6030" font-size="6" font-weight="600" font-family="DM Sans">Better</text>
-          <text x="104" y="332" text-anchor="middle" fill="#8B6030" font-size="6" font-weight="600" font-family="DM Sans">Conversations</text>
-          <text x="104" y="344" text-anchor="middle" fill="#8B6030" font-size="6" font-weight="600" font-family="DM Sans">Better</text>
-          <text x="104" y="356" text-anchor="middle" fill="#8B6030" font-size="6" font-weight="600" font-family="DM Sans">Connections</text>
-        </svg>
-      </div>
 
     </div><!-- /hw-visual-side -->
 
@@ -763,7 +640,6 @@
   <script src="../js/auth.js"></script>
 
   <script>
-    // Override switchLogin to use hw classes
     window.switchLogin = function(type) {
       document.getElementById('login-user').style.display   = type === 'user'   ? 'block' : 'none';
       document.getElementById('login-mentor').style.display = type === 'mentor' ? 'block' : 'none';
