@@ -1,5 +1,5 @@
 /* =============================================
-   base.css — Reset & Base Styles
+   base.css — Reset & Base Styles (Updated)
    ============================================= */
 
 * {
@@ -8,12 +8,19 @@
   box-sizing: border-box;
 }
 
-body {
+html, body {
   font-family: var(--font-body);
-  background: radial-gradient(circle at top left, var(--surface), var(--rose-light) 120%);
-  color: var(--dark);
+  background: var(--bg);
+  color: var(--text);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  /* NO radial-gradient here — was breaking dashboard */
+}
+
+/* Dashboard pages use flex body */
+body.db-layout {
+  display: flex;
+  background: #fdf5f7;
 }
 
 a {
@@ -21,11 +28,11 @@ a {
   color: inherit;
 }
 
-ul {
-  list-style: none;
-}
+ul { list-style: none; }
 
 img {
   max-width: 100%;
   display: block;
 }
+
+button { font-family: var(--font-body); }
