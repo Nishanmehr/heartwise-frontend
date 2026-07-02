@@ -90,6 +90,8 @@
       padding: 24px 28px 40px;
       background: #ffffff !important;
       min-height: 100vh;
+      width: calc(100vw - 220px);
+      overflow-x: hidden;
     }
 
     /* ── TOPBAR ── */
@@ -117,22 +119,52 @@
     .db-profile-info .pi-name { font-size: 13px; font-weight: 700; color: #1a0a2e; }
     .db-profile-info .pi-role { font-size: 11px; color: #a090b8; }
 
-    /* ── HERO BANNER ── */
+    /* ── HERO BANNER — exact reference gradient ── */
     .db-hero {
-      background: linear-gradient(135deg, #fff5f8 0%, #ffeef5 50%, #fff0f8 100%);
-      border-radius: 20px; padding: 28px 36px;
+      background: linear-gradient(110deg, #fff0f5 0%, #ffd6e8 30%, #f5c0e0 55%, #e8b0d8 75%, #d4a0d0 100%);
+      border-radius: 20px; padding: 32px 36px;
       margin-bottom: 22px;
-      display: flex; align-items: center; justify-content: space-between;
+      display: flex; align-items: center;
       overflow: hidden; position: relative;
-      border: 1px solid #fcd6e8; min-height: 155px;
+      min-height: 170px; border: none;
     }
-    .db-hero-text { max-width: 420px; z-index: 1; }
-    .db-hero-text h3 { font-size: 26px; font-weight: 800; color: #1a0a2e; line-height: 1.25; margin-bottom: 10px; }
+    /* Pink blob top-right */
+    .db-hero::before {
+      content: '';
+      position: absolute; top: -30px; right: 200px;
+      width: 220px; height: 220px;
+      background: radial-gradient(circle, rgba(255,150,200,0.5) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    /* Purple blob right */
+    .db-hero::after {
+      content: '';
+      position: absolute; bottom: -40px; right: -20px;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(200,140,220,0.4) 0%, transparent 65%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .db-hero-text { max-width: 420px; z-index: 2; }
+    .db-hero-text h3 { font-size: 28px; font-weight: 800; color: #1a0a2e; line-height: 1.2; margin-bottom: 10px; }
     .db-hero-text h3 span { color: #E8526A; }
-    .db-hero-text p { font-size: 14px; color: #b090a8; font-weight: 500; }
-    .db-hero-hearts { position: absolute; top: 20px; right: 340px; font-size: 20px; opacity: 0.8; animation: heroFloat 3s ease-in-out infinite; }
-    @keyframes heroFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-    .db-hero-img-placeholder { position: absolute; right: 24px; bottom: 0; font-size: 100px; line-height: 1; animation: heroFloat 3.5s ease-in-out infinite; }
+    .db-hero-text p { font-size: 14px; color: #7a4a6a; font-weight: 500; }
+
+    /* Floating hearts inside banner */
+    .db-hero-h1 { position: absolute; top: 22%; left: 38%; font-size: 22px; z-index: 2; animation: heroFloat 3s ease-in-out infinite 0s; }
+    .db-hero-h2 { position: absolute; top: 12%; right: 38%; font-size: 16px; z-index: 2; animation: heroFloat 3.5s ease-in-out infinite 0.5s; opacity: 0.8; }
+    .db-hero-h3 { position: absolute; bottom: 18%; right: 32%; font-size: 28px; z-index: 2; animation: heroFloat 4s ease-in-out infinite 1s; }
+    .db-hero-h4 { position: absolute; top: 15%; right: 14%; font-size: 20px; z-index: 2; animation: heroFloat 3.2s ease-in-out infinite 1.5s; }
+
+    @keyframes heroFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    .db-hero-img-placeholder {
+      position: absolute; right: 16px; bottom: 0;
+      font-size: 120px; line-height: 1;
+      z-index: 2;
+      animation: heroFloat 3.8s ease-in-out infinite;
+      filter: drop-shadow(0 8px 20px rgba(180,100,160,0.3));
+    }
 
     /* ── STAT CARDS ── */
     .db-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 22px; }
@@ -384,8 +416,12 @@
         <h3>"Every conversation<br>can <span>change a life.</span>"</h3>
         <p>Keep spreading positivity 🧡</p>
       </div>
-      <div class="db-hero-hearts">💗</div>
-      <!-- Replace with actual teddy image if available -->
+      <!-- Floating hearts -->
+      <div class="db-hero-h1">💗</div>
+      <div class="db-hero-h2">💕</div>
+      <div class="db-hero-h3">🩷</div>
+      <div class="db-hero-h4">💗</div>
+      <!-- Teddy -->
       <div class="db-hero-img-placeholder">🧸</div>
     </div>
 
